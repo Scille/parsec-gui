@@ -1,0 +1,87 @@
+@import url(http://netdna.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.css);
+
+:root {
+  --main-color: main-color from "../index.css";
+  --second-color: second-color from "../index.css";
+  --third-color: third-color from "../index.css";
+  --sidebar-width: 60px;
+}
+
+/*Sidebar css*/
+.sidebar {
+  background: var(--second-color);
+  border-right: 1px solid var(--third-color);
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  height: 100%;
+  width: var(--sidebar-width);
+}
+
+.sidebar .header {
+  margin: 15px 0;
+}
+.sidebar .header .parsec-logo {
+  margin: 0 auto;
+  width: 50px;
+  height: 50px;
+  display: block;
+  background: url(../../public/favicon.png);
+  background-size: 50px 50px;
+}
+
+.sidebar .footer {
+  margin-bottom: 25px;
+  position:absolute;
+  left:0;
+  bottom:0;
+}
+
+.sidebar nav {
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  -o-user-select: none;
+  user-select: none;
+}
+.sidebar nav ul,
+.sidebar nav li {
+  outline: 0;
+  margin: 0;
+  padding: 0;
+}
+.sidebar li {
+  display:block;
+  padding: 0;
+}
+.sidebar li:hover>a,
+.sidebar li.active>a {
+  color: var(--main-color);
+}
+.sidebar li a {
+  text-decoration: none;
+  color: var(--third-color);
+}
+
+.sidebar .fa {
+  position: relative;
+  display: table-cell;
+  width: 60px;
+  height: 36px;
+  text-align: center;
+  vertical-align: middle;
+  font-size: 20px;
+}
+
+
+/*Content css*/
+.content {
+  position: absolute;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  left: var(--sidebar-width);
+  padding: 15px 5px;
+  overflow-y: scroll;
+}

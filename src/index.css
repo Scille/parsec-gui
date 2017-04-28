@@ -1,0 +1,52 @@
+/*
+ * Support in all the modern browsers
+ * Firefox 31+, Chrome 49+, Safara 9.1+, Microsoft Edge 15+ and Opera 36+
+ */
+:root {
+  --main-color: #61dafb;
+  --second-color: #222;
+  --third-color: #ccc;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: sans-serif;
+}
+
+/*Dropdown*/
+.dropdown {
+ position: relative;
+ display: inline-block;
+ min-width: 40px;
+ min-height: 20px;
+ text-align: center;
+}
+.dropdown:hover {
+ cursor: pointer;
+}
+.dropdown:hover .dropdown-content {
+ display: block;
+ cursor: auto;
+}
+.dropdown-content {
+ display: none;
+ position: absolute;
+ right: 0;
+ text-align: left;
+ background-color: white;
+ color: var(--second-color);
+ border: 2px solid var(--main-color);
+ min-width: 150px;
+ padding: 7px 12px;
+ z-index: 1;
+}
+.dropdown-content a {
+  color: var(--third-color);
+  padding: 5px 16px;
+  text-decoration: none;
+  display: block;
+}
+.dropdown-content a:hover {
+  color: var(--main-color);
+}

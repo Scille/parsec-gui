@@ -1,0 +1,146 @@
+:root {
+  --main-color: main-color from "../index.css";
+  --second-color: second-color from "../index.css";
+  --third-color: third-color from "../index.css";
+  --sidebar-width: 60px;
+}
+
+.view-switcher .header {
+	padding: 10px 20px;
+  text-align: left;
+	padding-bottom: 10px;
+	border-bottom: 3px solid var(--main-color);
+}
+
+.view-switcher .header .title {
+	font-size: 2em;
+	margin: 0;
+	padding: 0;
+}
+
+.view-switcher .header>.breadcrumb ul {
+  padding: 10px 16px 0 16px;
+  margin: 0;
+  list-style: none;
+  font-size: 17px;
+}
+.view-switcher .header>.breadcrumb ul li {
+  display: inline;
+}
+.view-switcher .header>.breadcrumb ul li+li:before {
+  /* Add a slash symbol (/) before/behind each list item */
+  padding: 8px;
+  color: var(--third-color);
+  content: "/\00a0";
+}
+.view-switcher .header>.breadcrumb ul li a {
+  color: var(--third-color);
+  text-decoration: none;
+}
+.view-switcher .header>.breadcrumb ul li a:hover {
+  color: var(--main-color);
+}
+
+.view-switcher .header .options {
+	position: absolute;
+  right: 15px;
+  top: 75px;
+}
+
+.view-switcher .file-view ul {
+	list-style: none;
+	padding: 0;
+	margin: 0;
+}
+.view-switcher .file-view ul:before,
+.view-switcher .file-view ul:after {
+	content: " ";
+	display: table;
+}
+.view-switcher .file-view ul:after {
+	clear: both;
+}
+.view-switcher .file-view ul li {
+	display: block;
+	position: relative;
+}
+.view-switcher .file-view ul li a {
+  color: var(--third-color);
+  text-decoration: none;
+}
+.view-switcher .file-view ul li a:hover {
+  color: var(--main-color);
+}
+
+.view-switcher .grid-view ul {
+	text-align: center;
+}
+.view-switcher .grid-view ul li {
+	text-align: center;
+	padding: 25px;
+	margin: 20px 5px;
+	display: inline-block;
+  min-width: 180px;
+	min-height: 280px;
+	vertical-align: top;
+	border: 1px solid var(--third-color);
+}
+.view-switcher .grid-view ul li:hover {
+	border: 2px solid var(--main-color);
+}
+.view-switcher .grid-view .icon {
+	font-size: 11em;
+}
+.view-switcher .grid-view .title {
+  font-size: 2em;
+	max-width: 300px;
+	margin: 0 auto;
+}
+.view-switcher .grid-view .details {
+	max-width: 300px;
+	margin: 10px auto;
+}
+.view-switcher .grid-view .options {
+	position: absolute;
+  right: 10px;
+  top: 10px;
+}
+
+.view-switcher .list-view {
+	margin: 10px 5px;
+}
+.view-switcher .list-view ul li {
+  text-align: center;
+	padding: 10px 0;
+	border-bottom: 1px solid var(--third-color);
+}
+.view-switcher .list-view .icon,
+.view-switcher .list-view .title,
+.view-switcher .list-view .details{
+	display: inline-block;
+  padding: 0 15px;
+  vertical-align: middle;
+	overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.view-switcher .list-view .icon {
+	width: 10%;
+	font-size: 2em;
+}
+.view-switcher .list-view .title {
+  width: 30%;
+}
+.view-switcher .list-view .details {
+	width: 40%;
+}
+.view-switcher .list-view .options {
+	position: absolute;
+  right: 10px;
+  top: 23px;
+}
+@media screen and (max-width: 425px) {
+  .view-switcher .list-view .details {
+  	display: none;
+  }
+}

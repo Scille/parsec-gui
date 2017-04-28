@@ -1,0 +1,37 @@
+{
+  "name": "parsec-gui",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "prop-types": "^15.5.8",
+    "react": "^15.5.4",
+    "react-dom": "^15.5.4",
+    "react-redux": "^5.0.4",
+    "react-router-dom": "^4.1.1",
+    "redux": "^3.6.0",
+    "redux-thunk": "^2.2.0"
+  },
+  "devDependencies": {
+    "electron": "^1.6.5",
+    "electron-packager": "^8.6.0",
+    "react-scripts": "0.9.5",
+    "rimraf": "^2.6.1"
+  },
+  "scripts": {
+    "clear": "rimraf build platforms",
+    "clear:osx": "rimraf platforms/osx",
+    "clear:win": "rimraf platforms/win",
+    "clear:nix": "rimraf platforms/nix",
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test --env=jsdom",
+    "eject": "react-scripts eject",
+    "electron": "npm run build && electron .",
+    "electron:dev": "ELECTRON_DEV=true electron .",
+    "electron:osx": "npm run clear:osx && npm run build && electron-packager . --icon=build/favicon.png --platform=darwin --arch=x64 --asar --out=platforms/osx",
+    "electron:win": "npm run clear:win && npm run build && electron-packager . --icon=build/favicon.png --platform=win32 --arch=ia32,x64 --asar --out=platforms/win",
+    "electron:nix": "npm run clear:nix && npm run build && electron-packager . --icon=build/favicon.png --platform=linux --arch=ia32,x64 --asar --out=platforms/nix"
+  },
+  "main": "electron-starter.js",
+  "homepage": "./"
+}
