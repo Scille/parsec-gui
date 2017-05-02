@@ -1,6 +1,6 @@
 import * as types from '../actions/actionTypes';
 
-const personalFile = (state = {}, action) => {
+const personalFile = (state={}, action) => {
   switch (action.type) {
     case types.ADD_FILE:
       return action.file
@@ -16,7 +16,7 @@ const personalFile = (state = {}, action) => {
   }
 }
 
-const personalFilesReducer = (state = [], action) => {
+const personalFilesReducer = (state=[], action) => {
   switch (action.type) {
     case types.ADD_FILE:
       return [
@@ -29,9 +29,9 @@ const personalFilesReducer = (state = [], action) => {
     case types.DELETE_FILE:
       return state.filter(item => personalFile(item, action));
     case types.REFRESH_FILES:
-      return action.path
+      return action.files;
     default:
-      return state
+      return state;
   }
 }
 

@@ -1,8 +1,6 @@
 import * as types from '../actions/actionTypes';
 
-const initState = false
-
-const viewSwitcherReducer = (state = initState, action) => {
+const viewSwitcherReducer = (state=false, action) => {
   switch (action.type) {
     case types.SWITCH_VIEW:
       return !state

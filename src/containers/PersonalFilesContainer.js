@@ -1,6 +1,5 @@
-import PropTypes from 'prop-types'
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux'
 
 import * as actionsCreators from '../actions/actionCreators';
 import PersonalFiles from '../components/PersonalFiles';
@@ -9,22 +8,23 @@ PersonalFiles.propTypes = {
   state: PropTypes.shape({
     files: PropTypes.array.isRequired,
     listView: PropTypes.bool.isRequired,
+    path: PropTypes.string.isRequired,
   }),
   dispatch: PropTypes.shape({
-    addFile: PropTypes.func.isRequired,
-    refreshFiles: PropTypes.func.isRequired,
-    switchView: PropTypes.func.isRequired,
     socketConnect: PropTypes.func.isRequired,
     socketEnd: PropTypes.func.isRequired,
+    socketListDir: PropTypes.func.isRequired,
+    switchView: PropTypes.func.isRequired,
+    addFile: PropTypes.func.isRequired,
   }),
-
 };
 
 const mapStateToProps = (state) => {
   return {
     state: {
-      files : state.personalFilesReducer,
-      listView: state.viewSwitcherReducer
+      files: state.personalFilesReducer,
+      listView: state.viewSwitcherReducer,
+      path: state.pathReducer,
     }
   }
 }
@@ -32,22 +32,23 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     dispatch: {
-      addFile: () => {
-        const file = {id: "1", detail:"35Ko"};
-        dispatch(actionsCreators.addFile(file))
-      },
-      refreshFiles: () => {
-        dispatch(actionsCreators.refreshFiles('/'))
-      },
-      switchView: () => {
-        dispatch(actionsCreators.switchView())
-      },
       socketConnect: () => {
-        dispatch(actionsCreators.socketConnect())
+        dispatch(actionsCreators.socketConnect());
       },
       socketEnd: () => {
-        dispatch(actionsCreators.socketEnd())
-      }
+        dispatch(actionsCreators.socketEnd());
+      },
+      socketListDir: (path='') => {
+        dispatch(actionsCreators.socketListDir(path));
+        dispatch(actionsCreators.switchPath(path));
+      },
+      switchView: () => {
+        dispatch(actionsCreators.switchView());
+      },
+      addFile: () => {
+        const file = {id: "1", detail:"35Ko"};
+        dispatch(actionsCreators.addFile(file));
+      },
     }
   }
 }
