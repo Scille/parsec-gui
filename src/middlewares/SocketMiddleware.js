@@ -6,7 +6,9 @@ const SOCKET_PATH = '/tmp/parsec';
 const REQUESTS = Object.freeze({
   "IDENTITY_LOAD": "0",
   "USER_MANIFEST_LOAD": "1",
-  "USER_MANIFEST_LIST_DIR": "2,"
+  "USER_MANIFEST_LIST_DIR": "2",
+  "USER_MANIFEST_CREATE_FILE": "3",
+  "FILE_STAT": "4",
 });
 
 const socketMiddleware = (() => {
@@ -26,10 +28,28 @@ const socketMiddleware = (() => {
               files.push({
                 id: data['children'][key]['id'],
                 name: key,
-                detail: 'todo'
+                size: 0
               });
             }
             store.dispatch(actionsCreators.refreshFiles(files));
+            for (var file of files) {
+              socket.write(`{"cmd": "file_stat", "request_id": "${REQUESTS.FILE_STAT}", "id": "${file['id']}"}\n`);
+            }
+            break;
+          case REQUESTS.USER_MANIFEST_CREATE_FILE:
+            var file = {
+              id: data['id'],
+              size: 0
+            }
+            store.dispatch(actionsCreators.updateFile('-1', file));
+            socket.write(`{"cmd": "file_stat", "request_id": "${REQUESTS.FILE_STAT}", "id": "${data['id']}"}\n`);
+            break;
+          case REQUESTS.FILE_STAT:
+            var file = {
+              id: data['id'],
+              size: data['size']
+            }
+            store.dispatch(actionsCreators.updateFile(data['id'], file));
             break;
           case REQUESTS.IDENTITY_LOAD:
           case REQUESTS.USER_MANIFEST_LOAD:
@@ -44,25 +64,39 @@ const socketMiddleware = (() => {
     switch(action.type) {
       case types.SOCKET_CONNECT:
         console.log("*** SOCKET: Connect ***");
-        if(socket != null) {
-          socket.end();
-        }
+        if(socket != null) socket.end();
         socket = net.connect({path: SOCKET_PATH});
         socket.setEncoding('utf8');
         socket.write(`{"cmd": "identity_load", "request_id": "${REQUESTS.IDENTITY_LOAD}", "identity": "null"}\n`);
         socket.write(`{"cmd": "user_manifest_load", "request_id": "${REQUESTS.USER_MANIFEST_LOAD}"}\n`);
+        socket.write(`{"cmd": "user_manifest_list_dir", "request_id": "${REQUESTS.USER_MANIFEST_LIST_DIR}", "path": "/"}\n`);
         socket.on("data", (data) => onData(store, data));
         break;
       case types.SOCKET_END:
         console.log("*** SOCKET: End ***");
-        if(socket != null) {
-          socket.end();
-        }
+        if(socket != null) socket.end();
         socket = null;
         break;
       case types.SOCKET_LIST_DIR:
-        const path = action.path === '' ? '/' : action.path;
-        socket.write(`{"cmd": "user_manifest_list_dir", "request_id": "${REQUESTS.USER_MANIFEST_LIST_DIR}", "path": "${path}"}\n`);
+        const listPath = action.path === '' ? '/' : action.path;
+        socket.write(`{"cmd": "user_manifest_list_dir", "request_id": "${REQUESTS.USER_MANIFEST_LIST_DIR}", "path": "${listPath}"}\n`);
+        break;
+      case types.SOCKET_CREATE_FILE:
+        const createFilePath = action.path === '' ? '/' : action.path;
+        const reader = new FileReader();
+        reader.readAsDataURL(action.file);
+        reader.onload = () => {
+          const file = {
+            id: "-1",
+            name: action.path.split('/').pop(),
+            size: 0
+          }
+          store.dispatch(actionsCreators.addFile(file));
+          socket.write(`{"cmd": "user_manifest_create_file", "request_id": "${REQUESTS.USER_MANIFEST_CREATE_FILE}", "path": "${createFilePath}", "content": "${reader.result.split(',')[1]}"}\n`);
+        }
+        reader.onerror = (evt) => {
+          alert("Error reading file");
+        }
         break;
       default:
         return next(action);

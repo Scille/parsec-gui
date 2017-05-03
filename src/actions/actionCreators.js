@@ -10,6 +10,9 @@ export const socketEnd = () => {
 export const socketListDir = (path) => {
   return { type: types.SOCKET_LIST_DIR, path }
 }
+export const socketCreateFile = (path, file) => {
+  return { type: types.SOCKET_CREATE_FILE, path, file }
+}
 
 // VIEW
 export const switchView = () => {
@@ -25,14 +28,11 @@ export const switchPath = (path) => {
 export const addFile = (file) => {
   return { type: types.ADD_FILE, file }
 }
-export const deleteFile = (file) => {
-  return { type: types.DELETE_FILE, file }
+export const removeFile = (id) => {
+  return { type: types.REMOVE_FILE, id }
 }
-export const moveFile = (file) => {
-  return { type: types.MOVE_FILE, file }
-}
-export const renameFile = (file) => {
-  return { type: types.RENAME_FILE, file }
+export const updateFile = (id, file) => {
+  return { type: types.UPDATE_FILE, id, file }
 }
 export const refreshFiles = (files) => {
   return { type: types.REFRESH_FILES, files }

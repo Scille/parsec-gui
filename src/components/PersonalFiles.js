@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 
+import bytesToSize from '../common/common'
+
 import './ViewSwitcher.css';
 
 class PersonalFiles extends Component {
@@ -18,8 +20,8 @@ class PersonalFiles extends Component {
     const path = this.props.state.path;
 
     const socketListDir = this.props.dispatch.socketListDir;
+    const socketCreateFiles = this.props.dispatch.socketCreateFiles;
     const switchView = this.props.dispatch.switchView;
-    const addFile = this.props.dispatch.addFile;
 
     const breadcrumbPath = path.split('/').map((item, i) => {
       if (item === '') {
@@ -41,15 +43,15 @@ class PersonalFiles extends Component {
           <a href="#" onClick={() => socketListDir(itemPath)}>
             <div className="icon"><i className={icon}/></div>
             <div className="title">{file['name']}</div>
-            <div className="details">{file['detail']}</div>
+            <div className="details">{bytesToSize(file['size'])}</div>
           </a>
           <div className="options">
             <div className="dropdown">
               <i className="fa fa-ellipsis-h"/>
               <div className="dropdown-content">
-                <a href="#" onClick={addFile}><i className="fa fa-pencil-square-o"/> Rename</a>
-                <a href="#" onClick={addFile}><i className="fa fa-user-plus"/> Share</a>
-                <a href="#" onClick={addFile}><i className="fa fa-trash-o"/> Delete</a>
+                <a href="#" onClick={() => console.log("Rename")}><i className="fa fa-pencil-square-o"/> Rename</a>
+                <a href="#" onClick={() => console.log("Share")}><i className="fa fa-user-plus"/> Share</a>
+                <a href="#" onClick={() => console.log("Delete")}><i className="fa fa-trash-o"/> Delete</a>
               </div>
             </div>
           </div>
@@ -74,8 +76,12 @@ class PersonalFiles extends Component {
                 <a href="#" onClick={switchView}><i className={!listView ? 'fa fa-th-large' : 'fa fa-th-list'}/>{!listView ? ' Grid' : ' List'}</a>
                 <div>Actions</div>
                 <a href="#" onClick={() => socketListDir(path)}><i className="fa fa-refresh"/> Refresh</a>
-                <a href="#" onClick={addFile}><i className="fa fa-folder"/> New Folder</a>
-                <a href="#" onClick={addFile}><i className="fa fa-file"/> Add File</a>
+                <a href="#" onClick={() => console.log("New Folder")}><i className="fa fa-folder"/> New Folder</a>
+                <a href="#">
+                  <i className="fa fa-file"/>
+                  <input type="file" name="file" id="file" className="input-file" onChange={(event) => {socketCreateFiles(path, event.target.files, event.target.result)}} multiple/>
+                  <label htmlFor="file"> Add File</label>
+                </a>
               </div>
             </div>
           </div>

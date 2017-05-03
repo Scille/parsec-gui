@@ -14,8 +14,8 @@ PersonalFiles.propTypes = {
     socketConnect: PropTypes.func.isRequired,
     socketEnd: PropTypes.func.isRequired,
     socketListDir: PropTypes.func.isRequired,
+    socketCreateFiles: PropTypes.func.isRequired,
     switchView: PropTypes.func.isRequired,
-    addFile: PropTypes.func.isRequired,
   }),
 };
 
@@ -42,12 +42,14 @@ const mapDispatchToProps = (dispatch) => {
         dispatch(actionsCreators.socketListDir(path));
         dispatch(actionsCreators.switchPath(path));
       },
+      socketCreateFiles: (path='', files=[]) => {
+        for (let i = 0; i < files.length; i++) {
+          const filePath = path.concat('/', files[i].name);
+          dispatch(actionsCreators.socketCreateFile(filePath, files[i]));
+        };
+      },
       switchView: () => {
         dispatch(actionsCreators.switchView());
-      },
-      addFile: () => {
-        const file = {id: "1", detail:"35Ko"};
-        dispatch(actionsCreators.addFile(file));
       },
     }
   }
