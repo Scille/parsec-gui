@@ -8,7 +8,9 @@ const REQUESTS = Object.freeze({
   "USER_MANIFEST_LOAD": "1",
   "USER_MANIFEST_LIST_DIR": "2",
   "USER_MANIFEST_CREATE_FILE": "3",
-  "FILE_STAT": "4",
+  "USER_MANIFEST_RENAME_FILE": "4",
+  "USER_MANIFEST_MAKE_DIR": "5",
+  "FILE_STAT": "6",
 });
 
 const socketMiddleware = (() => {
@@ -37,20 +39,20 @@ const socketMiddleware = (() => {
             }
             break;
           case REQUESTS.USER_MANIFEST_CREATE_FILE:
-            var file = {
+            var createFile = {
               id: data['id'],
-              size: 0
             }
-            store.dispatch(actionsCreators.updateFile('-1', file));
+            store.dispatch(actionsCreators.updateFile('-1', createFile));
             socket.write(`{"cmd": "file_stat", "request_id": "${REQUESTS.FILE_STAT}", "id": "${data['id']}"}\n`);
             break;
           case REQUESTS.FILE_STAT:
-            var file = {
-              id: data['id'],
+            var file_stat = {
               size: data['size']
             }
-            store.dispatch(actionsCreators.updateFile(data['id'], file));
+            store.dispatch(actionsCreators.updateFile(data['id'], file_stat));
             break;
+          case REQUESTS.USER_MANIFEST_RENAME_FILE:
+          case REQUESTS.USER_MANIFEST_MAKE_DIR:
           case REQUESTS.IDENTITY_LOAD:
           case REQUESTS.USER_MANIFEST_LOAD:
           default:
@@ -97,6 +99,19 @@ const socketMiddleware = (() => {
         reader.onerror = (evt) => {
           alert("Error reading file");
         }
+        break;
+      case types.SOCKET_RENAME_FILE:
+        const renameFilePath = action.path === '' ? '/' : action.path;
+        const oldFilePath = renameFilePath.concat(action.name)
+        const newFilePath = renameFilePath.concat(action.newName)
+        socket.write(`{"cmd": "user_manifest_rename_file", "request_id": "${REQUESTS.USER_MANIFEST_RENAME_FILE}", "old_path": "${oldFilePath}", "new_path": "${newFilePath}"}\n`);
+        socket.write(`{"cmd": "user_manifest_list_dir", "request_id": "${REQUESTS.USER_MANIFEST_LIST_DIR}", "path": "${renameFilePath}"}\n`);
+        break;
+      case types.SOCKET_CREATE_DIR:
+        const dirPath = action.path === '' ? '/' : action.path;
+        const newDirPath = dirPath.concat(action.name);
+        socket.write(`{"cmd": "user_manifest_make_dir", "request_id": "${REQUESTS.USER_MANIFEST_MAKE_DIR}", "path": "${newDirPath}"}\n`);
+        socket.write(`{"cmd": "user_manifest_list_dir", "request_id": "${REQUESTS.USER_MANIFEST_LIST_DIR}", "path": "${dirPath}"}\n`);
         break;
       default:
         return next(action);

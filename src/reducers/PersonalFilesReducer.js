@@ -9,7 +9,8 @@ const personalFile = (state={}, action) => {
         return state
       return {
         ...state,
-        id: action.file.id,
+        id: action.file.id || state.id,
+        name: action.file.name || state.name,
         size: action.file.size
       }
     case types.REMOVE_FILE:

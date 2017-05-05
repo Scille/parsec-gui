@@ -6,6 +6,15 @@
   --main-color: #61dafb;
   --second-color: #222;
   --third-color: #ccc;
+  --mixin-button: {
+    border: none;
+    color: white;
+    padding: 15px 32px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+  };
 }
 
 body {
@@ -60,4 +69,51 @@ body {
 }
 .dropdown-content a .input-file + label {
 	cursor: pointer;
+}
+
+/*Inputs*/
+input[type=text],
+select,
+textarea {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid var(--third-color);
+  background: white;
+  box-sizing: border-box;
+  margin-top: 6px;
+  margin-bottom: 16px;
+  resize: vertical;
+}
+input[type=text]:focus,
+select:focus,
+textarea:focus {
+  border-color: var(--main-color);
+  outline: none;
+}
+
+/*Buttons*/
+.button {
+  border: none;
+  color: white;
+  padding: 10px 25px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 5px;
+}
+.button:hover {
+  cursor: pointer;
+}
+.button:focus {
+  outline: none;
+}
+.main-button {
+  background-color: var(--main-color);
+}
+.second-button {
+  background-color: var(--second-color);
+}
+.third-button {
+  background-color: var(--third-color);
 }

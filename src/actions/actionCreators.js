@@ -13,6 +13,12 @@ export const socketListDir = (path) => {
 export const socketCreateFile = (path, file) => {
   return { type: types.SOCKET_CREATE_FILE, path, file }
 }
+export const socketRenameFile = (path, name, newName) => {
+  return { type: types.SOCKET_RENAME_FILE, path, name, newName }
+}
+export const socketCreateDir = (path, name) => {
+  return { type: types.SOCKET_CREATE_DIR, path, name }
+}
 
 // VIEW
 export const switchView = () => {
@@ -36,4 +42,12 @@ export const updateFile = (id, file) => {
 }
 export const refreshFiles = (files) => {
   return { type: types.REFRESH_FILES, files }
+}
+
+// Modal
+export const showModal = (modalType, modalProps) => {
+  return { type: types.SHOW_MODAL, modalType, modalProps }
+}
+export const hideModal = () => {
+  return { type: types.HIDE_MODAL }
 }

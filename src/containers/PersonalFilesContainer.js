@@ -15,6 +15,8 @@ PersonalFiles.propTypes = {
     socketEnd: PropTypes.func.isRequired,
     socketListDir: PropTypes.func.isRequired,
     socketCreateFiles: PropTypes.func.isRequired,
+    socketRenameFile: PropTypes.func.isRequired,
+    socketCreateDir: PropTypes.func.isRequired,
     switchView: PropTypes.func.isRequired,
   }),
 };
@@ -25,6 +27,7 @@ const mapStateToProps = (state) => {
       files: state.personalFilesReducer,
       listView: state.viewSwitcherReducer,
       path: state.pathReducer,
+      modal: state.modalReducer,
     }
   }
 }
@@ -48,8 +51,22 @@ const mapDispatchToProps = (dispatch) => {
           dispatch(actionsCreators.socketCreateFile(filePath, files[i]));
         };
       },
+      socketRenameFile: (path='', name='', newName='newName') => {
+        dispatch(actionsCreators.socketRenameFile(path, name, newName));
+        dispatch(actionsCreators.hideModal());
+      },
+      socketCreateDir: (path='', name='') => {
+        dispatch(actionsCreators.socketCreateDir(path, name));
+        dispatch(actionsCreators.hideModal());
+      },
       switchView: () => {
         dispatch(actionsCreators.switchView());
+      },
+      showModal: (modalType, modalProps) => {
+        dispatch(actionsCreators.showModal(modalType, modalProps));
+      },
+      hideModal: () => {
+        dispatch(actionsCreators.hideModal());
       },
     }
   }

@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 
-import bytesToSize from '../common/common'
+import bytesToSize from '../common/common';
+
+import ModalsContainer from '../containers/ModalsContainer';
 
 import './ViewSwitcher.css';
 
@@ -21,7 +23,18 @@ class PersonalFiles extends Component {
 
     const socketListDir = this.props.dispatch.socketListDir;
     const socketCreateFiles = this.props.dispatch.socketCreateFiles;
+    const socketRenameFile = this.props.dispatch.socketRenameFile;
+    const socketCreateDir = this.props.dispatch.socketCreateDir;
     const switchView = this.props.dispatch.switchView;
+
+    const showModal = this.props.dispatch.showModal;
+    const hideModal = this.props.dispatch.hideModal;
+
+    const createDirModal = {
+      "path": path,
+      "socketCreateDir": socketCreateDir,
+      "hideModal": hideModal
+    }
 
     const breadcrumbPath = path.split('/').map((item, i) => {
       if (item === '') {
@@ -38,6 +51,12 @@ class PersonalFiles extends Component {
     const listFiles = files.map((file, i) => {
       const icon = file['id'] !== null? 'fa fa-file-o' : 'fa fa-folder-o';
       const itemPath = file['id'] !== null? path : path.concat('/', file['name']);
+      const renameModal = {
+        "path": path,
+        "name": file['name'],
+        "socketRenameFile": socketRenameFile,
+        "hideModal": hideModal
+      }
       return (
         <li key={i}>
           <a href="#" onClick={() => socketListDir(itemPath)}>
@@ -49,7 +68,7 @@ class PersonalFiles extends Component {
             <div className="dropdown">
               <i className="fa fa-ellipsis-h"/>
               <div className="dropdown-content">
-                <a href="#" onClick={() => console.log("Rename")}><i className="fa fa-pencil-square-o"/> Rename</a>
+                <a href="#" onClick={() => showModal('renameModal', renameModal)}><i className="fa fa-pencil-square-o"/> Rename</a>
                 <a href="#" onClick={() => console.log("Share")}><i className="fa fa-user-plus"/> Share</a>
                 <a href="#" onClick={() => console.log("Delete")}><i className="fa fa-trash-o"/> Delete</a>
               </div>
@@ -76,7 +95,7 @@ class PersonalFiles extends Component {
                 <a href="#" onClick={switchView}><i className={!listView ? 'fa fa-th-large' : 'fa fa-th-list'}/>{!listView ? ' Grid' : ' List'}</a>
                 <div>Actions</div>
                 <a href="#" onClick={() => socketListDir(path)}><i className="fa fa-refresh"/> Refresh</a>
-                <a href="#" onClick={() => console.log("New Folder")}><i className="fa fa-folder"/> New Folder</a>
+                <a href="#" onClick={() => showModal('createDirModal', createDirModal)}><i className="fa fa-folder"/> New Folder</a>
                 <a href="#">
                   <i className="fa fa-file"/>
                   <input type="file" name="file" id="file" className="input-file" onChange={(event) => {socketCreateFiles(path, event.target.files, event.target.result)}} multiple/>
@@ -91,6 +110,8 @@ class PersonalFiles extends Component {
             { listFiles }
           </ul>
         </div>
+
+        <ModalsContainer></ModalsContainer>
       </div>
     );
   }
