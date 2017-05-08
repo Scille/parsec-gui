@@ -17,6 +17,7 @@ const socketMiddleware = (() => {
   var socket = null;
   const electron = window.require('electron');
   const net = electron.remote.require('net');
+  const ipcRenderer  = electron.ipcRenderer;
 
   const onData = (store, data) => {
     console.log("*** SOCKET: data ***");
@@ -95,6 +96,7 @@ const socketMiddleware = (() => {
           }
           store.dispatch(actionsCreators.addFile(file));
           socket.write(`{"cmd": "user_manifest_create_file", "request_id": "${REQUESTS.USER_MANIFEST_CREATE_FILE}", "path": "${createFilePath}", "content": "${reader.result.split(',')[1]}"}\n`);
+          ipcRenderer.send('create_file', file['name']);
         }
         reader.onerror = (evt) => {
           alert("Error reading file");
