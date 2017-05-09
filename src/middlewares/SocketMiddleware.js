@@ -108,12 +108,14 @@ const socketMiddleware = (() => {
         const newFilePath = renameFilePath.concat(action.newName)
         socket.write(`{"cmd": "user_manifest_rename_file", "request_id": "${REQUESTS.USER_MANIFEST_RENAME_FILE}", "old_path": "${oldFilePath}", "new_path": "${newFilePath}"}\n`);
         socket.write(`{"cmd": "user_manifest_list_dir", "request_id": "${REQUESTS.USER_MANIFEST_LIST_DIR}", "path": "${renameFilePath}"}\n`);
+        ipcRenderer.send('update_file', action.name, action.newName);
         break;
       case types.SOCKET_CREATE_DIR:
         const dirPath = action.path === '' ? '/' : action.path;
         const newDirPath = dirPath.concat(action.name);
         socket.write(`{"cmd": "user_manifest_make_dir", "request_id": "${REQUESTS.USER_MANIFEST_MAKE_DIR}", "path": "${newDirPath}"}\n`);
         socket.write(`{"cmd": "user_manifest_list_dir", "request_id": "${REQUESTS.USER_MANIFEST_LIST_DIR}", "path": "${dirPath}"}\n`);
+        ipcRenderer.send('create_file', action.name);
         break;
       default:
         return next(action);

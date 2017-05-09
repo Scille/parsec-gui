@@ -39,12 +39,12 @@ class PersonalFiles extends Component {
     const breadcrumbPath = path.split('/').map((item, i) => {
       if (item === '') {
         return (
-          <li key={i}><a href="#" onClick={() => socketListDir()}>Home</a></li>
+          <li key={i}><a onClick={() => socketListDir()}>Home</a></li>
         );
       }
       const itemPath = path.split(item)[0].concat(item);
       return (
-        <li key={i}><a href="#" onClick={() => socketListDir(itemPath)}>{item}</a></li>
+        <li key={i}><a onClick={() => socketListDir(itemPath)}>{item}</a></li>
       );
     });
 
@@ -59,7 +59,7 @@ class PersonalFiles extends Component {
       }
       return (
         <li key={i}>
-          <a href="#" onClick={() => socketListDir(itemPath)}>
+          <a onClick={() => socketListDir(itemPath)}>
             <div className="icon"><i className={icon}/></div>
             <div className="title">{file['name']}</div>
             <div className="details">{bytesToSize(file['size'])}</div>
@@ -68,9 +68,9 @@ class PersonalFiles extends Component {
             <div className="dropdown">
               <i className="fa fa-ellipsis-h"/>
               <div className="dropdown-content">
-                <a href="#" onClick={() => showModal('renameModal', renameModal)}><i className="fa fa-pencil-square-o"/> Rename</a>
-                <a href="#" onClick={() => console.log("Share")}><i className="fa fa-user-plus"/> Share</a>
-                <a href="#" onClick={() => console.log("Delete")}><i className="fa fa-trash-o"/> Delete</a>
+                <a onClick={() => showModal('renameModal', renameModal)}><i className="fa fa-pencil-square-o"/> Rename</a>
+                <a onClick={() => console.log("Share")}><i className="fa fa-user-plus"/> Share</a>
+                <a onClick={() => console.log("Delete")}><i className="fa fa-trash-o"/> Delete</a>
               </div>
             </div>
           </div>
@@ -92,11 +92,11 @@ class PersonalFiles extends Component {
               <i className="fa fa-ellipsis-v"/>
               <div className="dropdown-content">
                 <div>Views</div>
-                <a href="#" onClick={switchView}><i className={!listView ? 'fa fa-th-large' : 'fa fa-th-list'}/>{!listView ? ' Grid' : ' List'}</a>
+                <a onClick={switchView}><i className={!listView ? 'fa fa-th-large' : 'fa fa-th-list'}/>{!listView ? ' Grid' : ' List'}</a>
                 <div>Actions</div>
-                <a href="#" onClick={() => socketListDir(path)}><i className="fa fa-refresh"/> Refresh</a>
-                <a href="#" onClick={() => showModal('createDirModal', createDirModal)}><i className="fa fa-folder"/> New Folder</a>
-                <a href="#">
+                <a onClick={() => socketListDir(path)}><i className="fa fa-refresh"/> Refresh</a>
+                <a onClick={() => showModal('createDirModal', createDirModal)}><i className="fa fa-folder"/> New Folder</a>
+                <a>
                   <i className="fa fa-file"/>
                   <input type="file" name="file" id="file" className="input-file" onChange={(event) => {socketCreateFiles(path, event.target.files, event.target.result)}} multiple/>
                   <label htmlFor="file"> Add File</label>

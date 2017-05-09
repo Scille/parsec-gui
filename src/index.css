@@ -23,6 +23,10 @@ body {
   font-family: sans-serif;
 }
 
+a:hover {
+  cursor: pointer;
+}
+
 /*Dropdown*/
 .dropdown {
  position: relative;

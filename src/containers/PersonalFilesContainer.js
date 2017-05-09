@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import { withRouter } from 'react-router-dom';
 
 import * as actionsCreators from '../actions/actionCreators';
 import PersonalFiles from '../components/PersonalFiles';
@@ -72,9 +73,9 @@ const mapDispatchToProps = (dispatch) => {
   }
 }
 
-const PersonalFilesContainer = connect(
+const PersonalFilesContainer = withRouter(connect(
   mapStateToProps,
   mapDispatchToProps
-)(PersonalFiles)
+)(PersonalFiles))
 
 export default PersonalFilesContainer;

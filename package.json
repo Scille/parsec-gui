@@ -13,10 +13,12 @@
     "redux-thunk": "^2.2.0"
   },
   "devDependencies": {
+    "concurrently": "^3.4.0",
     "electron": "^1.6.5",
     "electron-packager": "^8.6.0",
     "react-scripts": "0.9.5",
-    "rimraf": "^2.6.1"
+    "rimraf": "^2.6.1",
+    "wait-on": "^2.0.2"
   },
   "scripts": {
     "clear": "rimraf build platforms",
@@ -34,5 +36,5 @@
     "electron:nix": "npm run clear:nix && npm run build && electron-packager . --icon=build/favicon.png --platform=linux --arch=ia32,x64 --asar --out=platforms/nix"
   },
   "main": "electron-starter.js",
-  "homepage": "./"
+  "homepage": "."
 }

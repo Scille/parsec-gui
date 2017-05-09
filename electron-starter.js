@@ -6,40 +6,59 @@ const BrowserWindow = electron.BrowserWindow
 const Menu = electron.Menu
 const Tray = electron.Tray
 
+const notifier = require('node-notifier');
 const path = require('path')
 const url = require('url')
+const pjson = require('./package.json');
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 let mainWindow
 
 function createWindow() {
-  // Create an icon in an operating system's notification area.
-  appIcon = new Tray(path.join(__dirname, '/public/favicon.png'))
-  var contextMenu = Menu.buildFromTemplate([
-    {
-      label: 'Show PARSEC',
-      click: function() {
-        mainWindow.show();
-      }
-    },
-    {
-      label: 'Quit PARSEC',
-      click:  function() {
-        app.isQuiting = true;
-        app.quit();
-      }
-    }
-  ]);
-  appIcon.setToolTip('PARSEC - GUI')
-  appIcon.setTitle('PARSEC - GUI')
-  appIcon.setContextMenu(contextMenu)
-
   // Create the browser window.
   mainWindow = new BrowserWindow({width: 800, height: 600, minWidth: 760, minHeight: 500})
 
-  // Remove the menu bar.
-  mainWindow.setMenu(null)
+  // Create the application menu
+  var menu = Menu.buildFromTemplate([
+    {
+      role: 'help',
+      submenu: [
+        {
+          label: 'View Licence',
+          click: function() {
+            electron.shell.openExternal('https://github.com/Scille/parsec-gui/blob/master/LICENSE');
+          }
+        },
+        {
+          label: `Version ${pjson['version']}`,
+          enabled: false
+        },
+        {
+          type: 'separator'
+        },
+        {
+          role: 'close'
+        },
+        {
+          label: 'Quit',
+          accelerator: 'CmdOrCtrl+Q',
+          click: function() {
+            app.isQuiting = true;
+            app.quit();
+          }
+        }
+      ]
+    }
+  ])
+  Menu.setApplicationMenu(menu)
+
+  // Create an icon in an operating system's notification area.
+  tray = new Tray(path.join(__dirname, '/public/favicon.png'))
+  tray.setToolTip(pjson['name']);
+  tray.on('click', () => {
+    mainWindow.show()
+  })
 
   // Load the index.html of the app.
   if (process.env.ELECTRON_DEV){
@@ -53,27 +72,49 @@ function createWindow() {
       protocol: 'file:',
       slashes: true
     }))
+    mainWindow.webContents.openDevTools()
   }
 
   // Minimize/close window to system tray and restore window back from tray
   mainWindow.on('minimize', function(event) {
     event.preventDefault()
     mainWindow.hide()
-  });
+  })
   mainWindow.on('close', function(event) {
     if(!app.isQuiting) {
       event.preventDefault()
       mainWindow.hide()
     }
     return false;
-  });
+  })
 
-
+  // Show Notifications
   ipcMain.on('create_file', function(event, name) {
-    const notifier = require('node-notifier');
     notifier.notify({
-      message: "File Importer",
-      title: name + " was added into PARSEC forlder",
+      message: name + " was added in your PARSEC forlder.",
+      title: name + " added",
+      sound: true,
+      wait: false,
+      icon : path.join(__dirname, '/public/favicon.png'),
+    }, function(error, response) {
+      console.log(response);
+    });
+  })
+  ipcMain.on('update_file', function(event, name, newName) {
+    notifier.notify({
+      message: name + " is renamed to " + newName,
+      title: name + " updated",
+      sound: true,
+      wait: false,
+      icon : path.join(__dirname, '/public/favicon.png'),
+    }, function(error, response) {
+      console.log(response);
+    });
+  })
+  ipcMain.on('delete_file', function(event, name) {
+    notifier.notify({
+      message: name + " was removed from your PARSEC forlder.",
+      title: name + " deleted",
       sound: true,
       wait: false,
       icon : path.join(__dirname, '/public/favicon.png'),
