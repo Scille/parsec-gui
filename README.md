@@ -1,14 +1,13 @@
-===============================
-ParSec - GUI
-===============================
+# ParSec - GUI
+
+[![Build Status](https://travis-ci.org/Scille/parsec-gui.svg?branch=master)](https://travis-ci.org/Scille/parsec-gui)
 
 Secure cloud framework
 
 * Free software: GPL v3
 * Documentation: https://parsec-cloud.readthedocs.org.
 
-Credits
----------
+## Credits
 
 This project was bootstrapped with [Create React App](https://github.com/facebookincubator/create-react-app).
 
