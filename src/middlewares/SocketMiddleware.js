@@ -1,23 +1,28 @@
-import * as types from '../actions/actionTypes';
-import * as actionsCreators from '../actions/actionCreators';
+import * as types from '../actions/actionTypes'
+import * as actionsCreators from '../actions/actionCreators'
 
-const SOCKET_PATH = '/tmp/parsec';
+const SOCKET_PATH = '/tmp/parsec'
 
 const REQUESTS = Object.freeze({
-  "IDENTITY_LOAD": "0",
-  "USER_MANIFEST_LOAD": "1",
-  "USER_MANIFEST_LIST_DIR": "2",
-  "USER_MANIFEST_CREATE_FILE": "3",
-  "USER_MANIFEST_RENAME_FILE": "4",
-  "USER_MANIFEST_MAKE_DIR": "5",
-  "FILE_STAT": "6",
-});
+  IDENTITY_LOAD: 'IDENTITY_LOAD',
+  USER_MANIFEST_CREATE_FILE: 'USER_MANIFEST_CREATE_FILE',
+  USER_MANIFEST_RENAME_FILE: 'USER_MANIFEST_RENAME_FILE',
+  USER_MANIFEST_DELETE_FILE: 'USER_MANIFEST_DELETE_FILE',
+  USER_MANIFEST_LIST_DIR: 'USER_MANIFEST_LIST_DIR',
+  USER_MANIFEST_MAKE_DIR: 'USER_MANIFEST_MAKE_DIR',
+  USER_MANIFEST_REMOVE_DIR: 'USER_MANIFEST_REMOVE_DIR',
+  USER_MANIFEST_SHOW_DUSTBIN: 'USER_MANIFEST_SHOW_DUSTBIN',
+  USER_MANIFEST_RESTORE: 'USER_MANIFEST_RESTORE',
+  USER_MANIFEST_HISTORY: 'USER_MANIFEST_HISTORY',
+  USER_MANIFEST_LOAD: 'USER_MANIFEST_LOAD',
+  FILE_STAT: 'FILE_STAT'
+})
 
 const socketMiddleware = (() => {
-  var socket = null;
-  const electron = window.require('electron');
-  const net = electron.remote.require('net');
-  const ipcRenderer  = electron.ipcRenderer;
+  let socket = null
+  const electron = window.require('electron')
+  const net = electron.remote.require('net')
+  const ipcRenderer  = electron.ipcRenderer
 
   const onData = (store, data) => {
     console.log("*** SOCKET: data ***");
@@ -36,15 +41,8 @@ const socketMiddleware = (() => {
             }
             store.dispatch(actionsCreators.refreshFiles(files));
             for (var file of files) {
-              socket.write(`{"cmd": "file_stat", "request_id": "${REQUESTS.FILE_STAT}", "id": "${file['id']}"}\n`);
+              socket.write(`{"cmd": "file_stat", "request_id": "${REQUESTS.FILE_STAT}", "id": "${file['id']}"}\n`)
             }
-            break;
-          case REQUESTS.USER_MANIFEST_CREATE_FILE:
-            var createFile = {
-              id: data['id'],
-            }
-            store.dispatch(actionsCreators.updateFile('-1', createFile));
-            socket.write(`{"cmd": "file_stat", "request_id": "${REQUESTS.FILE_STAT}", "id": "${data['id']}"}\n`);
             break;
           case REQUESTS.FILE_STAT:
             var file_stat = {
@@ -52,12 +50,13 @@ const socketMiddleware = (() => {
             }
             store.dispatch(actionsCreators.updateFile(data['id'], file_stat));
             break;
+          case REQUESTS.USER_MANIFEST_CREATE_FILE:
           case REQUESTS.USER_MANIFEST_RENAME_FILE:
           case REQUESTS.USER_MANIFEST_MAKE_DIR:
           case REQUESTS.IDENTITY_LOAD:
           case REQUESTS.USER_MANIFEST_LOAD:
           default:
-            break;
+            break
         }
       }
     }
@@ -66,61 +65,50 @@ const socketMiddleware = (() => {
   return store => next => action => {
     switch(action.type) {
       case types.SOCKET_CONNECT:
-        console.log("*** SOCKET: Connect ***");
-        if(socket != null) socket.end();
-        socket = net.connect({path: SOCKET_PATH});
-        socket.setEncoding('utf8');
-        socket.write(`{"cmd": "identity_load", "request_id": "${REQUESTS.IDENTITY_LOAD}", "identity": "null"}\n`);
-        socket.write(`{"cmd": "user_manifest_load", "request_id": "${REQUESTS.USER_MANIFEST_LOAD}"}\n`);
-        socket.write(`{"cmd": "user_manifest_list_dir", "request_id": "${REQUESTS.USER_MANIFEST_LIST_DIR}", "path": "/"}\n`);
-        socket.on("data", (data) => onData(store, data));
-        break;
+        console.log("*** SOCKET: Connect ***")
+        if(socket != null) socket.end()
+        socket = new net.Socket()
+        socket.on("error", (error) => ipcRenderer.send('catch_error', error.message))
+        socket.on("data", (data) => onData(store, data))
+        socket.connect({path: SOCKET_PATH}, () => {
+          socket.setEncoding('utf8')
+          socket.write(`{"cmd": "identity_load", "request_id": "${REQUESTS.IDENTITY_LOAD}", "identity": "null"}\n`)
+          socket.write(`{"cmd": "user_manifest_load", "request_id": "${REQUESTS.USER_MANIFEST_LOAD}"}\n`)
+          socket.write(`{"cmd": "user_manifest_list_dir", "request_id": "${REQUESTS.USER_MANIFEST_LIST_DIR}", "path": "/"}\n`)
+        })
+        break
       case types.SOCKET_END:
-        console.log("*** SOCKET: End ***");
-        if(socket != null) socket.end();
-        socket = null;
-        break;
+        console.log("*** SOCKET: End ***")
+        if(socket != null) socket.end()
+        socket = null
+        break
       case types.SOCKET_LIST_DIR:
-        const listPath = action.path === '' ? '/' : action.path;
-        socket.write(`{"cmd": "user_manifest_list_dir", "request_id": "${REQUESTS.USER_MANIFEST_LIST_DIR}", "path": "${listPath}"}\n`);
+        socket.write(`{"cmd": "user_manifest_list_dir", "request_id": "${REQUESTS.USER_MANIFEST_LIST_DIR}", "path": "${action.route}"}\n`)
+        break;
+      case types.SOCKET_SHOW_DUSTBIN:
+        socket.write(`{"cmd": "user_manifest_show_dustbin", "request_id": "${REQUESTS.USER_MANIFEST_SHOW_DUSTBIN}", "path": "${action.route}"}\n`)
         break;
       case types.SOCKET_CREATE_FILE:
-        const createFilePath = action.path === '' ? '/' : action.path;
-        const reader = new FileReader();
-        reader.readAsDataURL(action.file);
+        const reader = new FileReader()
+        reader.readAsDataURL(action.file)
         reader.onload = () => {
-          const file = {
-            id: "-1",
-            name: action.path.split('/').pop(),
-            size: 0
-          }
-          store.dispatch(actionsCreators.addFile(file));
-          socket.write(`{"cmd": "user_manifest_create_file", "request_id": "${REQUESTS.USER_MANIFEST_CREATE_FILE}", "path": "${createFilePath}", "content": "${reader.result.split(',')[1]}"}\n`);
-          ipcRenderer.send('create_file', file['name']);
+          socket.write(`{"cmd": "user_manifest_create_file", "request_id": "${REQUESTS.USER_MANIFEST_CREATE_FILE}", "path": "${action.route}", "content": "${reader.result.split(',')[1]}"}\n`)
+          ipcRenderer.send('create_file', action.route);
         }
-        reader.onerror = (evt) => {
-          alert("Error reading file");
-        }
-        break;
+        reader.onerror = (evt) => alert("Error reading file")
+        break
       case types.SOCKET_RENAME_FILE:
-        const renameFilePath = action.path === '' ? '/' : action.path;
-        const oldFilePath = renameFilePath.concat(action.name)
-        const newFilePath = renameFilePath.concat(action.newName)
-        socket.write(`{"cmd": "user_manifest_rename_file", "request_id": "${REQUESTS.USER_MANIFEST_RENAME_FILE}", "old_path": "${oldFilePath}", "new_path": "${newFilePath}"}\n`);
-        socket.write(`{"cmd": "user_manifest_list_dir", "request_id": "${REQUESTS.USER_MANIFEST_LIST_DIR}", "path": "${renameFilePath}"}\n`);
-        ipcRenderer.send('update_file', action.name, action.newName);
-        break;
+        socket.write(`{"cmd": "user_manifest_rename_file", "request_id": "${REQUESTS.USER_MANIFEST_RENAME_FILE}", "old_path": "${action.actualRoute}", "new_path": "${action.newRoute}"}\n`)
+        ipcRenderer.send('update_file', action.actualRoute, action.newRoute)
+        break
       case types.SOCKET_CREATE_DIR:
-        const dirPath = action.path === '' ? '/' : action.path;
-        const newDirPath = dirPath.concat(action.name);
-        socket.write(`{"cmd": "user_manifest_make_dir", "request_id": "${REQUESTS.USER_MANIFEST_MAKE_DIR}", "path": "${newDirPath}"}\n`);
-        socket.write(`{"cmd": "user_manifest_list_dir", "request_id": "${REQUESTS.USER_MANIFEST_LIST_DIR}", "path": "${dirPath}"}\n`);
-        ipcRenderer.send('create_file', action.name);
-        break;
+        socket.write(`{"cmd": "user_manifest_make_dir", "request_id": "${REQUESTS.USER_MANIFEST_MAKE_DIR}", "path": "${action.route}"}\n`)
+        ipcRenderer.send('create_file', action.route)
+        break
       default:
-        return next(action);
+        return next(action)
     }
   }
-})();
+})()
 
-export default socketMiddleware;
+export default socketMiddleware

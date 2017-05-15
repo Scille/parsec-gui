@@ -1,12 +1,19 @@
-import * as types from '../actions/actionTypes';
+import * as types from '../actions/actionTypes'
 
-const pathReducer = (state='', action) => {
+const initialState = [{ route: '/', libelle: 'Home' }]
+
+const pathReducer = (state=initialState, action) => {
   switch (action.type) {
-    case types.SWITCH_PATH:
-      return action.path;
+    case types.ADD_PATH:
+      return [
+        ...state,
+        action.path
+      ]
+    case types.SLICE_PATH:
+      return state.slice(0, action.index + 1)
     default:
-      return state;
+      return state
   }
 }
 
-export default pathReducer;
+export default pathReducer

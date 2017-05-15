@@ -1,65 +1,53 @@
-import React, { Component } from 'react';
+import React, { Component } from 'react'
 
-import bytesToSize from '../common/common';
+import ModalsContainer from '../containers/ModalsContainer'
+import bytesToSize from './common'
 
-import ModalsContainer from '../containers/ModalsContainer';
-
-import './ViewSwitcher.css';
+import './ViewSwitcher.css'
 
 class PersonalFiles extends Component {
 
   componentDidMount() {
-    this.props.dispatch.socketConnect();
+    this.props.dispatch.init()
   }
 
   componentWillUnmount() {
-    this.props.dispatch.socketEnd();
+    this.props.dispatch.end()
   }
 
   render() {
-    const files = this.props.state.files;
-    const listView = this.props.state.listView;
-    const path = this.props.state.path;
+    const files = this.props.state.files
+    const listView = this.props.state.listView
+    const breadcrumb = this.props.state.path
+    const path = breadcrumb[breadcrumb.length -1].route
 
-    const socketListDir = this.props.dispatch.socketListDir;
-    const socketCreateFiles = this.props.dispatch.socketCreateFiles;
-    const socketRenameFile = this.props.dispatch.socketRenameFile;
-    const socketCreateDir = this.props.dispatch.socketCreateDir;
-    const switchView = this.props.dispatch.switchView;
-
-    const showModal = this.props.dispatch.showModal;
-    const hideModal = this.props.dispatch.hideModal;
+    const moveTo = this.props.dispatch.moveTo
+    const moveUp = this.props.dispatch.moveUp
+    const refresh = this.props.dispatch.refresh
+    const createFiles = this.props.dispatch.createFiles
+    const renameFile = this.props.dispatch.renameFile
+    const createDir = this.props.dispatch.createDir
+    const switchView = this.props.dispatch.switchView
+    const showModal = this.props.dispatch.showModal
+    const hideModal = this.props.dispatch.hideModal
 
     const createDirModal = {
       "path": path,
-      "socketCreateDir": socketCreateDir,
+      "createDir": createDir,
       "hideModal": hideModal
     }
 
-    const breadcrumbPath = path.split('/').map((item, i) => {
-      if (item === '') {
-        return (
-          <li key={i}><a onClick={() => socketListDir()}>Home</a></li>
-        );
-      }
-      const itemPath = path.split(item)[0].concat(item);
-      return (
-        <li key={i}><a onClick={() => socketListDir(itemPath)}>{item}</a></li>
-      );
-    });
-
     const listFiles = files.map((file, i) => {
       const icon = file['id'] !== null? 'fa fa-file-o' : 'fa fa-folder-o';
-      const itemPath = file['id'] !== null? path : path.concat('/', file['name']);
       const renameModal = {
         "path": path,
         "name": file['name'],
-        "socketRenameFile": socketRenameFile,
+        "renameFile": renameFile,
         "hideModal": hideModal
       }
       return (
         <li key={i}>
-          <a onClick={() => socketListDir(itemPath)}>
+          <a onClick={() => moveTo(path, file.name)}>
             <div className="icon"><i className={icon}/></div>
             <div className="title">{file['name']}</div>
             <div className="details">{bytesToSize(file['size'])}</div>
@@ -84,7 +72,7 @@ class PersonalFiles extends Component {
           <div className="title">Personal Files</div>
           <div className="breadcrumb">
             <ul>
-              { breadcrumbPath }
+              { breadcrumb.map((path, i) => <li key={i}><a onClick={() => moveUp(path.route, i)}>{path.libelle}</a></li>) }
             </ul>
           </div>
           <div className="options">
@@ -94,11 +82,11 @@ class PersonalFiles extends Component {
                 <div>Views</div>
                 <a onClick={switchView}><i className={!listView ? 'fa fa-th-large' : 'fa fa-th-list'}/>{!listView ? ' Grid' : ' List'}</a>
                 <div>Actions</div>
-                <a onClick={() => socketListDir(path)}><i className="fa fa-refresh"/> Refresh</a>
+                <a onClick={() => refresh(path)}><i className="fa fa-refresh"/> Refresh</a>
                 <a onClick={() => showModal('createDirModal', createDirModal)}><i className="fa fa-folder"/> New Folder</a>
                 <a>
                   <i className="fa fa-file"/>
-                  <input type="file" name="file" id="file" className="input-file" onChange={(event) => {socketCreateFiles(path, event.target.files, event.target.result)}} multiple/>
+                  <input type="file" name="file" id="file" className="input-file" onChange={(event) => {createFiles(path, event.target.files)}} multiple/>
                   <label htmlFor="file"> Add File</label>
                 </a>
               </div>

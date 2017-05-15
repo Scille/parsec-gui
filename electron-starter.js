@@ -92,6 +92,7 @@ const createWindow = () => {
       icon : path.join(__dirname, '/public/favicon.png'),
     }, (error, response) => console.log(response))
   }
+  ipcMain.on('catch_error', (event, message) => sendNotification('Error', message))
   ipcMain.on('create_file', (event, name) => {
     const title = `'${name}' added`
     const message = `'${name}' was added in your PARSEC forlder.`

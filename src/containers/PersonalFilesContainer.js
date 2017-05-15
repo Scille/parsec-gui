@@ -1,31 +1,35 @@
-import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
-import { withRouter } from 'react-router-dom';
+import PropTypes from 'prop-types'
+import { connect } from 'react-redux'
+import { withRouter } from 'react-router-dom'
 
-import * as actionsCreators from '../actions/actionCreators';
-import PersonalFiles from '../components/PersonalFiles';
+import * as actionsCreators from '../actions/actionCreators'
+import PersonalFiles from '../components/PersonalFiles'
 
 PersonalFiles.propTypes = {
   state: PropTypes.shape({
     files: PropTypes.array.isRequired,
     listView: PropTypes.bool.isRequired,
-    path: PropTypes.string.isRequired,
+    path: PropTypes.array.isRequired,
   }),
   dispatch: PropTypes.shape({
-    socketConnect: PropTypes.func.isRequired,
-    socketEnd: PropTypes.func.isRequired,
-    socketListDir: PropTypes.func.isRequired,
-    socketCreateFiles: PropTypes.func.isRequired,
-    socketRenameFile: PropTypes.func.isRequired,
-    socketCreateDir: PropTypes.func.isRequired,
+    init: PropTypes.func.isRequired,
+    end: PropTypes.func.isRequired,
+    moveTo: PropTypes.func.isRequired,
+    moveUp: PropTypes.func.isRequired,
+    refresh: PropTypes.func.isRequired,
+    createFiles: PropTypes.func.isRequired,
+    renameFile: PropTypes.func.isRequired,
+    createDir: PropTypes.func.isRequired,
     switchView: PropTypes.func.isRequired,
+    showModal: PropTypes.func.isRequired,
+    hideModal: PropTypes.func.isRequired,
   }),
 };
 
 const mapStateToProps = (state) => {
   return {
     state: {
-      files: state.personalFilesReducer,
+      files: state.FilesReducer,
       listView: state.viewSwitcherReducer,
       path: state.pathReducer,
       modal: state.modalReducer,
@@ -36,39 +40,48 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     dispatch: {
-      socketConnect: () => {
-        dispatch(actionsCreators.socketConnect());
+      init: () => dispatch(actionsCreators.socketConnect()),
+      end: () => {
+        dispatch(actionsCreators.socketEnd())
+        dispatch(actionsCreators.slicePath(0))
       },
-      socketEnd: () => {
-        dispatch(actionsCreators.socketEnd());
+      moveTo: (route, name) => {
+        const path = {
+          route: route === '/' ? route.concat(name) : route.concat('/', name),
+          libelle: name
+        }
+        dispatch(actionsCreators.socketListDir(path.route))
+        dispatch(actionsCreators.addPath(path))
       },
-      socketListDir: (path='') => {
-        dispatch(actionsCreators.socketListDir(path));
-        dispatch(actionsCreators.switchPath(path));
+      moveUp: (route, index) => {
+        dispatch(actionsCreators.socketListDir(route))
+        dispatch(actionsCreators.slicePath(index))
       },
-      socketCreateFiles: (path='', files=[]) => {
-        for (let i = 0; i < files.length; i++) {
-          const filePath = path.concat('/', files[i].name);
-          dispatch(actionsCreators.socketCreateFile(filePath, files[i]));
-        };
+      refresh: (route) => dispatch(actionsCreators.socketListDir(route)),
+      createFiles: (route, files=[], result) => {
+        for (const file of files) {
+          dispatch(actionsCreators.socketCreateFile(
+            route === '/' ? route.concat(file.name) : route.concat('/', file.name),
+            file
+          ))
+        }
+        dispatch(actionsCreators.socketListDir(route))
       },
-      socketRenameFile: (path='', name='', newName='newName') => {
-        dispatch(actionsCreators.socketRenameFile(path, name, newName));
-        dispatch(actionsCreators.hideModal());
+      renameFile: (route, name, newName) => {
+        const actualRoute = route === '/' ? route.concat(name) : route.concat('/', name)
+        const newRoute = route === '/' ? route.concat(newName) : route.concat('/', newName)
+        dispatch(actionsCreators.socketRenameFile(actualRoute, newRoute))
+        dispatch(actionsCreators.socketListDir(route))
+        dispatch(actionsCreators.hideModal())
       },
-      socketCreateDir: (path='', name='') => {
-        dispatch(actionsCreators.socketCreateDir(path, name));
-        dispatch(actionsCreators.hideModal());
+      createDir: (route, name) => {
+        dispatch(actionsCreators.socketCreateDir(route === '/' ? route.concat(name) : route.concat('/', name)))
+        dispatch(actionsCreators.socketListDir(route))
+        dispatch(actionsCreators.hideModal())
       },
-      switchView: () => {
-        dispatch(actionsCreators.switchView());
-      },
-      showModal: (modalType, modalProps) => {
-        dispatch(actionsCreators.showModal(modalType, modalProps));
-      },
-      hideModal: () => {
-        dispatch(actionsCreators.hideModal());
-      },
+      switchView: () => dispatch(actionsCreators.switchView()),
+      showModal: (modalType, modalProps) => dispatch(actionsCreators.showModal(modalType, modalProps)),
+      hideModal: () => dispatch(actionsCreators.hideModal()),
     }
   }
 }

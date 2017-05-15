@@ -11,44 +11,40 @@ describe('Socket Actions', () => {
     expect(actions.socketEnd()).toEqual(expectedAction)
   })
   it('should create an action to list files', () => {
-    const path = '/'
+    const route = '/'
     const expectedAction = {
       type: types.SOCKET_LIST_DIR,
-      path
+      route
     }
-    expect(actions.socketListDir(path)).toEqual(expectedAction)
+    expect(actions.socketListDir(route)).toEqual(expectedAction)
   })
   it('should create an action to create file', () => {
-    const path = '/'
+    const route = '/file.txt'
     const file = {}
     const expectedAction = {
       type: types.SOCKET_CREATE_FILE,
-      path,
+      route,
       file
     }
-    expect(actions.socketCreateFile(path, file)).toEqual(expectedAction)
+    expect(actions.socketCreateFile(route, file)).toEqual(expectedAction)
   })
   it('should create an action to rename file', () => {
-    const path = '/'
-    const name = 'file.txt'
-    const newName = 'rename_file.txt'
+    const actualRoute = '/file.txt'
+    const newRoute = '/rename_file.txt'
     const expectedAction = {
       type: types.SOCKET_RENAME_FILE,
-      path,
-      name,
-      newName
+      actualRoute,
+      newRoute
     }
-    expect(actions.socketRenameFile(path, name, newName)).toEqual(expectedAction)
+    expect(actions.socketRenameFile(actualRoute, newRoute)).toEqual(expectedAction)
   })
   it('should create an action to create directory', () => {
-    const path = '/'
-    const name = 'directory'
+    const route = '/directory'
     const expectedAction = {
       type: types.SOCKET_CREATE_DIR,
-      path,
-      name
+      route
     }
-    expect(actions.socketCreateDir(path, name)).toEqual(expectedAction)
+    expect(actions.socketCreateDir(route)).toEqual(expectedAction)
   })
 })
 
@@ -60,13 +56,21 @@ describe('View Actions', () => {
 })
 
 describe('Path Actions', () => {
-  it('should create an action to switch path', () => {
-    const path = '/personal-files'
+  it('should create an action to add path', () => {
+    const path = { route: '/dir', libelle: 'dir' }
     const expectedAction = {
-      type: types.SWITCH_PATH,
+      type: types.ADD_PATH,
       path
     }
-    expect(actions.switchPath(path)).toEqual(expectedAction)
+    expect(actions.addPath(path)).toEqual(expectedAction)
+  })
+  it('should create an action to slice path', () => {
+    const index = 0
+    const expectedAction = {
+      type: types.SLICE_PATH,
+      index
+    }
+    expect(actions.slicePath(index)).toEqual(expectedAction)
   })
 })
 

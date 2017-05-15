@@ -1,4 +1,4 @@
-import * as types from './actionTypes';
+import * as types from './actionTypes'
 
 // SOCKET
 export const socketConnect = () => {
@@ -7,17 +7,20 @@ export const socketConnect = () => {
 export const socketEnd = () => {
   return { type: types.SOCKET_END }
 }
-export const socketListDir = (path) => {
-  return { type: types.SOCKET_LIST_DIR, path }
+export const socketListDir = (route) => {
+  return { type: types.SOCKET_LIST_DIR, route }
 }
-export const socketCreateFile = (path, file) => {
-  return { type: types.SOCKET_CREATE_FILE, path, file }
+export const socketShowDustbin = (route) => {
+  return { type: types.SOCKET_SHOW_DUSTBIN, route }
 }
-export const socketRenameFile = (path, name, newName) => {
-  return { type: types.SOCKET_RENAME_FILE, path, name, newName }
+export const socketCreateFile = (route, file) => {
+  return { type: types.SOCKET_CREATE_FILE, route, file }
 }
-export const socketCreateDir = (path, name) => {
-  return { type: types.SOCKET_CREATE_DIR, path, name }
+export const socketRenameFile = (actualRoute, newRoute) => {
+  return { type: types.SOCKET_RENAME_FILE, actualRoute, newRoute }
+}
+export const socketCreateDir = (route) => {
+  return { type: types.SOCKET_CREATE_DIR, route }
 }
 
 // VIEW
@@ -26,14 +29,14 @@ export const switchView = () => {
 }
 
 // PATH
-export const switchPath = (path) => {
-  return { type: types.SWITCH_PATH, path }
+export const addPath = (path) => {
+  return { type: types.ADD_PATH, path }
+}
+export const slicePath = (index) => {
+  return { type: types.SLICE_PATH, index }
 }
 
 // FILES
-export const addFile = (file) => {
-  return { type: types.ADD_FILE, file }
-}
 export const removeFile = (id) => {
   return { type: types.REMOVE_FILE, id }
 }

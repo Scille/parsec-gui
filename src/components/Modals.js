@@ -8,7 +8,7 @@ class RenameModal extends Component {
     const path = this.props.path;
     const name = this.props.name;
 
-    const socketRenameFile = this.props.socketRenameFile;
+    const renameFile = this.props.renameFile;
     const hideModal = this.props.hideModal;
 
     return (
@@ -17,7 +17,7 @@ class RenameModal extends Component {
           <h3>RENAME FILE</h3>
         </div>
         <Form model="modalsForm.rename"
-              onSubmit={(values) => socketRenameFile(path, name, values['name'])}>
+              onSubmit={(values) => renameFile(path, name, values['name'])}>
           <div className="modal-body">
             <label>Enter new document name</label><br/>
             <Control.text model="modalsForm.rename.name" />
@@ -36,7 +36,7 @@ class CreateDirModal extends Component {
   render() {
     const path = this.props.path;
 
-    const socketCreateDir = this.props.socketCreateDir;
+    const createDir = this.props.createDir;
     const hideModal = this.props.hideModal;
 
     return (
@@ -45,7 +45,7 @@ class CreateDirModal extends Component {
           <h3>RENAME FILE</h3>
         </div>
         <Form model="modalsForm.createDir"
-              onSubmit={(values) => socketCreateDir(path, values['name'])}>
+              onSubmit={(values) => createDir(path, values['name'])}>
           <div className="modal-body">
             <label>Enter new directory name</label><br/>
             <Control.text model="modalsForm.createDir.name" />

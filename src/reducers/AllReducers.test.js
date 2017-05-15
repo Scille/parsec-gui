@@ -1,11 +1,11 @@
-import allReducer from '.'
+import allReducers from '.'
 
-describe('combine Reducer', () => {
+describe('Combine Reducers', () => {
   const initialState = {
-    personalFilesReducer: [],
+    FilesReducer: [],
     viewSwitcherReducer: false,
     modalReducer: { modalType: null, modalProps: {} },
-    pathReducer: '',
+    pathReducer: [{ route: '/', libelle: 'Home' }],
     modalsForm: {
       rename: { name: '' },
       createDir: { name: '' }
@@ -13,8 +13,8 @@ describe('combine Reducer', () => {
   }
 
   it('should return the initial state', () => {
-    const combineReducers = allReducer(undefined, {})
-    expect(combineReducers.personalFilesReducer).toEqual(initialState.personalFilesReducer)
+    const combineReducers = allReducers(undefined, {})
+    expect(combineReducers.FilesReducer).toEqual(initialState.FilesReducer)
     expect(combineReducers.viewSwitcherReducer).toEqual(initialState.viewSwitcherReducer)
     expect(combineReducers.modalReducer).toEqual(initialState.modalReducer)
     expect(combineReducers.pathReducer).toEqual(initialState.pathReducer)
