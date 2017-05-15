@@ -1,22 +1,12 @@
 import * as types from '../actions/actionTypes'
 
-const FileReducer = (state={}, action) => {
-  switch (action.type) {
-    case types.UPDATE_FILE:
-      if (state.id !== action.file.id)
-        return state
-      return action.file
-    default:
-      return state
-  }
-}
-
 const FilesReducer = (state=[], action) => {
-  switch (action.type) {
+  switch(action.type) {
     case types.UPDATE_FILE:
-      return state.map(item => FileReducer(item, action))
-    case types.REMOVE_FILE:
-      return state.filter(item => item.id !== action.file.id)
+      return state.map(item => {
+        if(item.id !== action.file.id) return item
+        return Object.assign(item, action.file)
+      })
     case types.REFRESH_FILES:
       return action.files
     default:

@@ -26,7 +26,9 @@ class PersonalFiles extends Component {
     const refresh = this.props.dispatch.refresh
     const createFiles = this.props.dispatch.createFiles
     const renameFile = this.props.dispatch.renameFile
+    const deleteFile = this.props.dispatch.deleteFile
     const createDir = this.props.dispatch.createDir
+    const removeDir = this.props.dispatch.removeDir
     const switchView = this.props.dispatch.switchView
     const showModal = this.props.dispatch.showModal
     const hideModal = this.props.dispatch.hideModal
@@ -39,6 +41,7 @@ class PersonalFiles extends Component {
 
     const listFiles = files.map((file, i) => {
       const icon = file['id'] !== null? 'fa fa-file-o' : 'fa fa-folder-o';
+      const removeFunc = file['id'] !== null? deleteFile : removeDir;
       const renameModal = {
         "path": path,
         "name": file['name'],
@@ -58,7 +61,7 @@ class PersonalFiles extends Component {
               <div className="dropdown-content">
                 <a onClick={() => showModal('renameModal', renameModal)}><i className="fa fa-pencil-square-o"/> Rename</a>
                 <a onClick={() => console.log("Share")}><i className="fa fa-user-plus"/> Share</a>
-                <a onClick={() => console.log("Delete")}><i className="fa fa-trash-o"/> Delete</a>
+                <a onClick={() => removeFunc(path, file.name)}><i className="fa fa-trash-o"/> Delete</a>
               </div>
             </div>
           </div>

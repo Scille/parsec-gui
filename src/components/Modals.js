@@ -12,21 +12,23 @@ class RenameModal extends Component {
     const hideModal = this.props.hideModal;
 
     return (
-      <div className="modal-content">
-        <div className="modal-header">
-          <h3>RENAME FILE</h3>
+      <div className="modal">
+        <div className="modal-content">
+          <div className="modal-header">
+            <h3>RENAME FILE</h3>
+          </div>
+          <Form model="modalsForm.rename"
+                onSubmit={(values) => renameFile(path, name, values['name'])}>
+            <div className="modal-body">
+              <label>Enter new document name</label><br/>
+              <Control.text model="modalsForm.rename.name" />
+            </div>
+            <div className="modal-footer">
+              <button onClick={hideModal} className="button third-button">Cancel</button>
+              <button type="submit" className="button main-button">OK</button>
+            </div>
+          </Form>
         </div>
-        <Form model="modalsForm.rename"
-              onSubmit={(values) => renameFile(path, name, values['name'])}>
-          <div className="modal-body">
-            <label>Enter new document name</label><br/>
-            <Control.text model="modalsForm.rename.name" />
-          </div>
-          <div className="modal-footer">
-            <button onClick={hideModal} className="button third-button">Cancel</button>
-            <button type="submit" className="button main-button">OK</button>
-          </div>
-        </Form>
       </div>
     );
   }
@@ -40,21 +42,23 @@ class CreateDirModal extends Component {
     const hideModal = this.props.hideModal;
 
     return (
-      <div className="modal-content">
-        <div className="modal-header">
-          <h3>RENAME FILE</h3>
+      <div className="modal">
+        <div className="modal-content">
+          <div className="modal-header">
+            <h3>RENAME FILE</h3>
+          </div>
+          <Form model="modalsForm.createDir"
+                onSubmit={(values) => createDir(path, values['name'])}>
+            <div className="modal-body">
+              <label>Enter new directory name</label><br/>
+              <Control.text model="modalsForm.createDir.name" />
+            </div>
+            <div className="modal-footer">
+              <button onClick={hideModal} className="button third-button">Cancel</button>
+              <button type="submit" className="button main-button">OK</button>
+            </div>
+          </Form>
         </div>
-        <Form model="modalsForm.createDir"
-              onSubmit={(values) => createDir(path, values['name'])}>
-          <div className="modal-body">
-            <label>Enter new directory name</label><br/>
-            <Control.text model="modalsForm.createDir.name" />
-          </div>
-          <div className="modal-footer">
-            <button onClick={hideModal} className="button third-button">Cancel</button>
-            <button type="submit" className="button main-button">OK</button>
-          </div>
-        </Form>
       </div>
     );
   }

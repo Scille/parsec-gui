@@ -19,7 +19,9 @@ PersonalFiles.propTypes = {
     refresh: PropTypes.func.isRequired,
     createFiles: PropTypes.func.isRequired,
     renameFile: PropTypes.func.isRequired,
+    deleteFile: PropTypes.func.isRequired,
     createDir: PropTypes.func.isRequired,
+    removeDir: PropTypes.func.isRequired,
     switchView: PropTypes.func.isRequired,
     showModal: PropTypes.func.isRequired,
     hideModal: PropTypes.func.isRequired,
@@ -74,10 +76,18 @@ const mapDispatchToProps = (dispatch) => {
         dispatch(actionsCreators.socketListDir(route))
         dispatch(actionsCreators.hideModal())
       },
+      deleteFile: (route, name) => {
+        dispatch(actionsCreators.socketDeleteFile(route === '/' ? route.concat(name) : route.concat('/', name)))
+        dispatch(actionsCreators.socketListDir(route))
+      },
       createDir: (route, name) => {
         dispatch(actionsCreators.socketCreateDir(route === '/' ? route.concat(name) : route.concat('/', name)))
         dispatch(actionsCreators.socketListDir(route))
         dispatch(actionsCreators.hideModal())
+      },
+      removeDir: (route, name) => {
+        dispatch(actionsCreators.socketRemoveDir(route === '/' ? route.concat(name) : route.concat('/', name)))
+        dispatch(actionsCreators.socketListDir(route))
       },
       switchView: () => dispatch(actionsCreators.switchView()),
       showModal: (modalType, modalProps) => dispatch(actionsCreators.showModal(modalType, modalProps)),

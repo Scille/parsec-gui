@@ -19,8 +19,14 @@ export const socketCreateFile = (route, file) => {
 export const socketRenameFile = (actualRoute, newRoute) => {
   return { type: types.SOCKET_RENAME_FILE, actualRoute, newRoute }
 }
+export const socketDeleteFile = (route) => {
+  return { type: types.SOCKET_DELETE_FILE, route }
+}
 export const socketCreateDir = (route) => {
   return { type: types.SOCKET_CREATE_DIR, route }
+}
+export const socketRemoveDir = (route) => {
+  return { type: types.SOCKET_REMOVE_DIR, route }
 }
 
 // VIEW
@@ -37,11 +43,8 @@ export const slicePath = (index) => {
 }
 
 // FILES
-export const removeFile = (id) => {
-  return { type: types.REMOVE_FILE, id }
-}
-export const updateFile = (id, file) => {
-  return { type: types.UPDATE_FILE, id, file }
+export const updateFile = (file) => {
+  return { type: types.UPDATE_FILE, file }
 }
 export const refreshFiles = (files) => {
   return { type: types.REFRESH_FILES, files }

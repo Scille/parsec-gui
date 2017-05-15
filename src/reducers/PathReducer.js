@@ -3,7 +3,7 @@ import * as types from '../actions/actionTypes'
 const initialState = [{ route: '/', libelle: 'Home' }]
 
 const pathReducer = (state=initialState, action) => {
-  switch (action.type) {
+  switch(action.type) {
     case types.ADD_PATH:
       return [
         ...state,

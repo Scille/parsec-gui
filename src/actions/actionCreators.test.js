@@ -38,6 +38,14 @@ describe('Socket Actions', () => {
     }
     expect(actions.socketRenameFile(actualRoute, newRoute)).toEqual(expectedAction)
   })
+  it('should create an action to delete file', () => {
+    const route = '/file.txt'
+    const expectedAction = {
+      type: types.SOCKET_DELETE_FILE,
+      route
+    }
+    expect(actions.socketDeleteFile(route)).toEqual(expectedAction)
+  })
   it('should create an action to create directory', () => {
     const route = '/directory'
     const expectedAction = {
@@ -45,6 +53,14 @@ describe('Socket Actions', () => {
       route
     }
     expect(actions.socketCreateDir(route)).toEqual(expectedAction)
+  })
+  it('should create an action to remove directory', () => {
+    const route = '/directory'
+    const expectedAction = {
+      type: types.SOCKET_REMOVE_DIR,
+      route
+    }
+    expect(actions.socketRemoveDir(route)).toEqual(expectedAction)
   })
 })
 
@@ -75,16 +91,7 @@ describe('Path Actions', () => {
 })
 
 describe('File Actions', () => {
-  it('should create an action to remove file', () => {
-    const id = 'file_id'
-    const expectedAction = {
-      type: types.REMOVE_FILE,
-      id
-    }
-    expect(actions.removeFile(id)).toEqual(expectedAction)
-  })
   it('should create an action to update file', () => {
-    const id = 'file_id'
     const file = {
       id: 'file_id',
       name: 'file.txt',
@@ -92,10 +99,9 @@ describe('File Actions', () => {
     }
     const expectedAction = {
       type: types.UPDATE_FILE,
-      id,
       file
     }
-    expect(actions.updateFile(id, file)).toEqual(expectedAction)
+    expect(actions.updateFile(file)).toEqual(expectedAction)
   })
   it('should create an action to get all files', () => {
     const files = []
