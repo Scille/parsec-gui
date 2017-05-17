@@ -19,7 +19,9 @@
     "electron": "^1.6.5",
     "electron-packager": "^8.6.0",
     "enzyme": "^2.8.2",
+    "react-addons-test-utils": "^15.5.1",
     "react-scripts": "0.9.5",
+    "react-test-renderer": "^15.5.4",
     "rimraf": "^2.6.1",
     "wait-on": "^2.0.2"
   },
