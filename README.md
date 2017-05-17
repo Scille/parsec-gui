@@ -1,6 +1,7 @@
 # ParSec - GUI
 
 [![Build Status](https://travis-ci.org/Scille/parsec-gui.svg?branch=master)](https://travis-ci.org/Scille/parsec-gui)
+[![Coverage Status](https://coveralls.io/repos/github/Scille/parsec-gui/badge.svg?branch=master)](https://coveralls.io/github/Scille/parsec-gui?branch=master)
 
 Secure cloud framework
 
