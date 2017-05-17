@@ -1,5 +1,5 @@
-import modalReducer from './ModalReducer'
-import * as types from '../actions/actionTypes'
+import modalReducer from './modalReducer'
+import * as types from '../actions/ActionTypes'
 
 describe('Modal Reducer', () => {
   const initialState = { modalType: null, modalProps: {} }

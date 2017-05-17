@@ -1,15 +1,15 @@
-import React, { Component } from 'react';
-import { Form, Control } from 'react-redux-form';
+import React, { Component } from 'react'
+import { Form, Control } from 'react-redux-form'
 
-import './Modals.css';
+import './Modals.css'
 
 class RenameModal extends Component {
   render() {
-    const path = this.props.path;
-    const name = this.props.name;
+    const path = this.props.path
+    const name = this.props.name
 
-    const renameFile = this.props.renameFile;
-    const hideModal = this.props.hideModal;
+    const renameFile = this.props.renameFile
+    const hideModal = this.props.hideModal
 
     return (
       <div className="modal">
@@ -30,16 +30,16 @@ class RenameModal extends Component {
           </Form>
         </div>
       </div>
-    );
+    )
   }
 }
 
 class CreateDirModal extends Component {
   render() {
-    const path = this.props.path;
+    const path = this.props.path
 
-    const createDir = this.props.createDir;
-    const hideModal = this.props.hideModal;
+    const createDir = this.props.createDir
+    const hideModal = this.props.hideModal
 
     return (
       <div className="modal">
@@ -60,7 +60,7 @@ class CreateDirModal extends Component {
           </Form>
         </div>
       </div>
-    );
+    )
   }
 }
 
@@ -68,17 +68,17 @@ class CreateDirModal extends Component {
 const MODAL_COMPONENTS = Object.freeze({
   "renameModal": RenameModal,
   "createDirModal": CreateDirModal,
-});
+})
 
 class Modals extends Component {
   render() {
-    const modalType = this.props.state.modal.modalType;
-    if(!modalType) return null;
+    const modalType = this.props.state.modal.modalType
+    if(!modalType) return null
 
-    const modalProps = this.props.state.modal.modalProps;
-    const SpecificModal = MODAL_COMPONENTS[modalType];
+    const modalProps = this.props.state.modal.modalProps
+    const SpecificModal = MODAL_COMPONENTS[modalType]
     return <SpecificModal {...modalProps} />
   }
 }
 
-export default Modals;
+export default Modals

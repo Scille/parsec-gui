@@ -1,5 +1,5 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React from 'react'
+import { Link } from 'react-router-dom'
 
 import './Errors.css'
 
@@ -27,7 +27,7 @@ export const SocketError = () => (
   </div>
 )
 
-export const NoMatchError = ({ location }) => (
+export const NoMatchError = () => (
   <div className="error">
     <Background />
     <div className="content">

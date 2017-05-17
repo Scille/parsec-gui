@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 
 import ModalsContainer from '../containers/ModalsContainer'
-import bytesToSize from './common'
+import { bytesToSize } from '../common'
 
 import './ViewSwitcher.css'
 
@@ -18,7 +18,7 @@ class PersonalFiles extends Component {
   render() {
     const files = this.props.state.files
     const listView = this.props.state.listView
-    const breadcrumb = this.props.state.path
+    const breadcrumb = this.props.state.breadcrumb
     const path = breadcrumb[breadcrumb.length -1].route
 
     const moveTo = this.props.dispatch.moveTo
@@ -40,8 +40,8 @@ class PersonalFiles extends Component {
     }
 
     const listFiles = files.map((file, i) => {
-      const icon = file['id'] !== null? 'fa fa-file-o' : 'fa fa-folder-o';
-      const removeFunc = file['id'] !== null? deleteFile : removeDir;
+      const icon = file['id'] !== null? 'fa fa-file-o' : 'fa fa-folder-o'
+      const removeFunc = file['id'] !== null? deleteFile : removeDir
       const renameModal = {
         "path": path,
         "name": file['name'],
@@ -66,8 +66,8 @@ class PersonalFiles extends Component {
             </div>
           </div>
         </li>
-      );
-    });
+      )
+    })
 
     return (
       <div className="view-switcher">
@@ -104,8 +104,8 @@ class PersonalFiles extends Component {
 
         <ModalsContainer></ModalsContainer>
       </div>
-    );
+    )
   }
 }
 
-export default PersonalFiles;
+export default PersonalFiles

@@ -1,4 +1,4 @@
-import * as types from '../actions/actionTypes';
+import * as types from '../actions/ActionTypes';
 
 const viewSwitcherReducer = (state=false, action) => {
   switch(action.type) {

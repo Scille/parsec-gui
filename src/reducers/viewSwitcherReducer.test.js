@@ -1,5 +1,5 @@
-import viewSwitcherReducer from './ViewSwitcherReducer'
-import * as types from '../actions/actionTypes';
+import viewSwitcherReducer from './viewSwitcherReducer'
+import * as types from '../actions/ActionTypes';
 
 describe('ViewSwitcher Reducer', () => {
   const initialState = false

@@ -1,6 +1,6 @@
-import * as types from '../actions/actionTypes'
+import * as types from '../actions/ActionTypes'
 
-const FilesReducer = (state=[], action) => {
+const filesReducer = (state=[], action) => {
   switch(action.type) {
     case types.UPDATE_FILE:
       return state.map(item => {
@@ -14,4 +14,4 @@ const FilesReducer = (state=[], action) => {
   }
 }
 
-export default FilesReducer
+export default filesReducer

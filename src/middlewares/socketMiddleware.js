@@ -1,5 +1,5 @@
-import * as types from '../actions/actionTypes'
-import * as actionsCreators from '../actions/actionCreators'
+import * as types from '../actions/ActionTypes'
+import * as actionsCreators from '../actions/ActionCreators'
 
 const SOCKET_PATH = '/tmp/parsec'
 

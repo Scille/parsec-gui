@@ -2,14 +2,14 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 
-import * as actionsCreators from '../actions/actionCreators'
+import * as actionsCreators from '../actions/ActionCreators'
 import PersonalFiles from '../components/PersonalFiles'
 
 PersonalFiles.propTypes = {
   state: PropTypes.shape({
     files: PropTypes.array.isRequired,
     listView: PropTypes.bool.isRequired,
-    path: PropTypes.array.isRequired,
+    breadcrumb: PropTypes.array.isRequired,
   }),
   dispatch: PropTypes.shape({
     init: PropTypes.func.isRequired,
@@ -26,14 +26,14 @@ PersonalFiles.propTypes = {
     showModal: PropTypes.func.isRequired,
     hideModal: PropTypes.func.isRequired,
   }),
-};
+}
 
 const mapStateToProps = (state) => {
   return {
     state: {
-      files: state.FilesReducer,
+      files: state.filesReducer,
       listView: state.viewSwitcherReducer,
-      path: state.pathReducer,
+      breadcrumb: state.breadcrumbReducer,
       modal: state.modalReducer,
     }
   }
@@ -45,7 +45,7 @@ const mapDispatchToProps = (dispatch) => {
       init: () => dispatch(actionsCreators.socketConnect()),
       end: () => {
         dispatch(actionsCreators.socketEnd())
-        dispatch(actionsCreators.slicePath(0))
+        dispatch(actionsCreators.removePath(0))
       },
       moveTo: (route, name) => {
         const path = {
@@ -57,7 +57,7 @@ const mapDispatchToProps = (dispatch) => {
       },
       moveUp: (route, index) => {
         dispatch(actionsCreators.socketListDir(route))
-        dispatch(actionsCreators.slicePath(index))
+        dispatch(actionsCreators.removePath(index))
       },
       refresh: (route) => dispatch(actionsCreators.socketListDir(route)),
       createFiles: (route, files=[], result) => {
@@ -101,4 +101,4 @@ const PersonalFilesContainer = withRouter(connect(
   mapDispatchToProps
 )(PersonalFiles))
 
-export default PersonalFilesContainer;
+export default PersonalFilesContainer

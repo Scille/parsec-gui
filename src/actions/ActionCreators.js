@@ -1,4 +1,4 @@
-import * as types from './actionTypes'
+import * as types from './ActionTypes'
 
 // SOCKET
 export const socketConnect = () => {
@@ -38,8 +38,8 @@ export const switchView = () => {
 export const addPath = (path) => {
   return { type: types.ADD_PATH, path }
 }
-export const slicePath = (index) => {
-  return { type: types.SLICE_PATH, index }
+export const removePath = (index) => {
+  return { type: types.REMOVE_PATH, index }
 }
 
 // FILES

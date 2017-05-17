@@ -1,18 +1,18 @@
 import { combineReducers } from 'redux'
 import { combineForms } from 'react-redux-form'
 
-import FilesReducer from './FilesReducer'
-import viewSwitcherReducer from './ViewSwitcherReducer'
-import modalReducer from './ModalReducer'
-import pathReducer from './PathReducer'
+import filesReducer from './filesReducer'
+import viewSwitcherReducer from './viewSwitcherReducer'
+import modalReducer from './modalReducer'
+import breadcrumbReducer from './breadcrumbReducer'
 
 const initialForm = { name: '' }
 
 const allReducers = combineReducers({
-  FilesReducer,
+  filesReducer,
   viewSwitcherReducer,
   modalReducer,
-  pathReducer,
+  breadcrumbReducer,
   modalsForm: combineForms({
     rename: initialForm,
     createDir: initialForm,

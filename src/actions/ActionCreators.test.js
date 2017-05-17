@@ -1,5 +1,5 @@
-import * as actions from './actionCreators'
-import * as types from './actionTypes'
+import * as actions from './ActionCreators'
+import * as types from './ActionTypes'
 
 describe('Socket Actions', () => {
   it('should create an action to connect', () => {
@@ -83,10 +83,10 @@ describe('Path Actions', () => {
   it('should create an action to slice path', () => {
     const index = 0
     const expectedAction = {
-      type: types.SLICE_PATH,
+      type: types.REMOVE_PATH,
       index
     }
-    expect(actions.slicePath(index)).toEqual(expectedAction)
+    expect(actions.removePath(index)).toEqual(expectedAction)
   })
 })
 

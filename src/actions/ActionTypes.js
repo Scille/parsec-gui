@@ -14,7 +14,7 @@ export const SWITCH_VIEW = 'SWITCH_VIEW'
 
 // PATH
 export const ADD_PATH = 'ADD_PATH'
-export const SLICE_PATH = 'SLICE_PATH'
+export const REMOVE_PATH = 'REMOVE_PATH'
 
 // FILES
 export const UPDATE_FILE = 'UPDATE_FILE'

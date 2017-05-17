@@ -1,4 +1,4 @@
-const bytesToSize = (bytes=0) => {
+export const bytesToSize = (bytes=0) => {
   const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
   if (bytes === 0) return '---';
   if (bytes === 1) return '1 Byte';
@@ -6,5 +6,3 @@ const bytesToSize = (bytes=0) => {
   if (i === 0) return `${bytes} ${sizes[i]}`;
   return `${(bytes / (1024 ** i)).toFixed(1)} ${sizes[i]}`;
 }
-
-export default bytesToSize;

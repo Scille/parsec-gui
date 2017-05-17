@@ -1,16 +1,14 @@
-import React from 'react';
+import React from 'react'
 import {
   HashRouter as Router,
   Route,
   Redirect,
   Switch,
   Link
-} from 'react-router-dom';
+} from 'react-router-dom'
 
 import PersonalFilesContainer from '../containers/PersonalFilesContainer'
 import { SocketError, NoMatchError } from './Errors.js'
-// import Login from './Login';
-// import NotFound from './NotFound';
 
 import './App.css'
 

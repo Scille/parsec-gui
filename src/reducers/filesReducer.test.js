@@ -1,11 +1,11 @@
-import FilesReducer from './FilesReducer'
-import * as types from '../actions/actionTypes'
+import filesReducer from './filesReducer'
+import * as types from '../actions/ActionTypes'
 
 describe('Files Reducer', () => {
   const initialState = []
 
   it('should return the initial state', () => {
-    expect(FilesReducer(undefined, {})).toEqual(initialState)
+    expect(filesReducer(undefined, {})).toEqual(initialState)
   })
   it('should handle REFRESH_FILES', () => {
     const state = [{ id: '1', name: 'file1.txt', size: 0 }]
@@ -17,7 +17,7 @@ describe('Files Reducer', () => {
       type: types.REFRESH_FILES,
       files: newState
     }
-    expect(FilesReducer(state, action)).toEqual(newState)
+    expect(filesReducer(state, action)).toEqual(newState)
   })
   it('should handle UPDATE_FILE', () => {
     const state = [
@@ -33,6 +33,6 @@ describe('Files Reducer', () => {
       id: newState[0].id,
       file: newState[0]
     }
-    expect(FilesReducer(state, action)).toEqual(newState)
+    expect(filesReducer(state, action)).toEqual(newState)
   })
 })

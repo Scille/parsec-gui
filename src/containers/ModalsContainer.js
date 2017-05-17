@@ -1,6 +1,6 @@
-import { connect } from 'react-redux';
+import { connect } from 'react-redux'
 
-import Modals from '../components/Modals';
+import Modals from '../components/Modals'
 
 const mapStateToProps = (state) => {
   return {
@@ -14,4 +14,4 @@ const ModalsContainer = connect(
   mapStateToProps,
 )(Modals)
 
-export default ModalsContainer;
+export default ModalsContainer

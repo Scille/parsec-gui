@@ -1,4 +1,4 @@
-import bytesToSize from './common'
+import { bytesToSize } from '.'
 
 describe('bytesToSize Functions', () => {
   const bytesToSizeList = [
