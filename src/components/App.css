@@ -76,7 +76,7 @@
 
 
 /*Content css*/
-.content {
+.app .content {
   position: absolute;
   right: 0;
   top: 0;

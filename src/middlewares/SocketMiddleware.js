@@ -33,16 +33,16 @@ const socketMiddleware = (() => {
             for(let [key, value] of Object.entries(data['children'])) {
               files.push({ id: value.id, name: key, size: 0 })
             }
-            store.dispatch(actionsCreators.refreshFiles(files));
+            store.dispatch(actionsCreators.refreshFiles(files))
             files.forEach((file) => socket.write(`{"cmd": "file_stat", "request_id": "${REQUESTS.FILE_STAT}", "id": "${file.id}"}\n`))
             break
           case REQUESTS.FILE_STAT:
             const file = { id: data.id, size: data.size }
-            store.dispatch(actionsCreators.updateFile(file));
+            store.dispatch(actionsCreators.updateFile(file))
             break
           case REQUESTS.USER_MANIFEST_CREATE_FILE:
           case REQUESTS.USER_MANIFEST_MAKE_DIR:
-            ipcRenderer.send('create_file', rest[0]);
+            ipcRenderer.send('create_file', rest[0])
             break
           case REQUESTS.USER_MANIFEST_RENAME_FILE:
             ipcRenderer.send('update_file', rest[0], rest[1])
@@ -63,7 +63,10 @@ const socketMiddleware = (() => {
       case types.SOCKET_CONNECT:
         if(socket != null) socket.end()
         socket = new net.Socket()
-        socket.on("error", (error) => ipcRenderer.send('catch_error', error.message))
+        socket.on("error", (error) => {
+          window.location.hash = '/socket-error'
+          ipcRenderer.send('catch_error', error.message)
+        })
         socket.on("data", (data) => onData(store, data))
         socket.connect({path: SOCKET_PATH}, () => {
           socket.setEncoding('utf8')

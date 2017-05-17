@@ -8,19 +8,13 @@ import {
 } from 'react-router-dom';
 
 import PersonalFilesContainer from '../containers/PersonalFilesContainer'
+import { SocketError, NoMatchError } from './Errors.js'
 // import Login from './Login';
 // import NotFound from './NotFound';
 
 import './App.css'
 
-const NoMatch = ({ location }) => (
-  <div>
-    <h3>No match for <code>{location.pathname}</code></h3>
-  </div>
-)
-
-
-const AppRouter = () => (
+const App = () => (
   <Router>
     <div className="app">
       <div className="sidebar">
@@ -44,14 +38,28 @@ const AppRouter = () => (
           {/* PersonalFiles component */}
           <Redirect from='/personal-files' to='/'/>
           {/* DeletedFiles component */}
-          <Route path='/deleted-files' component={NoMatch}/>
+          {/* <Route path='/deleted-files' component={NoMatchError}/> */}
+          <Redirect from='/deleted-files' to='/404'/>
           {/* Parameters component */}
-          <Route path='/parameters' component={NoMatch}/>
-          {/* NotFound component */}
-          <Route component={NoMatch}/>
+          {/* <Route path='/parameters' component={NoMatchError}/> */}
+          <Redirect from='/parameters' to='/404'/>
+          {/* Errors component */}
+          <Redirect to='/404'/>
         </Switch>
       </div>
     </div>
+  </Router>
+)
+
+const AppRouter = () => (
+  <Router>
+    <Switch>
+      {/* Errors component */}
+      <Route path='/socket-error' component={SocketError}/>
+      <Route path='/404' component={NoMatchError}/>
+      {/* App component */}
+      <Route path='/' component={App}/>
+    </Switch>
   </Router>
 )
 export default AppRouter

@@ -19,7 +19,7 @@ const createWindow = () => {
   mainWindow = new BrowserWindow({ width: 800, height: 600, minWidth: 760, minHeight: 500 })
 
   // Create the application menu
-  var menu = Menu.buildFromTemplate([
+  const menu = Menu.buildFromTemplate([
     {
       role: 'help',
       submenu: [
@@ -52,8 +52,25 @@ const createWindow = () => {
 
   // Create an icon in an operating system's notification area.
   tray = new Tray(path.join(__dirname, '/public/favicon.png'))
+  const trayMenu = Menu.buildFromTemplate([
+    {
+      label: pjson['name'],
+      enabled: false
+    },
+    {
+      label: 'Open',
+      click: () => mainWindow.show()
+    },
+    {
+      label: 'Quit',
+      click: () => {
+        app.isQuiting = true
+        app.quit()
+      }
+    }
+  ])
   tray.setToolTip(pjson['name'])
-  tray.on('click', () => mainWindow.show())
+  tray.setContextMenu(trayMenu)
 
   // Load the index.html of the app.
   if(process.env.ELECTRON_DEV) {

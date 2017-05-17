@@ -1,0 +1,218 @@
+/* cf. http://codepen.io/sqfreakz/pen/GJRJOY */
+
+:root {
+  --main-color: main-color from "../index.css";
+  --second-color: second-color from "../index.css";
+  --third-color: third-color from "../index.css";
+  --sidebar-width: 60px;
+}
+
+.error {
+  position: relative;
+  overflow: hidden;
+}
+.error .content {
+  text-align: center;
+  width: 80%;
+  margin: 100px auto;
+}
+.error .content h1 {
+  font-size: 140px;
+  height: 150px;
+  color: var(--second-color);
+  margin-bottom: 0;
+}
+.error .content h2 {
+  font-size: 40px;
+  text-transform: uppercase;
+  color: var(--second-color);
+}
+.error .content p {
+  font-size: 20px;
+  color: var(--third-color);
+}
+.error .content hr {
+  border: none;
+  border-top: 5px solid var(--second-color);
+  color: var(--second-color);
+  width: 150px;
+  height:10px;
+}
+.error .content .button {
+  text-transform: uppercase;
+  width: 50%;
+}
+
+.error .background .logo {
+  margin: 0 auto;
+  width: 250px;
+  height: 250px;
+  display: block;
+  background: url(../../public/favicon.png);
+  background-size: 250px 250px;
+  z-index:-1;
+  position: absolute;
+}
+.error .background .logo-1 {
+  left:100px;
+  top:-50px;
+  -webkit-transform: scale(0.3);
+  -moz-transform: scale(0.3);
+  transform: scale(0.3);
+  opacity: 0.9;
+  -webkit-animation: movelogo 15s linear infinite;
+  -moz-animation: movelogo 15s linear infinite;
+  -o-animation: movelogo 15s linear infinite;
+  animation: movelogo 15s linear infinite;
+}
+.error .background .logo-2 {
+  left: 250px;
+  top: 30px;
+  -webkit-transform: scale(0.6);
+  -moz-transform: scale(0.6);
+  transform: scale(0.6);
+  opacity: 0.6;
+  -webkit-animation: movelogo 10s linear infinite;
+  -moz-animation: movelogo 10s linear infinite;
+  -o-animation: movelogo 10s linear infinite;
+  animation: movelogo 10s linear infinite;
+}
+.error .background .logo-3 {
+  left: 250px;
+  bottom: -75px;
+  -webkit-transform: scale(0.7);
+  -moz-transform: scale(0.7);
+  transform: scale(0.7);
+  opacity: 0.8;
+  -webkit-animation: movelogo 25s linear infinite;
+  -moz-animation: movelogo 25s linear infinite;
+  -o-animation: movelogo 25s linear infinite;
+  animation: movelogo 25s linear infinite;
+}
+.error .background .logo-4 {
+  left: 470px;
+  bottom: 20px;
+  -webkit-transform: scale(0.5);
+  -moz-transform: scale(0.5);
+  transform: scale(0.5);
+  opacity: 0.5;
+  -webkit-animation: movelogo 18s linear infinite;
+  -moz-animation: movelogo 18s linear infinite;
+  -o-animation: movelogo 18s linear infinite;
+  animation: movelogo 18s linear infinite;
+}
+.error .background .logo-5 {
+  left: 200px;
+  top: 95px;
+  -webkit-transform: scale(0.5);
+  -moz-transform: scale(0.5);
+  transform: scale(0.5);
+  opacity: 0.8;
+  -webkit-animation: movelogo 20s linear infinite;
+  -moz-animation: movelogo 20s linear infinite;
+  -o-animation: movelogo 20s linear infinite;
+  animation: movelogo 20s linear infinite;
+}
+@-webkit-keyframes movelogo {
+  0% {margin-left: 500px;}
+  100% {margin-left: -500px;}
+}
+@-moz-keyframes movelogo {
+  0% {margin-left: 500px;}
+  100% {margin-left: -500px;}
+}
+@-o-keyframes movelogo {
+  0% {margin-left: 500px;}
+  100% {margin-left: -500px;}
+}
+@keyframes movelogo {
+  0% {margin-left: 500px;}
+  100% {margin-left: -500px;}
+}
+/*
+            .x1 {
+                top:-50px;
+                left:100px;
+                -webkit-transform: scale(0.3);
+                -moz-transform: scale(0.3);
+                transform: scale(0.3);
+                opacity: 0.9;
+                -webkit-animation: moveclouds 15s linear infinite;
+                -moz-animation: moveclouds 15s linear infinite;
+                -o-animation: moveclouds 15s linear infinite;
+            }
+
+            .x1_5{
+                top:-80px;
+                left:250px;
+                -webkit-transform: scale(0.3);
+                -moz-transform: scale(0.3);
+                transform: scale(0.3);
+                -webkit-animation: moveclouds 17s linear infinite;
+                -moz-animation: moveclouds 17s linear infinite;
+                -o-animation: moveclouds 17s linear infinite;
+            }
+
+            .x2 {
+                left: 250px;
+                top:30px;
+                -webkit-transform: scale(0.6);
+                -moz-transform: scale(0.6);
+                transform: scale(0.6);
+                opacity: 0.6;
+                -webkit-animation: moveclouds 25s linear infinite;
+                -moz-animation: moveclouds 25s linear infinite;
+                -o-animation: moveclouds 25s linear infinite;
+            }
+
+            .x3 {
+                left: 250px; bottom: -70px;
+
+                -webkit-transform: scale(0.6);
+                -moz-transform: scale(0.6);
+                transform: scale(0.6);
+                opacity: 0.8;
+
+                -webkit-animation: moveclouds 25s linear infinite;
+                -moz-animation: moveclouds 25s linear infinite;
+                -o-animation: moveclouds 25s linear infinite;
+            }
+
+            .x4 {
+                left: 470px; botttom: 20px;
+
+                -webkit-transform: scale(0.75);
+                -moz-transform: scale(0.75);
+                transform: scale(0.75);
+                opacity: 0.75;
+
+                -webkit-animation: moveclouds 18s linear infinite;
+                -moz-animation: moveclouds 18s linear infinite;
+                -o-animation: moveclouds 18s linear infinite;
+            }
+
+            .x5 {
+                left: 200px; top: 300px;
+
+                -webkit-transform: scale(0.5);
+                -moz-transform: scale(0.5);
+                transform: scale(0.5);
+                opacity: 0.8;
+
+                -webkit-animation: moveclouds 20s linear infinite;
+                -moz-animation: moveclouds 20s linear infinite;
+                -o-animation: moveclouds 20s linear infinite;
+            }
+
+            @-webkit-keyframes moveclouds {
+                0% {margin-left: 1000px;}
+                100% {margin-left: -1000px;}
+            }
+            @-moz-keyframes moveclouds {
+                0% {margin-left: 1000px;}
+                100% {margin-left: -1000px;}
+            }
+            @-o-keyframes moveclouds {
+                0% {margin-left: 1000px;}
+                100% {margin-left: -1000px;}
+            }*/
