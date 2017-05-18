@@ -65,7 +65,7 @@ export class RenameModal extends Component {
   }
 }
 
-class CreateDirModal extends Component {
+export class CreateDirModal extends Component {
   constructor(props) {
     super(props);
     this.state = { newName: 'Untitled Folder' }

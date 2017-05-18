@@ -1,5 +1,6 @@
 import React from 'react'
 import { shallow } from 'enzyme'
+import sinon from 'sinon'
 
 import Modals, { RenameModal, CreateDirModal } from './Modals'
 
@@ -46,19 +47,32 @@ describe('Modals components', () => {
     })
 
     it('cancel button should call hideModal() when clicked', () => {
-      // const { enzymeWrapper, props } = setup()
+      const { enzymeWrapper, props } = setup()
+      const handleCancel = sinon.spy(RenameModal.prototype, 'handleCancel')
 
-      // TODO
-      // enzymeWrapper.find('.third-button').simulate('click')
-      // expect(props.hideModal.mock.calls.length).toBe(1)
+      enzymeWrapper.find('.third-button').simulate('click', { preventDefault: () => {} })
+      expect(handleCancel.calledOnce)
+      expect(props.hideModal.mock.calls.length).toBe(1)
     })
 
     it('submit button should call renameFile() when clicked', () => {
-      // const { enzymeWrapper, props } = setup()
+      const { enzymeWrapper, props } = setup()
+      const handleSubmit = sinon.spy(RenameModal.prototype, 'handleSubmit')
 
-      // TODO
-      // enzymeWrapper.find('.main-button').simulate('submit')
-      // expect(props.renameFile.mock.calls.length).toBe(1)
+      enzymeWrapper.find('form').simulate('submit', { preventDefault: () => {} })
+      expect(handleSubmit.calledOnce)
+      expect(props.renameFile.mock.calls.length).toBe(1)
+    })
+
+    it('input change should call handleChange() when clicked', () => {
+      const { enzymeWrapper, props } = setup()
+      const handleChange = sinon.spy(RenameModal.prototype, 'handleChange')
+
+      enzymeWrapper.find('input').simulate('change', {
+        preventDefault: () => {},
+        target: { value: 'rename_file.txt' }
+      })
+      expect(handleChange.calledOnce)
     })
   })
 
@@ -73,27 +87,40 @@ describe('Modals components', () => {
     }
 
     it('should render self', () => {
-      // const { enzymeWrapper } = setup()
-      //
-      // expect(enzymeWrapper.find('h3').text()).toBe('CREATE DIRECTORY')
-      // expect(enzymeWrapper.find('.third-button').exists()).toBe(true)
-      // expect(enzymeWrapper.find('.main-button').exists()).toBe(true)
+      const { enzymeWrapper } = setup()
+
+      expect(enzymeWrapper.find('h3').text()).toBe('CREATE DIRECTORY')
+      expect(enzymeWrapper.find('.third-button').exists()).toBe(true)
+      expect(enzymeWrapper.find('.main-button').exists()).toBe(true)
     })
 
     it('cancel button should call hideModal() when clicked', () => {
-      // const { enzymeWrapper, props } = setup()
+      const { enzymeWrapper, props } = setup()
+      const handleCancel = sinon.spy(CreateDirModal.prototype, 'handleCancel')
 
-      // TODO
-      // enzymeWrapper.find('.third-button').simulate('click')
-      // expect(props.hideModal.mock.calls.length).toBe(1)
+      enzymeWrapper.find('.third-button').simulate('click', { preventDefault: () => {} })
+      expect(handleCancel.calledOnce)
+      expect(props.hideModal.mock.calls.length).toBe(1)
     })
 
     it('submit button should call createDir() when clicked', () => {
-      // const { enzymeWrapper, props } = setup()
+      const { enzymeWrapper, props } = setup()
+      const handleSubmit = sinon.spy(CreateDirModal.prototype, 'handleSubmit')
 
-      // TODO
-      // enzymeWrapper.find('.main-button').simulate('submit')
-      // expect(props.createDir.mock.calls.length).toBe(1)
+      enzymeWrapper.find('form').simulate('submit', { preventDefault: () => {} })
+      expect(handleSubmit.calledOnce)
+      expect(props.createDir.mock.calls.length).toBe(1)
+    })
+
+    it('input change should call handleChange() when clicked', () => {
+      const { enzymeWrapper, props } = setup()
+      const handleChange = sinon.spy(CreateDirModal.prototype, 'handleChange')
+
+      enzymeWrapper.find('input').simulate('change', {
+        preventDefault: () => {},
+        target: { value: 'directory' }
+      })
+      expect(handleChange.calledOnce)
     })
   })
 })
