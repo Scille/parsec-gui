@@ -6,10 +6,6 @@ describe('Combine Reducers', () => {
     viewSwitcherReducer: false,
     modalReducer: { modalType: null, modalProps: {} },
     breadcrumbReducer: [{ route: '/', libelle: 'Home' }],
-    modalsForm: {
-      rename: { name: '' },
-      createDir: { name: '' }
-    }
   }
 
   it('should return the initial state', () => {
@@ -18,7 +14,5 @@ describe('Combine Reducers', () => {
     expect(combineReducers.viewSwitcherReducer).toEqual(initialState.viewSwitcherReducer)
     expect(combineReducers.modalReducer).toEqual(initialState.modalReducer)
     expect(combineReducers.breadcrumbReducer).toEqual(initialState.breadcrumbReducer)
-    expect(combineReducers.modalsForm.rename).toEqual(initialState.modalsForm.rename)
-    expect(combineReducers.modalsForm.createDir).toEqual(initialState.modalsForm.createDir)
   })
 })

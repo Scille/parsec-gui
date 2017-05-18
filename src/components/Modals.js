@@ -1,15 +1,45 @@
 import React, { Component } from 'react'
-import { Form, Control } from 'react-redux-form'
 
 import './Modals.css'
 
 export class RenameModal extends Component {
-  render() {
+  constructor(props) {
+    super(props);
+    this.state = { newName: '' }
+
+    this.handleChange = this.handleChange.bind(this)
+    this.handleCancel = this.handleCancel.bind(this)
+    this.handleSubmit = this.handleSubmit.bind(this)
+  }
+
+  handleChange(event) {
+    const target = event.target
+    const value = target.type === 'checkbox' ? target.checked : target.value
+    const name = target.name
+
+    this.setState({ [name]: value })
+  }
+
+  handleCancel(event) {
+    const hideModal = this.props.hideModal
+
+    event.preventDefault()
+    hideModal()
+  }
+
+  handleSubmit(event) {
     const path = this.props.path
     const name = this.props.name
-
+    const newName = this.state.newName
     const renameFile = this.props.renameFile
-    const hideModal = this.props.hideModal
+
+    event.preventDefault()
+    renameFile(path, name, newName)
+  }
+
+  render() {
+    const name = this.props.name
+    const newName = this.state.newName
 
     return (
       <div className="modal">
@@ -17,29 +47,60 @@ export class RenameModal extends Component {
           <div className="modal-header">
             <h3>RENAME FILE</h3>
           </div>
-          <Form model="modalsForm.rename"
-                onSubmit={(values) => renameFile(path, name, values['name'])}>
+          <form onSubmit={this.handleSubmit}>
             <div className="modal-body">
-              <label>Enter new document name</label><br/>
-              <Control.text model="modalsForm.rename.name" />
+              <label>
+                Enter file name<br/>
+                <input type="text" name="newName" placeholder={name} value={newName} onChange={this.handleChange}/>
+              </label>
             </div>
             <div className="modal-footer">
-              <button onClick={hideModal} className="button third-button">Cancel</button>
-              <button type="submit" className="button main-button">OK</button>
+              <button onClick={this.handleCancel} className="button third-button">Cancel</button>
+              <button type="submit" className="button main-button" value="Submit">OK</button>
             </div>
-          </Form>
+          </form>
         </div>
       </div>
     )
   }
 }
 
-export class CreateDirModal extends Component {
-  render() {
-    const path = this.props.path
+class CreateDirModal extends Component {
+  constructor(props) {
+    super(props);
+    this.state = { newName: 'Untitled Folder' }
 
-    const createDir = this.props.createDir
+    this.handleChange = this.handleChange.bind(this)
+    this.handleCancel = this.handleCancel.bind(this)
+    this.handleSubmit = this.handleSubmit.bind(this)
+  }
+
+  handleChange(event) {
+    const target = event.target
+    const value = target.type === 'checkbox' ? target.checked : target.value
+    const name = target.name
+
+    this.setState({ [name]: value })
+  }
+
+  handleCancel(event) {
     const hideModal = this.props.hideModal
+
+    event.preventDefault()
+    hideModal()
+  }
+
+  handleSubmit(event) {
+    const path = this.props.path
+    const newName = this.state.newName
+    const createDir = this.props.createDir
+
+    event.preventDefault()
+    if(newName !== '') createDir(path, newName)
+  }
+
+  render() {
+    const newName = this.state.newName
 
     return (
       <div className="modal">
@@ -47,17 +108,18 @@ export class CreateDirModal extends Component {
           <div className="modal-header">
             <h3>CREATE DIRECTORY</h3>
           </div>
-          <Form model="modalsForm.createDir"
-                onSubmit={(values) => createDir(path, values['name'])}>
+          <form onSubmit={this.handleSubmit}>
             <div className="modal-body">
-              <label>Enter new directory name</label><br/>
-              <Control.text model="modalsForm.createDir.name" />
+              <label>
+                Enter new directory name<br/>
+                <input type="text" name="newName" value={newName} onChange={this.handleChange}/>
+              </label>
             </div>
             <div className="modal-footer">
-              <button onClick={hideModal} className="button third-button">Cancel</button>
-              <button type="submit" className="button main-button">OK</button>
+              <button onClick={this.handleCancel} className="button third-button">Cancel</button>
+              <button type="submit" className="button main-button" value="Submit">OK</button>
             </div>
-          </Form>
+          </form>
         </div>
       </div>
     )

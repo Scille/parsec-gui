@@ -18,7 +18,7 @@ describe('bytesToSize Functions', () => {
   ]
 
   it('converting file size in bytes to human readable', () => {
-    for (let elt of bytesToSizeList) {
+    for(let elt of bytesToSizeList) {
       expect(bytesToSize(elt.bytes)).toEqual(elt.size)
     }
   })

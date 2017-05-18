@@ -61,7 +61,7 @@ const mapDispatchToProps = (dispatch) => {
       },
       refresh: (route) => dispatch(actionsCreators.socketListDir(route)),
       createFiles: (route, files=[], result) => {
-        for (const file of files) {
+        for(const file of files) {
           dispatch(actionsCreators.socketCreateFile(
             route === '/' ? route.concat(file.name) : route.concat('/', file.name),
             file
