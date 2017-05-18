@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
 
 import './Errors.css'
@@ -27,17 +27,30 @@ export const SocketError = () => (
   </div>
 )
 
-export const NoMatchError = () => (
-  <div className="error">
-    <Background />
-    <div className="content">
-      <h1>404</h1>
-      <hr/>
-      <h2>Page not found</h2>
-      <p>The page you are looking for doesnt exist.</p>
-      <br/>
-      <a className="button third-button" onClick={() => history.back()}>Previous Page</a>
-      <Link to="/" className="button main-button">Back to Home page</Link>
-    </div>
-  </div>
-)
+export class NoMatchError extends Component {
+  constructor() {
+    super()
+		this.goBack = this.goBack.bind(this)
+   }
+
+   goBack() {
+     history.back()
+   }
+
+   render() {
+     return (
+       <div className="error">
+         <Background />
+         <div className="content">
+           <h1>404</h1>
+           <hr/>
+           <h2>Page not found</h2>
+           <p>The page you are looking for doesnt exist.</p>
+           <br/>
+           <a className="button third-button" onClick={this.goBack}>Previous Page</a>
+           <Link to="/" className="button main-button">Back to Home page</Link>
+         </div>
+       </div>
+     )
+   }
+}
