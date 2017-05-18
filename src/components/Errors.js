@@ -30,7 +30,7 @@ export const SocketError = () => (
 export class NoMatchError extends Component {
   constructor() {
     super()
-		this.goBack = this.goBack.bind(this)
+    this.goBack = this.goBack.bind(this)
    }
 
    goBack() {

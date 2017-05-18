@@ -3,7 +3,7 @@ import { Form, Control } from 'react-redux-form'
 
 import './Modals.css'
 
-class RenameModal extends Component {
+export class RenameModal extends Component {
   render() {
     const path = this.props.path
     const name = this.props.name
@@ -34,7 +34,7 @@ class RenameModal extends Component {
   }
 }
 
-class CreateDirModal extends Component {
+export class CreateDirModal extends Component {
   render() {
     const path = this.props.path
 
@@ -45,7 +45,7 @@ class CreateDirModal extends Component {
       <div className="modal">
         <div className="modal-content">
           <div className="modal-header">
-            <h3>RENAME FILE</h3>
+            <h3>CREATE DIRECTORY</h3>
           </div>
           <Form model="modalsForm.createDir"
                 onSubmit={(values) => createDir(path, values['name'])}>
@@ -72,10 +72,10 @@ const MODAL_COMPONENTS = Object.freeze({
 
 class Modals extends Component {
   render() {
-    const modalType = this.props.state.modal.modalType
+    const modalType = this.props.modalType
     if(!modalType) return null
 
-    const modalProps = this.props.state.modal.modalProps
+    const modalProps = this.props.modalProps
     const SpecificModal = MODAL_COMPONENTS[modalType]
     return <SpecificModal {...modalProps} />
   }

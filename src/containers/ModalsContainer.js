@@ -3,11 +3,7 @@ import { connect } from 'react-redux'
 import Modals from '../components/Modals'
 
 const mapStateToProps = (state) => {
-  return {
-    state: {
-      modal: state.modalReducer,
-    }
-  }
+  return state.modalReducer
 }
 
 const ModalsContainer = connect(
