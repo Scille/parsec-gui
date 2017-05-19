@@ -41,11 +41,17 @@ class PersonalFiles extends Component {
 
     const listFiles = files.map((file, i) => {
       const icon = file['id'] !== null? 'fa fa-file-o' : 'fa fa-folder-o'
-      const removeFunc = file['id'] !== null? deleteFile : removeDir
       const renameModal = {
         "path": path,
         "name": file['name'],
         "renameFile": renameFile,
+        "hideModal": hideModal
+      }
+      const removeModal = {
+        "path": path,
+        "name": file['name'],
+        "title": file['id'] !== null? 'DELETE FILE' : 'DELETE DIRECTORY',
+        "removeFunc": file['id'] !== null? deleteFile : removeDir,
         "hideModal": hideModal
       }
       return (
@@ -61,7 +67,7 @@ class PersonalFiles extends Component {
               <div className="dropdown-content">
                 <a onClick={() => showModal('renameModal', renameModal)}><i className="fa fa-pencil-square-o"/> Rename</a>
                 <a onClick={() => console.log("Share")}><i className="fa fa-user-plus"/> Share</a>
-                <a onClick={() => removeFunc(path, file.name)}><i className="fa fa-trash-o"/> Delete</a>
+                <a onClick={() => showModal('removeModal', removeModal)}><i className="fa fa-trash-o"/> Delete</a>
               </div>
             </div>
           </div>

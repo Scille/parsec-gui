@@ -2,7 +2,7 @@ import React from 'react'
 import { shallow } from 'enzyme'
 import sinon from 'sinon'
 
-import Modals, { RenameModal, CreateDirModal } from './Modals'
+import Modals, { RenameModal, CreateDirModal, RemoveModal } from './Modals'
 
 describe('Modals components', () => {
   describe('Modals', () => {
@@ -18,6 +18,13 @@ describe('Modals components', () => {
       const enzymeWrapper = shallow(<Modals {...props} />)
 
       expect(enzymeWrapper.find('CreateDirModal').exists()).toBe(true)
+    })
+
+    it('should render RemoveModal', () => {
+      const props = { modalType: 'removeModal' }
+      const enzymeWrapper = shallow(<Modals {...props} />)
+
+      expect(enzymeWrapper.find('RemoveModal').exists()).toBe(true)
     })
 
     it('should render nothing', () => {
@@ -121,6 +128,46 @@ describe('Modals components', () => {
         target: { value: 'directory' }
       })
       expect(handleChange.calledOnce)
+    })
+  })
+
+  describe('RemoveModal', () => {
+    const setup = () => {
+      const props = {
+        title: "REMOVE FILE",
+        name: "file.txt",
+        removeFunc: jest.fn(),
+        hideModal: jest.fn()
+      }
+      const enzymeWrapper = shallow(<RemoveModal {...props} />)
+      return { props, enzymeWrapper }
+    }
+
+    it('should render self', () => {
+      const { enzymeWrapper, props } = setup()
+
+      expect(enzymeWrapper.find('h3').text()).toBe(props.title)
+      expect(enzymeWrapper.find('p').text()).toBe(`Are you sure you want to delete ${props.name} ?`)
+      expect(enzymeWrapper.find('.third-button').exists()).toBe(true)
+      expect(enzymeWrapper.find('.main-button').exists()).toBe(true)
+    })
+
+    it('cancel button should call hideModal() when clicked', () => {
+      const { enzymeWrapper, props } = setup()
+      const handleCancel = sinon.spy(RemoveModal.prototype, 'handleCancel')
+
+      enzymeWrapper.find('.third-button').simulate('click', { preventDefault: () => {} })
+      expect(handleCancel.calledOnce)
+      expect(props.hideModal.mock.calls.length).toBe(1)
+    })
+
+    it('delete button should call removeFunc() when clicked', () => {
+      const { enzymeWrapper, props } = setup()
+      const handleDelete = sinon.spy(RemoveModal.prototype, 'handleDelete')
+
+      enzymeWrapper.find('.main-button').simulate('click', { preventDefault: () => {} })
+      expect(handleDelete.calledOnce)
+      expect(props.removeFunc.mock.calls.length).toBe(1)
     })
   })
 })

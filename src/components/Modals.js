@@ -4,7 +4,7 @@ import './Modals.css'
 
 export class RenameModal extends Component {
   constructor(props) {
-    super(props);
+    super(props)
     this.state = { newName: '' }
 
     this.handleChange = this.handleChange.bind(this)
@@ -67,7 +67,7 @@ export class RenameModal extends Component {
 
 export class CreateDirModal extends Component {
   constructor(props) {
-    super(props);
+    super(props)
     this.state = { newName: 'Untitled Folder' }
 
     this.handleChange = this.handleChange.bind(this)
@@ -126,10 +126,57 @@ export class CreateDirModal extends Component {
   }
 }
 
+export class RemoveModal extends Component {
+  constructor(props) {
+    super(props)
+
+    this.handleCancel = this.handleCancel.bind(this)
+    this.handleDelete = this.handleDelete.bind(this)
+  }
+
+  handleCancel(event) {
+    const hideModal = this.props.hideModal
+
+    event.preventDefault()
+    hideModal()
+  }
+
+  handleDelete(event) {
+    const path = this.props.path
+    const name = this.props.name
+    const removeFunc = this.props.removeFunc
+
+    event.preventDefault()
+    removeFunc(path, name)
+  }
+
+  render() {
+    const title = this.props.title
+    const name = this.props.name
+
+    return (
+      <div className="modal">
+        <div className="modal-content">
+          <div className="modal-header">
+            <h3>{title}</h3>
+          </div>
+          <div className="modal-body">
+            <p>Are you sure you want to delete <b>{name}</b> ?</p>
+          </div>
+          <div className="modal-footer">
+            <button onClick={this.handleCancel} className="button third-button">Cancel</button>
+            <button onClick={this.handleDelete} className="button main-button">Delete</button>
+          </div>
+        </div>
+      </div>
+    )
+  }
+}
 
 const MODAL_COMPONENTS = Object.freeze({
   "renameModal": RenameModal,
   "createDirModal": CreateDirModal,
+  "removeModal": RemoveModal,
 })
 
 class Modals extends Component {
