@@ -2,7 +2,142 @@
 History
 =======
 
-dev:
-  - Electron / Unix Socket <=> parsec-core
-  - ReactJs / Redux / React-Router V4
-  - This project was bootstrapped with Create React App
+Tools
+-----
+- This project was bootstrapped with Create React App
+- CI servers
+ - Travis
+ - Coveralls
+- Desktop application
+ - Electron
+ - Unix Socket
+ - Notifications
+- JavaScript library
+ - ReactJs
+ - Redux
+ - React-Router V4
+- Tests
+ - JEST
+ - Enzyme
+ - Sinon
+
+Done
+----
+- Parsec-GUI
+ - Coverage [29%]
+ - PersonalFiles
+  - Connect to unix socket
+  - Redirection -> NoSocket Page
+  - Breadcrumb
+  - List files
+  - Add file
+  - Create directory
+  - Rename file
+  - Rename directory
+  - Remove file
+  - Remove directory
+ - Error pages
+  - NoSocket
+  - NotFound
+ - Routes
+  - */* -> PersonalFiles
+  - */personal-files* -> PersonalFiles
+  - */socket-error* -> NoSocket
+  - */404* -> NotFound
+ - Modals
+  - Create directory
+  - Rename file
+  - Rename directory
+  - Remove file
+  - Remove directory
+ - ViewSwitcher
+  - list view
+  - grid view
+ - Unix Socket
+  - SOCKET_CONNECT
+  - SOCKET_END
+  - IDENTITY_LOAD
+  - USER_MANIFEST_LOAD
+  - USER_MANIFEST_CREATE_FILE
+  - USER_MANIFEST_RENAME_FILE
+  - USER_MANIFEST_DELETE_FILE
+  - USER_MANIFEST_LIST_DIR
+  - USER_MANIFEST_MAKE_DIR
+  - USER_MANIFEST_REMOVE_DIR
+  - FILE_STAT
+ - Notifications
+  - Add file
+  - Create directory
+  - Rename file
+  - Rename directory
+  - Remove file
+  - Remove directory
+
+Todo: 26/05/2017
+**********************
+- Parsec-GUI
+ - DeletedFiles
+  - Connect to unix socket
+  - Redirection -> NoSocket Page
+  - List deleted files
+  - Restore file
+ - Routes
+  - */deleted-files* -> DeletedFiles
+ - Modals
+  - Restore file
+ - Unix Socket
+  - USER_MANIFEST_SHOW_DUSTBIN
+  - USER_MANIFEST_RESTORE
+ - Notifications
+  - Restore file
+
+19/05/2017
+**********************
+- Parsec-GUI
+ - PersonalFiles
+  - Connect to unix socket
+  - Redirection -> NoSocket Page
+  - Breadcrumb
+  - List files
+  - Add file
+  - Create directory
+  - Rename file
+  - Rename directory
+  - Remove file
+  - Remove directory
+ - Error pages
+  - NoSocket
+  - NotFound
+ - Routes
+  - */* -> PersonalFiles
+  - */personal-files* -> PersonalFiles
+  - */socket-error* -> NoSocket
+  - */404* -> NotFound
+ - Modals
+  - Create directory
+  - Rename file
+  - Rename directory
+  - Remove file
+  - Remove directory
+ - ViewSwitcher
+  - list view
+  - grid view
+ - Unix Socket
+  - SOCKET_CONNECT
+  - SOCKET_END
+  - IDENTITY_LOAD
+  - USER_MANIFEST_LOAD
+  - USER_MANIFEST_CREATE_FILE
+  - USER_MANIFEST_RENAME_FILE
+  - USER_MANIFEST_DELETE_FILE
+  - USER_MANIFEST_LIST_DIR
+  - USER_MANIFEST_MAKE_DIR
+  - USER_MANIFEST_REMOVE_DIR
+  - FILE_STAT
+ - Notifications
+  - Add file
+  - Create directory
+  - Rename file
+  - Rename directory
+  - Remove file
+  - Remove directory
