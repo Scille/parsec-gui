@@ -9,10 +9,10 @@ describe('Combine Reducers', () => {
   }
 
   it('should return the initial state', () => {
-    const combineReducers = allReducers(undefined, {})
-    expect(combineReducers.filesReducer).toEqual(initialState.filesReducer)
-    expect(combineReducers.viewSwitcherReducer).toEqual(initialState.viewSwitcherReducer)
-    expect(combineReducers.modalReducer).toEqual(initialState.modalReducer)
-    expect(combineReducers.breadcrumbReducer).toEqual(initialState.breadcrumbReducer)
+    const state = allReducers(undefined, {})
+    expect(state.filesReducer).toEqual(initialState.filesReducer)
+    expect(state.viewSwitcherReducer).toEqual(initialState.viewSwitcherReducer)
+    expect(state.modalReducer).toEqual(initialState.modalReducer)
+    expect(state.breadcrumbReducer).toEqual(initialState.breadcrumbReducer)
   })
 })

@@ -5,8 +5,6 @@ import viewSwitcherReducer from './viewSwitcherReducer'
 import modalReducer from './modalReducer'
 import breadcrumbReducer from './breadcrumbReducer'
 
-const initialForm = { name: '' }
-
 const allReducers = combineReducers({
   filesReducer,
   viewSwitcherReducer,
