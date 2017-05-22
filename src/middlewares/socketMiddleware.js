@@ -31,18 +31,30 @@ const socketMiddleware = (() => {
           case REQUESTS.USER_MANIFEST_LIST_DIR:
             let files = []
             for(let [key, value] of Object.entries(data['children'])) {
-              files.push({ id: value.id, name: key, size: 0 })
+              files.push({
+                ...value,
+                name: key,
+                path: rest[0] === '/' ? rest[0].concat(key) : rest[0].concat('/', key),
+              })
             }
             store.dispatch(actionsCreators.refreshFiles(files))
             files.forEach((file) => socket.write(`{"cmd": "file_stat", "request_id": "${REQUESTS.FILE_STAT}", "id": "${file.id}"}\n`))
             break
+          case REQUESTS.USER_MANIFEST_SHOW_DUSTBIN:
+            let dustbin = []
+            data['dustbin'].forEach((file) => dustbin.push({
+              ...file,
+              name: file.path.split('/').pop()
+            }))
+            store.dispatch(actionsCreators.refreshFiles(dustbin))
+            break
           case REQUESTS.FILE_STAT:
-            const file = { id: data.id, size: data.size }
-            store.dispatch(actionsCreators.updateFile(file))
+            store.dispatch(actionsCreators.updateFile(data))
             break
           case REQUESTS.USER_MANIFEST_CREATE_FILE:
           case REQUESTS.USER_MANIFEST_MAKE_DIR:
-            ipcRenderer.send('create_file', rest[0])
+          case REQUESTS.USER_MANIFEST_RESTORE:
+            ipcRenderer.send('add_file', rest[0])
             break
           case REQUESTS.USER_MANIFEST_RENAME_FILE:
             ipcRenderer.send('update_file', rest[0], rest[1])
@@ -72,7 +84,12 @@ const socketMiddleware = (() => {
           socket.setEncoding('utf8')
           socket.write(`{"cmd": "identity_load", "identity": null}\n`)
           socket.write(`{"cmd": "user_manifest_load"}\n`)
-          socket.write(`{"cmd": "user_manifest_list_dir", "request_id": "${REQUESTS.USER_MANIFEST_LIST_DIR}", "path": "/"}\n`)
+          if(action.cmd === 'list_dir') {
+            socket.write(`{"cmd": "user_manifest_list_dir", "request_id": "${REQUESTS.USER_MANIFEST_LIST_DIR}:/", "path": "/"}\n`)
+          }
+          else if (action.cmd === 'show_dustbin') {
+            socket.write(`{"cmd": "user_manifest_show_dustbin", "request_id": "${REQUESTS.USER_MANIFEST_SHOW_DUSTBIN}"}\n`)
+          }
         })
         break
       case types.SOCKET_END:
@@ -80,10 +97,10 @@ const socketMiddleware = (() => {
         socket = null
         break
       case types.SOCKET_LIST_DIR:
-        socket.write(`{"cmd": "user_manifest_list_dir", "request_id": "${REQUESTS.USER_MANIFEST_LIST_DIR}", "path": "${action.route}"}\n`)
+        socket.write(`{"cmd": "user_manifest_list_dir", "request_id": "${REQUESTS.USER_MANIFEST_LIST_DIR}:${action.route}", "path": "${action.route}"}\n`)
         break;
       case types.SOCKET_SHOW_DUSTBIN:
-        socket.write(`{"cmd": "user_manifest_show_dustbin", "request_id": "${REQUESTS.USER_MANIFEST_SHOW_DUSTBIN}", "path": "${action.route}"}\n`)
+        socket.write(`{"cmd": "user_manifest_show_dustbin", "request_id": "${REQUESTS.USER_MANIFEST_SHOW_DUSTBIN}"}\n`)
         break;
       case types.SOCKET_CREATE_FILE:
         const reader = new FileReader()
@@ -98,6 +115,9 @@ const socketMiddleware = (() => {
         break
       case types.SOCKET_DELETE_FILE:
         socket.write(`{"cmd": "user_manifest_delete_file", "request_id": "${REQUESTS.USER_MANIFEST_DELETE_FILE}:${action.route}", "path": "${action.route}"}\n`)
+        break
+      case types.SOCKET_RESTORE_FILE:
+        socket.write(`{"cmd": "user_manifest_restore", "request_id": "${REQUESTS.USER_MANIFEST_RESTORE}:${action.route}", "vlob": "${action.id}"}\n`)
         break
       case types.SOCKET_CREATE_DIR:
         socket.write(`{"cmd": "user_manifest_make_dir", "request_id": "${REQUESTS.USER_MANIFEST_MAKE_DIR}:${action.route}", "path": "${action.route}"}\n`)

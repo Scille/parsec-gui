@@ -110,7 +110,7 @@ const createWindow = () => {
     }, (error, response) => console.log(response))
   }
   ipcMain.on('catch_error', (event, message) => sendNotification('Error', message))
-  ipcMain.on('create_file', (event, name) => {
+  ipcMain.on('add_file', (event, name) => {
     const title = `'${name}' added`
     const message = `'${name}' was added in your PARSEC forlder.`
     sendNotification(title, message)

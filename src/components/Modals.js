@@ -1,5 +1,7 @@
 import React, { Component } from 'react'
 
+import { bytesToSize, dateToUTC } from '../common'
+
 import './Modals.css'
 
 export class RenameModal extends Component {
@@ -14,7 +16,7 @@ export class RenameModal extends Component {
 
   handleChange(event) {
     const target = event.target
-    const value = target.type === 'checkbox' ? target.checked : target.value
+    const value = target.value
     const name = target.name
 
     this.setState({ [name]: value })
@@ -51,7 +53,7 @@ export class RenameModal extends Component {
             <div className="modal-body">
               <label>
                 Enter file name<br/>
-                <input type="text" name="newName" placeholder={name} value={newName} onChange={this.handleChange}/>
+                <input type="text" name="newName" placeholder={name} value={newName} onChange={this.handleChange} autoFocus/>
               </label>
             </div>
             <div className="modal-footer">
@@ -77,7 +79,7 @@ export class CreateDirModal extends Component {
 
   handleChange(event) {
     const target = event.target
-    const value = target.type === 'checkbox' ? target.checked : target.value
+    const value = target.value
     const name = target.name
 
     this.setState({ [name]: value })
@@ -112,7 +114,7 @@ export class CreateDirModal extends Component {
             <div className="modal-body">
               <label>
                 Enter new directory name<br/>
-                <input type="text" name="newName" value={newName} onChange={this.handleChange}/>
+                <input type="text" name="newName" value={newName} onChange={this.handleChange} autoFocus/>
               </label>
             </div>
             <div className="modal-footer">
@@ -173,10 +175,103 @@ export class RemoveModal extends Component {
   }
 }
 
+export class RestoreModal extends Component {
+  constructor(props) {
+    super(props)
+
+    this.handleCancel = this.handleCancel.bind(this)
+    this.handleRestore = this.handleRestore.bind(this)
+  }
+
+  handleCancel(event) {
+    const hideModal = this.props.hideModal
+
+    event.preventDefault()
+    hideModal()
+  }
+
+  handleRestore(event) {
+    const id = this.props.id
+    const route = this.props.route
+    const restoreFile = this.props.restoreFile
+
+    event.preventDefault()
+    restoreFile(id, route)
+  }
+
+  render() {
+    const name = this.props.name
+
+    return (
+      <div className="modal">
+        <div className="modal-content">
+          <div className="modal-header">
+            <h3>RESTORE FILE</h3>
+          </div>
+          <div className="modal-body">
+            <p>Are you sure you want to restore <b>{name}</b> ?</p>
+          </div>
+          <div className="modal-footer">
+            <button onClick={this.handleCancel} className="button third-button">Cancel</button>
+            <button onClick={this.handleRestore} className="button main-button">Restore</button>
+          </div>
+        </div>
+      </div>
+    )
+  }
+}
+
+export class DetailsModal extends Component {
+  constructor(props) {
+    super(props)
+
+    this.handleClose = this.handleClose.bind(this)
+  }
+
+  handleClose(event) {
+    const hideModal = this.props.hideModal
+
+    event.preventDefault()
+    hideModal()
+  }
+
+  render() {
+    const file = this.props.file
+
+    return (
+      <div className="modal">
+        <div className="modal-content">
+          <div className="modal-header">
+            <h3>DETAILS</h3>
+          </div>
+          <div className="modal-body">
+            <label>Name<input type="text" value={file.name} readOnly/></label>
+            { file.id && <label>ID<input type="text" value={file.id} readOnly/></label> }
+            { file.key && <label>Key<input type="text" value={file.key} readOnly/></label> }
+            <label>Path<input type="text" value={file.path} readOnly/></label>
+            { file.size && <label>Size<input type="text" value={bytesToSize(file.size)} readOnly/></label> }
+            { file.removed_date && <label>Removed Date<input type="text" value={dateToUTC(file.removed_date)} readOnly/></label> }
+            { file.atime && <label>ATime<input type="text" value={dateToUTC(file.atime)} readOnly/></label> }
+            { file.mtime && <label>MTime<input type="text" value={dateToUTC(file.mtime)} readOnly/></label> }
+            { file.ctime && <label>CTime Date<input type="text" value={dateToUTC(file.ctime)} readOnly/></label> }
+            { file.read_trust_seed && <label>Read Trust Seed<input type="text" value={file.read_trust_seed} readOnly/></label> }
+            { file.write_trust_seed && <label>Write Trust Seed<input type="text" value={file.write_trust_seed} readOnly/></label> }
+          </div>
+          <div className="modal-footer">
+            <button onClick={this.handleClose} className="button third-button">Close</button>
+          </div>
+        </div>
+      </div>
+    )
+  }
+}
+
 const MODAL_COMPONENTS = Object.freeze({
   "renameModal": RenameModal,
   "createDirModal": CreateDirModal,
   "removeModal": RemoveModal,
+  "restoreModal": RestoreModal,
+  "detailsModal": DetailsModal
 })
 
 class Modals extends Component {

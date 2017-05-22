@@ -3,8 +3,9 @@ import * as types from './ActionTypes'
 
 describe('Socket Actions', () => {
   it('should create an action to connect', () => {
-    const expectedAction = { type: types.SOCKET_CONNECT }
-    expect(actions.socketConnect()).toEqual(expectedAction)
+    const cmd = 'list_dir'
+    const expectedAction = { type: types.SOCKET_CONNECT, cmd }
+    expect(actions.socketConnect(cmd)).toEqual(expectedAction)
   })
   it('should create an action to end', () => {
     const expectedAction = { type: types.SOCKET_END }

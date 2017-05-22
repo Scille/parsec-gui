@@ -8,6 +8,7 @@ import {
 } from 'react-router-dom'
 
 import PersonalFilesContainer from '../containers/PersonalFilesContainer'
+import DeletedFilesContainer from '../containers/DeletedFilesContainer'
 import { SocketError, NoMatchError } from './Errors.js'
 
 import './App.css'
@@ -36,8 +37,7 @@ const App = () => (
           {/* PersonalFiles component */}
           <Redirect from='/personal-files' to='/'/>
           {/* DeletedFiles component */}
-          {/* <Route path='/deleted-files' component={NoMatchError}/> */}
-          <Redirect from='/deleted-files' to='/404'/>
+          <Route path='/deleted-files' component={DeletedFilesContainer}/>
           {/* Parameters component */}
           {/* <Route path='/parameters' component={NoMatchError}/> */}
           <Redirect from='/parameters' to='/404'/>

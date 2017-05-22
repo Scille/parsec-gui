@@ -34,7 +34,6 @@ const mapStateToProps = (state) => {
       files: state.filesReducer,
       listView: state.viewSwitcherReducer,
       breadcrumb: state.breadcrumbReducer,
-      modal: state.modalReducer,
     }
   }
 }
@@ -42,7 +41,7 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     dispatch: {
-      init: () => dispatch(actionsCreators.socketConnect()),
+      init: () => dispatch(actionsCreators.socketConnect('list_dir')),
       end: () => {
         dispatch(actionsCreators.socketEnd())
         dispatch(actionsCreators.removePath(0))
@@ -66,8 +65,8 @@ const mapDispatchToProps = (dispatch) => {
             route === '/' ? route.concat(file.name) : route.concat('/', file.name),
             file
           ))
+          dispatch(actionsCreators.socketListDir(route))
         }
-        dispatch(actionsCreators.socketListDir(route))
       },
       renameFile: (route, name, newName) => {
         const actualRoute = route === '/' ? route.concat(name) : route.concat('/', name)
@@ -79,6 +78,7 @@ const mapDispatchToProps = (dispatch) => {
       deleteFile: (route, name) => {
         dispatch(actionsCreators.socketDeleteFile(route === '/' ? route.concat(name) : route.concat('/', name)))
         dispatch(actionsCreators.socketListDir(route))
+        dispatch(actionsCreators.hideModal())
       },
       createDir: (route, name) => {
         dispatch(actionsCreators.socketCreateDir(route === '/' ? route.concat(name) : route.concat('/', name)))
@@ -88,6 +88,7 @@ const mapDispatchToProps = (dispatch) => {
       removeDir: (route, name) => {
         dispatch(actionsCreators.socketRemoveDir(route === '/' ? route.concat(name) : route.concat('/', name)))
         dispatch(actionsCreators.socketListDir(route))
+        dispatch(actionsCreators.hideModal())
       },
       switchView: () => dispatch(actionsCreators.switchView()),
       showModal: (modalType, modalProps) => dispatch(actionsCreators.showModal(modalType, modalProps)),

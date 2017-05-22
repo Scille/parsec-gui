@@ -1,8 +1,8 @@
 import * as types from './ActionTypes'
 
 // SOCKET
-export const socketConnect = () => {
-  return { type: types.SOCKET_CONNECT }
+export const socketConnect = (cmd) => {
+  return { type: types.SOCKET_CONNECT, cmd }
 }
 export const socketEnd = () => {
   return { type: types.SOCKET_END }
@@ -10,8 +10,8 @@ export const socketEnd = () => {
 export const socketListDir = (route) => {
   return { type: types.SOCKET_LIST_DIR, route }
 }
-export const socketShowDustbin = (route) => {
-  return { type: types.SOCKET_SHOW_DUSTBIN, route }
+export const socketShowDustbin = () => {
+  return { type: types.SOCKET_SHOW_DUSTBIN }
 }
 export const socketCreateFile = (route, file) => {
   return { type: types.SOCKET_CREATE_FILE, route, file }
@@ -21,6 +21,9 @@ export const socketRenameFile = (actualRoute, newRoute) => {
 }
 export const socketDeleteFile = (route) => {
   return { type: types.SOCKET_DELETE_FILE, route }
+}
+export const socketRestoreFile = (id, route) => {
+  return { type: types.SOCKET_RESTORE_FILE, id, route }
 }
 export const socketCreateDir = (route) => {
   return { type: types.SOCKET_CREATE_DIR, route }

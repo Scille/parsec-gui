@@ -51,8 +51,8 @@ Done
   - Remove file
   - Remove directory
  - ViewSwitcher
-  - list view
-  - grid view
+  - List view
+  - Grid view
  - Unix Socket
   - SOCKET_CONNECT
   - SOCKET_END
@@ -73,7 +73,10 @@ Done
   - Remove file
   - Remove directory
 
-Todo: 26/05/2017
+Todo
+----
+
+26/05/2017
 **********************
 - Parsec-GUI
  - DeletedFiles
@@ -120,8 +123,8 @@ Todo: 26/05/2017
   - Remove file
   - Remove directory
  - ViewSwitcher
-  - list view
-  - grid view
+  - List view
+  - Grid view
  - Unix Socket
   - SOCKET_CONNECT
   - SOCKET_END
