@@ -19,6 +19,10 @@ describe('Socket Actions', () => {
     }
     expect(actions.socketListDir(route)).toEqual(expectedAction)
   })
+  it('should create an action to list deleted files', () => {
+    const expectedAction = { type: types.SOCKET_SHOW_DUSTBIN }
+    expect(actions.socketShowDustbin()).toEqual(expectedAction)
+  })
   it('should create an action to create file', () => {
     const route = '/file.txt'
     const file = {}
@@ -46,6 +50,26 @@ describe('Socket Actions', () => {
       route
     }
     expect(actions.socketDeleteFile(route)).toEqual(expectedAction)
+  })
+  it('should create an action to restore file', () => {
+    const id = 'file_id'
+    const route = './file.txt'
+    const expectedAction = {
+      type: types.SOCKET_RESTORE_FILE,
+      id,
+      route
+    }
+    expect(actions.socketRestoreFile(id, route)).toEqual(expectedAction)
+  })
+  it('should create an action to download file', () => {
+    const id = 'file_id'
+    const name = 'file.txt'
+    const expectedAction = {
+      type: types.SOCKET_DOWNLOAD_FILE,
+      id,
+      name
+    }
+    expect(actions.socketDownloadFile(id, name)).toEqual(expectedAction)
   })
   it('should create an action to create directory', () => {
     const route = '/directory'
