@@ -1,3 +1,4 @@
+import { saveAs } from '../common'
 import * as types from '../actions/ActionTypes'
 import * as actionsCreators from '../actions/ActionCreators'
 
@@ -11,9 +12,10 @@ const REQUESTS = Object.freeze({
   USER_MANIFEST_MAKE_DIR: 'USER_MANIFEST_MAKE_DIR',
   USER_MANIFEST_REMOVE_DIR: 'USER_MANIFEST_REMOVE_DIR',
   USER_MANIFEST_SHOW_DUSTBIN: 'USER_MANIFEST_SHOW_DUSTBIN',
-  USER_MANIFEST_RESTORE: 'USER_MANIFEST_RESTORE',
+  USER_MANIFEST_RESTORE_FILE: 'USER_MANIFEST_RESTORE_FILE',
   USER_MANIFEST_HISTORY: 'USER_MANIFEST_HISTORY',
-  FILE_STAT: 'FILE_STAT'
+  FILE_STAT: 'FILE_STAT',
+  DOWNLOAD_FILE: 'DOWNLOAD_FILE'
 })
 
 const socketMiddleware = (() => {
@@ -48,12 +50,18 @@ const socketMiddleware = (() => {
             }))
             store.dispatch(actionsCreators.refreshFiles(dustbin))
             break
+          case REQUESTS.DOWNLOAD_FILE:
+            const buffer = new Buffer(data.content, 'base64')
+            const blob = new Blob([buffer.toString()], { type: 'application/octet-binary' })
+            const url = window.URL.createObjectURL(blob)
+            saveAs(url, rest[0])
+            break
           case REQUESTS.FILE_STAT:
             store.dispatch(actionsCreators.updateFile(data))
             break
           case REQUESTS.USER_MANIFEST_CREATE_FILE:
           case REQUESTS.USER_MANIFEST_MAKE_DIR:
-          case REQUESTS.USER_MANIFEST_RESTORE:
+          case REQUESTS.USER_MANIFEST_RESTORE_FILE:
             ipcRenderer.send('add_file', rest[0])
             break
           case REQUESTS.USER_MANIFEST_RENAME_FILE:
@@ -117,7 +125,10 @@ const socketMiddleware = (() => {
         socket.write(`{"cmd": "user_manifest_delete_file", "request_id": "${REQUESTS.USER_MANIFEST_DELETE_FILE}:${action.route}", "path": "${action.route}"}\n`)
         break
       case types.SOCKET_RESTORE_FILE:
-        socket.write(`{"cmd": "user_manifest_restore", "request_id": "${REQUESTS.USER_MANIFEST_RESTORE}:${action.route}", "vlob": "${action.id}"}\n`)
+        socket.write(`{"cmd": "user_manifest_restore", "request_id": "${REQUESTS.USER_MANIFEST_RESTORE_FILE}:${action.route}", "vlob": "${action.id}"}\n`)
+        break
+      case types.SOCKET_DOWNLOAD_FILE:
+        socket.write(`{"cmd": "file_read", "request_id": "${REQUESTS.DOWNLOAD_FILE}:${action.name}", "id": "${action.id}"}\n`)
         break
       case types.SOCKET_CREATE_DIR:
         socket.write(`{"cmd": "user_manifest_make_dir", "request_id": "${REQUESTS.USER_MANIFEST_MAKE_DIR}:${action.route}", "path": "${action.route}"}\n`)

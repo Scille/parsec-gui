@@ -25,6 +25,9 @@ export const socketDeleteFile = (route) => {
 export const socketRestoreFile = (id, route) => {
   return { type: types.SOCKET_RESTORE_FILE, id, route }
 }
+export const socketDownloadFile = (id, name) => {
+  return { type: types.SOCKET_DOWNLOAD_FILE, id, name }
+}
 export const socketCreateDir = (route) => {
   return { type: types.SOCKET_CREATE_DIR, route }
 }

@@ -253,7 +253,7 @@ export class DetailsModal extends Component {
             { file.removed_date && <label>Removed Date<input type="text" value={dateToUTC(file.removed_date)} readOnly/></label> }
             { file.atime && <label>ATime<input type="text" value={dateToUTC(file.atime)} readOnly/></label> }
             { file.mtime && <label>MTime<input type="text" value={dateToUTC(file.mtime)} readOnly/></label> }
-            { file.ctime && <label>CTime Date<input type="text" value={dateToUTC(file.ctime)} readOnly/></label> }
+            { file.ctime && <label>CTime<input type="text" value={dateToUTC(file.ctime)} readOnly/></label> }
             { file.read_trust_seed && <label>Read Trust Seed<input type="text" value={file.read_trust_seed} readOnly/></label> }
             { file.write_trust_seed && <label>Write Trust Seed<input type="text" value={file.write_trust_seed} readOnly/></label> }
           </div>

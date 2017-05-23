@@ -79,6 +79,8 @@ Todo
 26/05/2017
 **********************
 - Parsec-GUI
+ - PersonalFiles
+  - Download File
  - DeletedFiles
   - Connect to unix socket
   - Redirection -> NoSocket Page
@@ -91,6 +93,7 @@ Todo
  - Unix Socket
   - USER_MANIFEST_SHOW_DUSTBIN
   - USER_MANIFEST_RESTORE
+  - FILE_READ
  - Notifications
   - Restore file
 

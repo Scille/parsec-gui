@@ -10,3 +10,12 @@ export const bytesToSize = (bytes=0) => {
 export const dateToUTC = (date) => {
   return new Date(date.toFixed(0) * 1000).toUTCString()
 }
+
+export const saveAs = (url, filename) => {
+  let link = document.createElement('a')
+  document.body.appendChild(link)
+  link.setAttribute('href', url)
+  link.setAttribute('download', filename)
+  link.click()
+  document.body.removeChild(link)
+}
