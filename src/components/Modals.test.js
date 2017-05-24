@@ -2,6 +2,7 @@ import React from 'react'
 import { shallow } from 'enzyme'
 import sinon from 'sinon'
 
+import { bytesToSize, dateToUTC } from '../common'
 import Modals, {
   RenameModal,
   CreateDirModal,
@@ -229,6 +230,56 @@ describe('Modals components', () => {
       enzymeWrapper.find('.main-button').simulate('click', { preventDefault: () => {} })
       expect(handleRestore.calledOnce)
       expect(props.restoreFile.mock.calls.length).toBe(1)
+    })
+  })
+
+  describe('DetailsModal', () => {
+    const setup = () => {
+      const props = {
+        file: {
+          id: 'file_id',
+          name: 'file.txt',
+          key: 'file_key',
+          path: '/file.txt',
+          size: 1024,
+          removed_date: 1483228800,
+          atime: 1483228800,
+          mtime: 1483228800,
+          ctime: 1483228800,
+          read_trust_seed: 'read_trust_seed',
+          write_trust_seed: 'write_trust_seed',
+        },
+        hideModal: jest.fn()
+      }
+      const enzymeWrapper = shallow(<DetailsModal {...props} />)
+      return { props, enzymeWrapper }
+    }
+
+    it('should render self', () => {
+      const { enzymeWrapper, props } = setup()
+
+      expect(enzymeWrapper.find('h3').text()).toBe('DETAILS')
+      expect(enzymeWrapper.findWhere(n => n.text() === 'Name').find('input').props().value).toBe(props.file.name)
+      expect(enzymeWrapper.findWhere(n => n.text() === 'ID').find('input').props().value).toBe(props.file.id)
+      expect(enzymeWrapper.findWhere(n => n.text() === 'Key').find('input').props().value).toBe(props.file.key)
+      expect(enzymeWrapper.findWhere(n => n.text() === 'Path').find('input').props().value).toBe(props.file.path)
+      expect(enzymeWrapper.findWhere(n => n.text() === 'Size').find('input').props().value).toBe(bytesToSize(props.file.size))
+      expect(enzymeWrapper.findWhere(n => n.text() === 'Removed Date').find('input').props().value).toBe(dateToUTC(props.file.removed_date))
+      expect(enzymeWrapper.findWhere(n => n.text() === 'ATime').find('input').props().value).toBe(dateToUTC(props.file.atime))
+      expect(enzymeWrapper.findWhere(n => n.text() === 'MTime').find('input').props().value).toBe(dateToUTC(props.file.mtime))
+      expect(enzymeWrapper.findWhere(n => n.text() === 'CTime').find('input').props().value).toBe(dateToUTC(props.file.ctime))
+      expect(enzymeWrapper.findWhere(n => n.text() === 'Read Trust Seed').find('input').props().value).toBe(props.file.read_trust_seed)
+      expect(enzymeWrapper.findWhere(n => n.text() === 'Write Trust Seed').find('input').props().value).toBe(props.file.write_trust_seed)
+      expect(enzymeWrapper.find('.third-button').exists()).toBe(true)
+    })
+
+    it('close button should call hideModal() when clicked', () => {
+      const { enzymeWrapper, props } = setup()
+      const handleClose = sinon.spy(DetailsModal.prototype, 'handleClose')
+
+      enzymeWrapper.find('.third-button').simulate('click', { preventDefault: () => {} })
+      expect(handleClose.calledOnce)
+      expect(props.hideModal.mock.calls.length).toBe(1)
     })
   })
 })
