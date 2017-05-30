@@ -5,6 +5,7 @@
   "dependencies": {
     "node-notifier": "^5.1.2",
     "prop-types": "^15.5.8",
+    "q": "^1.5.0",
     "react": "^15.5.4",
     "react-dom": "^15.5.4",
     "react-redux": "^5.0.4",

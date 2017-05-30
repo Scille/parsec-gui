@@ -9,4 +9,4 @@ const viewSwitcherReducer = (state=false, action) => {
   }
 }
 
-export default viewSwitcherReducer;
+export default viewSwitcherReducer

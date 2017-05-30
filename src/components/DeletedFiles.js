@@ -10,10 +10,6 @@ class DeletedFiles extends Component {
     this.props.dispatch.init()
   }
 
-  componentWillUnmount() {
-    this.props.dispatch.end()
-  }
-
   render() {
     const files = this.props.state.files
     const listView = this.props.state.listView
@@ -28,6 +24,7 @@ class DeletedFiles extends Component {
       const detailsModal = { file, hideModal }
       const restoreModal = {
         id: file.id,
+        guid: file.guid,
         name: file.name,
         route: file.route,
         restoreFile,

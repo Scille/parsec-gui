@@ -24,7 +24,7 @@ Tools
 Done
 ----
 - Parsec-GUI
- - Coverage [29%]
+ - Coverage [33%]
  - PersonalFiles
   - Connect to unix socket
   - Redirection -> NoSocket Page
@@ -36,12 +36,19 @@ Done
   - Rename directory
   - Remove file
   - Remove directory
+  - Download file
+ - DeletedFiles
+  - Connect to unix socket
+  - Redirection -> NoSocket Page
+  - List deleted files
+  - Restore file
  - Error pages
   - NoSocket
   - NotFound
  - Routes
   - */* -> PersonalFiles
   - */personal-files* -> PersonalFiles
+  - */deleted-files* -> DeletedFiles
   - */socket-error* -> NoSocket
   - */404* -> NotFound
  - Modals
@@ -50,6 +57,7 @@ Done
   - Rename directory
   - Remove file
   - Remove directory
+  - Restore file
  - ViewSwitcher
   - List view
   - Grid view
@@ -64,6 +72,9 @@ Done
   - USER_MANIFEST_LIST_DIR
   - USER_MANIFEST_MAKE_DIR
   - USER_MANIFEST_REMOVE_DIR
+  - USER_MANIFEST_SHOW_DUSTBIN
+  - USER_MANIFEST_RESTORE
+  - FILE_READ
   - FILE_STAT
  - Notifications
   - Add file
@@ -72,9 +83,32 @@ Done
   - Rename directory
   - Remove file
   - Remove directory
+  - Restore file
 
 Todo
 ----
+
+02/06/2017
+**********************
+- Parsec-GUI
+ - History
+  - Connect to unix socket
+  - Redirection -> NoSocket Page
+  - Show history
+  - Restore history
+ - Routes
+  - */history* -> History
+ - Modals
+  - Restore history
+ - Unix Socket
+  - USER_MANIFEST_HISTORY
+  - USER_MANIFEST_RESTORE
+ - Notifications
+  - Restore history
+ - API
+  - Remove custom middlewares + use thunk with custom API
+  - Notify api
+  - socket api
 
 26/05/2017
 **********************

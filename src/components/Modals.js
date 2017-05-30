@@ -30,13 +30,14 @@ export class RenameModal extends Component {
   }
 
   handleSubmit(event) {
+    const guid = this.props.guid
     const path = this.props.path
     const name = this.props.name
     const newName = this.state.newName
     const renameFile = this.props.renameFile
 
     event.preventDefault()
-    renameFile(path, name, newName)
+    renameFile(guid, path, name, newName)
   }
 
   render() {
@@ -144,12 +145,13 @@ export class RemoveModal extends Component {
   }
 
   handleDelete(event) {
+    const guid = this.props.guid
     const path = this.props.path
     const name = this.props.name
     const removeFunc = this.props.removeFunc
 
     event.preventDefault()
-    removeFunc(path, name)
+    removeFunc(guid, path, name)
   }
 
   render() {
@@ -192,11 +194,12 @@ export class RestoreModal extends Component {
 
   handleRestore(event) {
     const id = this.props.id
+    const guid = this.props.guid
     const route = this.props.route
     const restoreFile = this.props.restoreFile
 
     event.preventDefault()
-    restoreFile(id, route)
+    restoreFile(id, guid, route)
   }
 
   render() {

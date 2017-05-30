@@ -12,7 +12,6 @@ DeletedFiles.propTypes = {
   }),
   dispatch: PropTypes.shape({
     init: PropTypes.func.isRequired,
-    end: PropTypes.func.isRequired,
     refresh: PropTypes.func.isRequired,
     restoreFile: PropTypes.func.isRequired,
     switchView: PropTypes.func.isRequired,
@@ -33,11 +32,10 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     dispatch: {
-      init: () => dispatch(actionsCreators.socketConnect('show_dustbin')),
-      end: () =>  dispatch(actionsCreators.socketEnd()),
+      init: () => dispatch(actionsCreators.socketShowDustbin()),
       refresh: () => dispatch(actionsCreators.socketShowDustbin()),
-      restoreFile: (id, name) => {
-        dispatch(actionsCreators.socketRestoreFile(id, name))
+      restoreFile: (guid, name) => {
+        dispatch(actionsCreators.socketRestoreFile(guid, name))
         dispatch(actionsCreators.socketShowDustbin())
         dispatch(actionsCreators.hideModal())
       },

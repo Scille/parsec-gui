@@ -10,6 +10,7 @@ PersonalFiles.propTypes = {
     files: PropTypes.array.isRequired,
     listView: PropTypes.bool.isRequired,
     breadcrumb: PropTypes.array.isRequired,
+    loading: PropTypes.bool.isRequired,
   }),
   dispatch: PropTypes.shape({
     init: PropTypes.func.isRequired,
@@ -35,6 +36,7 @@ const mapStateToProps = (state) => {
       files: state.filesReducer,
       listView: state.viewSwitcherReducer,
       breadcrumb: state.breadcrumbReducer,
+      loading: state.socketReducer,
     }
   }
 }
@@ -42,11 +44,8 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     dispatch: {
-      init: () => dispatch(actionsCreators.socketConnect('list_dir')),
-      end: () => {
-        dispatch(actionsCreators.socketEnd())
-        dispatch(actionsCreators.removePath(0))
-      },
+      init: () => dispatch(actionsCreators.socketListDir('/')),
+      end: () => dispatch(actionsCreators.removePath(0)),
       moveTo: (route, name) => {
         const path = {
           route: route === '/' ? route.concat(name) : route.concat('/', name),
@@ -60,38 +59,31 @@ const mapDispatchToProps = (dispatch) => {
         dispatch(actionsCreators.removePath(index))
       },
       refresh: (route) => dispatch(actionsCreators.socketListDir(route)),
-      createFiles: (route, files=[], result) => {
+      createFiles: (route, files={}) => {
         for(const file of files) {
           dispatch(actionsCreators.socketCreateFile(
             route === '/' ? route.concat(file.name) : route.concat('/', file.name),
             file
           ))
-          dispatch(actionsCreators.socketListDir(route))
         }
       },
-      renameFile: (route, name, newName) => {
-        const actualRoute = route === '/' ? route.concat(name) : route.concat('/', name)
-        const newRoute = route === '/' ? route.concat(newName) : route.concat('/', newName)
-        dispatch(actionsCreators.socketRenameFile(actualRoute, newRoute))
-        dispatch(actionsCreators.socketListDir(route))
+      renameFile: (guid, route, name, newName) => {
+        dispatch(actionsCreators.socketRenameFile(guid, route, name, newName))
         dispatch(actionsCreators.hideModal())
       },
-      deleteFile: (route, name) => {
-        dispatch(actionsCreators.socketDeleteFile(route === '/' ? route.concat(name) : route.concat('/', name)))
-        dispatch(actionsCreators.socketListDir(route))
+      deleteFile: (guid, route, name) => {
+        dispatch(actionsCreators.socketDeleteFile(guid, route === '/' ? route.concat(name) : route.concat('/', name)))
         dispatch(actionsCreators.hideModal())
       },
       downloadFile: (id, name) => {
         dispatch(actionsCreators.socketDownloadFile(id, name))
       },
       createDir: (route, name) => {
-        dispatch(actionsCreators.socketCreateDir(route === '/' ? route.concat(name) : route.concat('/', name)))
-        dispatch(actionsCreators.socketListDir(route))
+        dispatch(actionsCreators.socketCreateDir(route, name))
         dispatch(actionsCreators.hideModal())
       },
-      removeDir: (route, name) => {
-        dispatch(actionsCreators.socketRemoveDir(route === '/' ? route.concat(name) : route.concat('/', name)))
-        dispatch(actionsCreators.socketListDir(route))
+      removeDir: (guid, route, name) => {
+        dispatch(actionsCreators.socketRemoveDir(guid, route === '/' ? route.concat(name) : route.concat('/', name)))
         dispatch(actionsCreators.hideModal())
       },
       switchView: () => dispatch(actionsCreators.switchView()),

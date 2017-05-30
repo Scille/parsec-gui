@@ -18,6 +18,7 @@ class PersonalFiles extends Component {
   render() {
     const files = this.props.state.files
     const listView = this.props.state.listView
+    const loading = this.props.state.loading
     const breadcrumb = this.props.state.breadcrumb
     const path = breadcrumb[breadcrumb.length -1].route
 
@@ -37,11 +38,12 @@ class PersonalFiles extends Component {
     const createDirModal = { path, createDir, hideModal }
 
     const listFiles = files.map((file, i) => {
-      const icon = file['id'] !== null? 'fa fa-file-o' : 'fa fa-folder-o'
+      const icon = file.id !== null? 'fa fa-file-o' : 'fa fa-folder-o'
       const detailsModal = { file, hideModal }
-      const renameModal = { path, name: file.name, renameFile, hideModal }
+      const renameModal = { path, guid: file.guid, name: file.name, renameFile, hideModal }
       const removeModal = {
         path,
+        guid: file.guid,
         name: file.name,
         title: file.id !== null? 'DELETE FILE' : 'DELETE DIRECTORY',
         removeFunc: file.id !== null? deleteFile : removeDir,
@@ -99,7 +101,7 @@ class PersonalFiles extends Component {
       	</div>
         <div className={listView ? 'file-view grid-view' : 'file-view list-view'}>
           <ul>
-            { listFiles }
+            { loading ? <div id="loader-wrapper"><div id="loader"></div></div> : listFiles }
           </ul>
         </div>
 

@@ -1,4 +1,9 @@
-import { bytesToSize, dateToUTC, saveAs } from '.'
+import {
+  bytesToSize,
+  dateToUTC,
+  saveAs,
+  guid
+} from '.'
 
 describe('Common Functions', () => {
   describe('bytesToSize', () => {
@@ -28,6 +33,12 @@ describe('Common Functions', () => {
   describe('dateToUTC', () => {
     it('converting unix timestamp to human readable date', () => {
       expect(dateToUTC(1483228800)).toEqual('Sun, 01 Jan 2017 00:00:00 GMT')
+    })
+  })
+
+  describe('dateToUTC', () => {
+    it('generate a globally-unique identifiers', () => {
+      expect(guid()).not.toEqual(guid())
     })
   })
 })

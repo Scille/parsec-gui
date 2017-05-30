@@ -1,15 +1,17 @@
 import { combineReducers } from 'redux'
 
-import filesReducer from './filesReducer'
-import viewSwitcherReducer from './viewSwitcherReducer'
-import modalReducer from './modalReducer'
 import breadcrumbReducer from './breadcrumbReducer'
+import filesReducer from './filesReducer'
+import modalReducer from './modalReducer'
+import socketReducer from './socketReducer'
+import viewSwitcherReducer from './viewSwitcherReducer'
 
 const allReducers = combineReducers({
-  filesReducer,
-  viewSwitcherReducer,
-  modalReducer,
   breadcrumbReducer,
+  filesReducer,
+  modalReducer,
+  socketReducer,
+  viewSwitcherReducer
 })
 
 export default allReducers
