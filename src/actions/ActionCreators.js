@@ -1,7 +1,7 @@
 import { saveAs, guid } from '../common'
 import * as types from './ActionTypes'
 import SocketApi from '../api/socketApi'
-import notifyApi from '../api/notifyApi'
+import NotifyApi from '../api/notifyApi'
 
 
 // VIEW
@@ -82,7 +82,7 @@ export const socketListDir = (route) => {
         dispatch(socketWriteSuccess())
       })
       .catch((error) => {
-        notifyApi.notify('Error', error.label)
+        NotifyApi.notify('Error', error.label)
         dispatch(socketWriteFailure())
       })
   }
@@ -103,7 +103,7 @@ export const socketShowDustbin = () => {
         dispatch(socketWriteSuccess())
       })
       .catch((error) => {
-        notifyApi.notify('Error', error.label)
+        NotifyApi.notify('Error', error.label)
         dispatch(socketWriteFailure())
       })
   }
@@ -123,7 +123,7 @@ export const socketCreateFile = (route, fileR) => {
       return SocketApi.write(cmd)
         .then((data) => {
           file = Object.assign(file, data)
-          notifyApi.notify('Create', `'${route}' was added in your PARSEC forlder.`)
+          NotifyApi.notify('Create', `'${route}' was added in your PARSEC forlder.`)
           return SocketApi.write(`{"cmd": "file_stat", "id": "${data.id}"}\n`)
         })
         .then((data) => {
@@ -132,7 +132,7 @@ export const socketCreateFile = (route, fileR) => {
           dispatch(socketWriteSuccess())
         })
         .catch((error) => {
-          notifyApi.notify('Error', error.label)
+          NotifyApi.notify('Error', error.label)
           dispatch(socketWriteFailure())
         })
     }
@@ -152,12 +152,12 @@ export const socketRenameFile = (guid, route, name, newName) => {
           name: newName,
           path: newRoute
         }
-        notifyApi.notify('Update', `'${actualRoute}' is renamed to '${newRoute}'.`)
+        NotifyApi.notify('Update', `'${actualRoute}' is renamed to '${newRoute}'.`)
         dispatch(updateFileSuccess(file))
         dispatch(socketWriteSuccess())
       })
       .catch((error) => {
-        notifyApi.notify('Error', error.label)
+        NotifyApi.notify('Error', error.label)
         dispatch(socketWriteFailure())
       })
   }
@@ -169,12 +169,12 @@ export const socketDeleteFile = (guid, route) => {
     return SocketApi.write(cmd)
       .then((data) => {
         const file = { guid }
-        notifyApi.notify('Delete', `'${route}' was removed from your PARSEC forlder.`)
+        NotifyApi.notify('Delete', `'${route}' was removed from your PARSEC forlder.`)
         dispatch(deleteFileSuccess(file))
         dispatch(socketWriteSuccess())
       })
       .catch((error) => {
-        notifyApi.notify('Error', error.label)
+        NotifyApi.notify('Error', error.label)
         dispatch(socketWriteFailure())
       })
   }
@@ -186,12 +186,12 @@ export const socketRestoreFile = (id, guid, route) => {
     return SocketApi.write(cmd)
       .then((data) => {
         const file = { guid }
-        notifyApi.notify('Restore', `'${route}' was added in your PARSEC forlder.`)
+        NotifyApi.notify('Restore', `'${route}' was added in your PARSEC forlder.`)
         dispatch(deleteFileSuccess(file))
         dispatch(socketWriteSuccess())
       })
       .catch((error) => {
-        notifyApi.notify('Error', error.label)
+        NotifyApi.notify('Error', error.label)
         dispatch(socketWriteFailure())
       })
   }
@@ -207,7 +207,7 @@ export const socketDownloadFile = (id, name) => {
         saveAs(url, name)
       })
       .catch((error) => {
-        notifyApi.notify('Error', error.label)
+        NotifyApi.notify('Error', error.label)
       })
   }
 }
@@ -223,12 +223,12 @@ export const socketCreateDir = (route, name) => {
           guid: guid(),
           path: newRoute
         }
-        notifyApi.notify('Create', `'${newRoute}' was added in your PARSEC forlder.`)
+        NotifyApi.notify('Create', `'${newRoute}' was added in your PARSEC forlder.`)
         dispatch(addFileSuccess(file))
         dispatch(socketWriteSuccess())
       })
       .catch((error) => {
-        notifyApi.notify('Error', error.label)
+        NotifyApi.notify('Error', error.label)
         dispatch(socketWriteFailure())
       })
   }
@@ -240,12 +240,12 @@ export const socketRemoveDir = (guid, route) => {
     return SocketApi.write(cmd)
       .then((data) => {
         const file = { guid }
-        notifyApi.notify('Delete', `'${route}' was removed from your PARSEC forlder.`)
+        NotifyApi.notify('Delete', `'${route}' was removed from your PARSEC forlder.`)
         dispatch(deleteFileSuccess(file))
         dispatch(socketWriteSuccess())
       })
       .catch((error) => {
-        notifyApi.notify('Error', error.label)
+        NotifyApi.notify('Error', error.label)
         dispatch(socketWriteFailure())
       })
   }

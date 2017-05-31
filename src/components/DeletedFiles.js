@@ -13,6 +13,7 @@ class DeletedFiles extends Component {
   render() {
     const files = this.props.state.files
     const listView = this.props.state.listView
+    const loading = this.props.state.loading
 
     const refresh = this.props.dispatch.refresh
     const restoreFile = this.props.dispatch.restoreFile
@@ -72,6 +73,7 @@ class DeletedFiles extends Component {
           </div>
       	</div>
         <div className={listView ? 'file-view grid-view' : 'file-view list-view'}>
+          { loading && <div id="loader-wrapper"><div id="loader"></div></div> }
           <ul>
             { listFiles }
           </ul>

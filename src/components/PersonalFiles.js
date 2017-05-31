@@ -100,8 +100,9 @@ class PersonalFiles extends Component {
           </div>
       	</div>
         <div className={listView ? 'file-view grid-view' : 'file-view list-view'}>
+          { loading && <div id="loader-wrapper"><div id="loader"></div></div> }
           <ul>
-            { loading ? <div id="loader-wrapper"><div id="loader"></div></div> : listFiles }
+            { listFiles }
           </ul>
         </div>
 
