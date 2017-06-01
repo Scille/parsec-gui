@@ -1,5 +1,3 @@
-import NotifyApi from './notifyApi'
-
 class FileReaderApi {
   static read(fileR) {
     return new Promise((resolve, reject) => {
