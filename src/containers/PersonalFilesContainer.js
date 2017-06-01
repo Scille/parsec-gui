@@ -67,23 +67,23 @@ const mapDispatchToProps = (dispatch) => {
           ))
         }
       },
-      renameFile: (guid, route, name, newName) => {
-        dispatch(actionsCreators.socketRenameFile(guid, route, name, newName))
+      renameFile: (file, name) => {
+        dispatch(actionsCreators.socketRenameFile(file, name))
         dispatch(actionsCreators.hideModal())
       },
-      deleteFile: (guid, route, name) => {
-        dispatch(actionsCreators.socketDeleteFile(guid, route === '/' ? route.concat(name) : route.concat('/', name)))
+      deleteFile: (file) => {
+        dispatch(actionsCreators.socketDeleteFile(file))
         dispatch(actionsCreators.hideModal())
       },
-      downloadFile: (id, name) => {
-        dispatch(actionsCreators.socketDownloadFile(id, name))
+      downloadFile: (file) => {
+        dispatch(actionsCreators.socketDownloadFile(file))
       },
       createDir: (route, name) => {
         dispatch(actionsCreators.socketCreateDir(route, name))
         dispatch(actionsCreators.hideModal())
       },
-      removeDir: (guid, route, name) => {
-        dispatch(actionsCreators.socketRemoveDir(guid, route === '/' ? route.concat(name) : route.concat('/', name)))
+      removeDir: (dir) => {
+        dispatch(actionsCreators.socketRemoveDir(dir))
         dispatch(actionsCreators.hideModal())
       },
       switchView: () => dispatch(actionsCreators.switchView()),

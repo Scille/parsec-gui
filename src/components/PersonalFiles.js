@@ -40,11 +40,9 @@ class PersonalFiles extends Component {
     const listFiles = files.map((file, i) => {
       const icon = file.id !== null? 'fa fa-file-o' : 'fa fa-folder-o'
       const detailsModal = { file, hideModal }
-      const renameModal = { path, guid: file.guid, name: file.name, renameFile, hideModal }
+      const renameModal = { file, renameFile, hideModal }
       const removeModal = {
-        path,
-        guid: file.guid,
-        name: file.name,
+        file,
         title: file.id !== null? 'DELETE FILE' : 'DELETE DIRECTORY',
         removeFunc: file.id !== null? deleteFile : removeDir,
         hideModal

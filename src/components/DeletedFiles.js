@@ -23,14 +23,7 @@ class DeletedFiles extends Component {
 
     const listFiles = files.map((file, i) => {
       const detailsModal = { file, hideModal }
-      const restoreModal = {
-        id: file.id,
-        guid: file.guid,
-        name: file.name,
-        route: file.route,
-        restoreFile,
-        hideModal
-      }
+      const restoreModal = { file, restoreFile, hideModal }
       return (
         <li key={i}>
           <a>

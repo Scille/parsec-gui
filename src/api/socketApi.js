@@ -25,10 +25,11 @@ class SocketApi {
 
   static write(cmd) {
     return new Promise((resolve, reject) => {
-      this._socket.write(cmd, 'utf8')
-      this._socket.once("data", (data) => {
-        data = JSON.parse(data)
-        data.status === 'ok' ? resolve(data) : reject(data)
+      this._socket.write(cmd, 'utf8', () => {
+        this._socket.once("data", (data) => {
+          data = JSON.parse(data)
+          data.status === 'ok' ? resolve(data) : reject(data)
+        })
       })
     })
   }

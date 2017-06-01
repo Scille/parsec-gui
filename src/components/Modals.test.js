@@ -12,6 +12,20 @@ import Modals, {
 } from './Modals'
 
 describe('Modals components', () => {
+  const file = {
+    id: 'a5a394e27c184854b22a59b658aae61c',
+    name: 'file.txt',
+    key: 'lbR/4r6T7bWHbNBjwuJ17Qa4aJjIvvD6x3JkXruN3ug=\n',
+    path: '/file.txt',
+    size: 5,
+    removed_date: 1496319612.273644,
+    atime: 1496317138.262896,
+    ctime: 1496317138.262896,
+    mtime: 1496317138.262896,
+    write_trust_seed: '1L6H3PIC5RUY',
+    read_trust_seed: 'CHJHVATQJF9V'
+  }
+
   describe('Modals', () => {
     it('should render RenameModal', () => {
       const props = { modalType: 'renameModal' }
@@ -59,6 +73,7 @@ describe('Modals components', () => {
   describe('RenameModal', () => {
     const setup = () => {
       const props = {
+        file,
         renameFile: jest.fn(),
         hideModal: jest.fn()
       }
@@ -155,8 +170,8 @@ describe('Modals components', () => {
   describe('RemoveModal', () => {
     const setup = () => {
       const props = {
+        file,
         title: 'REMOVE FILE',
-        name: 'file.txt',
         removeFunc: jest.fn(),
         hideModal: jest.fn()
       }
@@ -168,7 +183,7 @@ describe('Modals components', () => {
       const { enzymeWrapper, props } = setup()
 
       expect(enzymeWrapper.find('h3').text()).toBe(props.title)
-      expect(enzymeWrapper.find('p').text()).toBe(`Are you sure you want to delete ${props.name} ?`)
+      expect(enzymeWrapper.find('p').text()).toBe(`Are you sure you want to delete ${props.file.name} ?`)
       expect(enzymeWrapper.find('.third-button').exists()).toBe(true)
       expect(enzymeWrapper.find('.main-button').exists()).toBe(true)
     })
@@ -195,9 +210,7 @@ describe('Modals components', () => {
   describe('RestoreModal', () => {
     const setup = () => {
       const props = {
-        id: 'file_id',
-        name: 'file.txt',
-        route: '/file.txt',
+        file,
         restoreFile: jest.fn(),
         hideModal: jest.fn()
       }
@@ -209,7 +222,7 @@ describe('Modals components', () => {
       const { enzymeWrapper, props } = setup()
 
       expect(enzymeWrapper.find('h3').text()).toBe('RESTORE FILE')
-      expect(enzymeWrapper.find('p').text()).toBe(`Are you sure you want to restore ${props.name} ?`)
+      expect(enzymeWrapper.find('p').text()).toBe(`Are you sure you want to restore ${props.file.name} ?`)
       expect(enzymeWrapper.find('.third-button').exists()).toBe(true)
       expect(enzymeWrapper.find('.main-button').exists()).toBe(true)
     })
@@ -236,19 +249,7 @@ describe('Modals components', () => {
   describe('DetailsModal', () => {
     const setup = () => {
       const props = {
-        file: {
-          id: 'file_id',
-          name: 'file.txt',
-          key: 'file_key',
-          path: '/file.txt',
-          size: 1024,
-          removed_date: 1483228800,
-          atime: 1483228800,
-          mtime: 1483228800,
-          ctime: 1483228800,
-          read_trust_seed: 'read_trust_seed',
-          write_trust_seed: 'write_trust_seed',
-        },
+        file,
         hideModal: jest.fn()
       }
       const enzymeWrapper = shallow(<DetailsModal {...props} />)

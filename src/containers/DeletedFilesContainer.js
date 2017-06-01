@@ -36,8 +36,8 @@ const mapDispatchToProps = (dispatch) => {
     dispatch: {
       init: () => dispatch(actionsCreators.socketShowDustbin()),
       refresh: () => dispatch(actionsCreators.socketShowDustbin()),
-      restoreFile: (guid, name) => {
-        dispatch(actionsCreators.socketRestoreFile(guid, name))
+      restoreFile: (file) => {
+        dispatch(actionsCreators.socketRestoreFile(file))
         dispatch(actionsCreators.socketShowDustbin())
         dispatch(actionsCreators.hideModal())
       },

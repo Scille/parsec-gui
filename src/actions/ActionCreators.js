@@ -1,8 +1,8 @@
 import { saveAs, guid } from '../common'
 import * as types from './ActionTypes'
-import SocketApi from '../api/socketApi'
+import FileReaderApi from '../api/fileReaderApi'
 import NotifyApi from '../api/notifyApi'
-
+import SocketApi from '../api/socketApi'
 
 // VIEW
 export const switchView = () => {
@@ -111,48 +111,45 @@ export const socketShowDustbin = () => {
 export const socketCreateFile = (route, fileR) => {
   return (dispatch) => {
     dispatch(socketWrite())
-    const reader = new FileReader()
     let file = {
       name: fileR.name,
       guid: guid(),
       path: route
     }
-    reader.readAsDataURL(fileR)
-    reader.onload = () => {
-      const cmd = `{"cmd": "user_manifest_create_file", "path": "${route}", "content": "${reader.result.split(',')[1]}"}\n`
-      return SocketApi.write(cmd)
-        .then((data) => {
-          file = Object.assign(file, data)
-          NotifyApi.notify('Create', `'${route}' was added in your PARSEC forlder.`)
-          return SocketApi.write(`{"cmd": "file_stat", "id": "${data.id}"}\n`)
-        })
-        .then((data) => {
-          file = Object.assign(file, data)
-          dispatch(addFileSuccess(file))
-          dispatch(socketWriteSuccess())
-        })
-        .catch((error) => {
-          NotifyApi.notify('Error', error.label)
-          dispatch(socketWriteFailure())
-        })
-    }
-    reader.onerror = (evt) => alert("Error reading file")
+    return FileReaderApi.read(fileR)
+      .then((data) => {
+        const cmd = `{"cmd": "user_manifest_create_file", "path": "${route}", "content": "${data}"}\n`
+        return SocketApi.write(cmd)
+      })
+      .then((data) => {
+        file = Object.assign(file, data)
+        NotifyApi.notify('Create', `'${route}' was added in your PARSEC forlder.`)
+        return SocketApi.write(`{"cmd": "file_stat", "id": "${data.id}"}\n`)
+      })
+      .then((data) => {
+        file = Object.assign(file, data)
+        dispatch(addFileSuccess(file))
+        dispatch(socketWriteSuccess())
+      })
+      .catch((error) => {
+        NotifyApi.notify('Error', error.label)
+        dispatch(socketWriteFailure())
+      })
   }
 }
-export const socketRenameFile = (guid, route, name, newName) => {
-  const actualRoute = route === '/' ? route.concat(name) : route.concat('/', name)
-  const newRoute = route === '/' ? route.concat(newName) : route.concat('/', newName)
-  const cmd = `{"cmd": "user_manifest_rename_file", "old_path": "${actualRoute}", "new_path": "${newRoute}"}\n`
+export const socketRenameFile = (file, name) => {
+  const path = file.path.replace(new RegExp(`${file.name}$`, 'g'), name)
+  const cmd = `{"cmd": "user_manifest_rename_file", "old_path": "${file.path}", "new_path": "${path}"}\n`
   return (dispatch) => {
     dispatch(socketWrite())
     return SocketApi.write(cmd)
       .then((data) => {
-        const file = {
-          guid,
-          name: newName,
-          path: newRoute
+        NotifyApi.notify('Update', `'${file.path}' is renamed to '${path}'.`)
+        file = {
+          ...file,
+          name,
+          path
         }
-        NotifyApi.notify('Update', `'${actualRoute}' is renamed to '${newRoute}'.`)
         dispatch(updateFileSuccess(file))
         dispatch(socketWriteSuccess())
       })
@@ -162,14 +159,13 @@ export const socketRenameFile = (guid, route, name, newName) => {
       })
   }
 }
-export const socketDeleteFile = (guid, route) => {
-  const cmd = `{"cmd": "user_manifest_delete_file", "path": "${route}"}\n`
+export const socketDeleteFile = (file) => {
+  const cmd = `{"cmd": "user_manifest_delete_file", "path": "${file.path}"}\n`
   return (dispatch) => {
     dispatch(socketWrite())
     return SocketApi.write(cmd)
       .then((data) => {
-        const file = { guid }
-        NotifyApi.notify('Delete', `'${route}' was removed from your PARSEC forlder.`)
+        NotifyApi.notify('Delete', `'${file.path}' was removed from your PARSEC forlder.`)
         dispatch(deleteFileSuccess(file))
         dispatch(socketWriteSuccess())
       })
@@ -179,14 +175,13 @@ export const socketDeleteFile = (guid, route) => {
       })
   }
 }
-export const socketRestoreFile = (id, guid, route) => {
-  const cmd = `{"cmd": "user_manifest_restore", "vlob": "${id}"}\n`
+export const socketRestoreFile = (file) => {
+  const cmd = `{"cmd": "user_manifest_restore", "vlob": "${file.id}"}\n`
   return (dispatch) => {
     dispatch(socketWrite())
     return SocketApi.write(cmd)
       .then((data) => {
-        const file = { guid }
-        NotifyApi.notify('Restore', `'${route}' was added in your PARSEC forlder.`)
+        NotifyApi.notify('Restore', `'${file.path}' was added in your PARSEC forlder.`)
         dispatch(deleteFileSuccess(file))
         dispatch(socketWriteSuccess())
       })
@@ -220,10 +215,11 @@ export const socketCreateDir = (route, name) => {
       .then((data) => {
         const file = {
           name,
+          id: null,
           guid: guid(),
           path: newRoute
         }
-        NotifyApi.notify('Create', `'${newRoute}' was added in your PARSEC forlder.`)
+        NotifyApi.notify('Create', `'${file.path}' was added in your PARSEC forlder.`)
         dispatch(addFileSuccess(file))
         dispatch(socketWriteSuccess())
       })
@@ -233,14 +229,13 @@ export const socketCreateDir = (route, name) => {
       })
   }
 }
-export const socketRemoveDir = (guid, route) => {
-  const cmd = `{"cmd": "user_manifest_remove_dir", "path": "${route}"}\n`
+export const socketRemoveDir = (file) => {
+  const cmd = `{"cmd": "user_manifest_remove_dir", "path": "${file.path}"}\n`
   return (dispatch) => {
     dispatch(socketWrite())
     return SocketApi.write(cmd)
       .then((data) => {
-        const file = { guid }
-        NotifyApi.notify('Delete', `'${route}' was removed from your PARSEC forlder.`)
+        NotifyApi.notify('Delete', `'${file.path}' was removed from your PARSEC forlder.`)
         dispatch(deleteFileSuccess(file))
         dispatch(socketWriteSuccess())
       })
