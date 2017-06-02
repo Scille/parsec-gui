@@ -1,4 +1,4 @@
-import { saveAs, guid } from '../common'
+import { saveAs, guid, getPath } from '../common'
 import * as types from './ActionTypes'
 import FileReaderApi from '../api/fileReaderApi'
 import NotifyApi from '../api/notifyApi'
@@ -62,7 +62,7 @@ export const socketListDir = (route) => {
             ...value,
             name: key,
             guid: guid(),
-            path: route === '/' ? route.concat(key) : route.concat('/', key),
+            path: getPath(route, key),
           })
         }
         let chain = Q.when()
@@ -191,33 +191,36 @@ export const socketRestoreFile = (file) => {
       })
   }
 }
-export const socketDownloadFile = (id, name) => {
-  const cmd = `{"cmd": "file_read", "id": "${id}"}\n`
+export const socketDownloadFile = (file) => {
+  const cmd = `{"cmd": "file_read", "id": "${file.id}"}\n`
   return (dispatch) => {
+    dispatch(socketWrite())
     return SocketApi.write(cmd)
       .then((data) => {
         const buffer = new Buffer(data.content, 'base64')
         const blob = new Blob([buffer.toString()], { type: 'application/octet-binary' })
         const url = window.URL.createObjectURL(blob)
-        saveAs(url, name)
+        saveAs(url, file.name)
+        dispatch(socketWriteSuccess())
       })
       .catch((error) => {
         NotifyApi.notify('Error', error.label)
+        dispatch(socketWriteFailure())
       })
   }
 }
 export const socketCreateDir = (route, name) => {
-  const newRoute = route === '/' ? route.concat(name) : route.concat('/', name)
-  const cmd = `{"cmd": "user_manifest_make_dir", "path": "${newRoute}"}\n`
+  const path = getPath(route, name)
+  const cmd = `{"cmd": "user_manifest_make_dir", "path": "${path}"}\n`
   return (dispatch) => {
     dispatch(socketWrite())
     return SocketApi.write(cmd)
       .then((data) => {
         const file = {
           name,
+          path,
           id: null,
-          guid: guid(),
-          path: newRoute
+          guid: guid()
         }
         NotifyApi.notify('Create', `'${file.path}' was added in your PARSEC forlder.`)
         dispatch(addFileSuccess(file))

@@ -2,7 +2,8 @@ import {
   bytesToSize,
   dateToUTC,
   saveAs,
-  guid
+  guid,
+  getPath
 } from '.'
 
 describe('Common Functions', () => {
@@ -39,6 +40,13 @@ describe('Common Functions', () => {
   describe('dateToUTC', () => {
     it('generate a globally-unique identifiers', () => {
       expect(guid()).not.toEqual(guid())
+    })
+  })
+
+  describe('getPath', () => {
+    it('generate file path', () => {
+      expect(getPath('/', 'file.txt')).toEqual('/file.txt')
+      expect(getPath('/files', 'file.txt')).toEqual('/files/file.txt')
     })
   })
 })

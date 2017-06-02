@@ -59,7 +59,7 @@ class PersonalFiles extends Component {
               <i className="fa fa-ellipsis-h"/>
               <div className="dropdown-content">
                 <a onClick={() => showModal('detailsModal', detailsModal)}><i className="fa fa-info"/> Details</a>
-                { file.id && <a onClick={() => downloadFile(file.id, file.name)}><i className="fa fa-download"/> Download</a> }
+                { file.id && <a onClick={() => downloadFile(file)}><i className="fa fa-download"/> Download</a> }
                 <a onClick={() => showModal('renameModal', renameModal)}><i className="fa fa-pencil-square-o"/> Rename</a>
                 <a onClick={() => console.log("Share")}><i className="fa fa-user-plus"/> Share</a>
                 <a onClick={() => showModal('removeModal', removeModal)}><i className="fa fa-trash-o"/> Delete</a>

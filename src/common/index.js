@@ -27,3 +27,7 @@ export const guid = () => {
     return v.toString(16)
   })
 }
+
+export const getPath = (directory, file) => {
+  return directory === '/' ? directory.concat(file) : directory.concat('/', file)
+}
