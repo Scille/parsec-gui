@@ -9,15 +9,23 @@ import {
 
 import PersonalFilesContainer from '../containers/PersonalFilesContainer'
 import DeletedFilesContainer from '../containers/DeletedFilesContainer'
-import { SocketError, NoMatchError } from './Errors.js'
 import SocketApi from '../api/socketApi'
 
 import './App.css'
 
-class App extends Component {
+const LoadingPage = () => (
+  <div id="loader-wrapper"><div id="loader"></div></div>
+)
 
+export class App extends Component {
   componentDidMount() {
     SocketApi.connect()
+      .then((data) => {
+        window.location.hash = '/personal-files'
+      })
+      .catch((error) => {
+        window.location.hash = '/socket-error'
+      })
   }
 
   componentWillUnmount() {
@@ -25,7 +33,7 @@ class App extends Component {
   }
 
   render() {
-    return(
+    return (
       <Router>
         <div className="app">
           <div className="sidebar">
@@ -45,7 +53,7 @@ class App extends Component {
 
           <div className="content">
             <Switch>
-              <Route exact path='/' component={NoMatchError}/>
+              <Route exact path='/' component={LoadingPage}/>
               {/* PersonalFiles component */}
               <Route path='/personal-files' component={PersonalFilesContainer}/>
               {/* DeletedFiles component */}
@@ -62,16 +70,4 @@ class App extends Component {
     )
   }
 }
-
-const AppRouter = () => (
-  <Router>
-    <Switch>
-      {/* Errors component */}
-      <Route path='/socket-error' component={SocketError}/>
-      <Route path='/404' component={NoMatchError}/>
-      {/* App component */}
-      <Route path='/' component={App}/>
-    </Switch>
-  </Router>
-)
-export default AppRouter
+export default App

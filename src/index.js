@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom'
 import { Provider } from 'react-redux'
 
 import configureStore from './store/configureStore'
-import AppRouter from './components/App'
+import AppRouter from './components/AppRouter'
 import './index.css'
 
 const store = configureStore()

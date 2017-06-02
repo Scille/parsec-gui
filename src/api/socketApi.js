@@ -1,20 +1,18 @@
-import NotifyApi from './notifyApi'
-
 class SocketApi {
   static connect(path='/tmp/parsec') {
-    const electron = window.require('electron')
-    const net = electron.remote.require('net')
+    return new Promise((resolve, reject) => {
+      const electron = window.require('electron')
+      const net = electron.remote.require('net')
 
-    if(this._socket != null) this._socket.end()
-    this._socket = new net.Socket()
-    this._socket.on("error", (error) => {
-      window.location.hash = '/socket-error'
-      NotifyApi.notify('Error', error.message)
-    })
-    this._socket.connect({ path }, () => {
-      SocketApi.write(`{"cmd": "identity_load", "identity": null}\n`).then(
-        () => SocketApi.write(`{"cmd": "user_manifest_load"}\n`)
-      )
+      if(this._socket != null) this._socket.end()
+      this._socket = new net.Socket()
+      this._socket.on("error", (error) => reject(error))
+      this._socket.connect({ path }, () => {
+        SocketApi.write(`{"cmd": "identity_load", "identity": null}\n`)
+          .then((data) => SocketApi.write(`{"cmd": "user_manifest_load"}\n`))
+          .then((data) => resolve(data))
+          .catch((error) => reject(error))
+      })
     })
   }
 
