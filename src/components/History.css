@@ -1,0 +1,108 @@
+:root {
+  --main-color: main-color from "../index.css";
+  --second-color: second-color from "../index.css";
+  --third-color: third-color from "../index.css";
+  --sidebar-width: 60px;
+}
+
+.history .header {
+	padding: 10px 20px;
+  text-align: left;
+	padding-bottom: 25px;
+	border-bottom: 3px solid var(--main-color);
+}
+
+.history .header .title {
+	font-size: 2em;
+	margin: 0;
+	padding: 0;
+}
+
+.history .header .options {
+	position: relative;
+  float: right;
+}
+
+.history .history-view {
+	margin: 10px 5px;
+}
+.history .history-view ul {
+	list-style: none;
+	padding: 0;
+	margin: 0;
+}
+.history .history-view ul:before,
+.history .history-view ul:after {
+	content: " ";
+	display: table;
+}
+.history .history-view ul:after {
+	clear: both;
+}
+.history .history-view ul li {
+	display: block;
+	position: relative;
+  text-align: center;
+	padding: 10px 0;
+	border-bottom: 1px solid var(--third-color);
+}
+.history .history-view .version,
+.history .history-view .tree-view,
+.history .history-view .options{
+	display: inline-block;
+  padding: 0 15px;
+  vertical-align: middle;
+	overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.history .history-view .version {
+	font-size: 1.5em;
+}
+.history .history-view .tree-view {
+  width: 60%;
+}
+.history .history-view .tree-view .fa-added {
+  color: green;
+}
+.history .history-view .tree-view .fa-added:before {
+  content: "\f067";
+  font-family: FontAwesome;
+}
+.history .history-view .tree-view .fa-changed {
+  color: var(--main-color);
+}
+.history .history-view .tree-view .fa-changed:before {
+  content: "\f074";
+  font-family: FontAwesome;
+}
+.history .history-view .tree-view .fa-removed {
+  color: red;
+}
+.history .history-view .tree-view .fa-removed:before {
+  content: "\f068";
+  font-family: FontAwesome;
+}
+.history .history-view .tree-view label {
+  display: block;
+  text-align: left;
+  padding-left: 50px;
+}
+.history .history-view .tree-view label:hover {
+  cursor: pointer;
+}
+.history .history-view .tree-view input {
+  display: none;
+}
+.history .history-view .tree-view input ~ ul {
+  display: none;
+}
+.history .history-view .tree-view input:checked ~ ul {
+  display: block;
+  padding: 5px 0;
+}
+.history .history-view .tree-view input:checked ~ ul li {
+  text-align: left;
+  padding: 0 20px;
+  border-bottom: none;
+}

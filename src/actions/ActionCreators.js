@@ -39,6 +39,11 @@ export const loadFilesSuccess = (files) => {
   return { type: types.LOAD_FILES_SUCCESS, files }
 }
 
+// HISTORY
+export const loadHistorySuccess = (history) => {
+  return { type: types.LOAD_HISTORY_SUCCESS, history }
+}
+
 // SOCKET
 export const socketWrite = () => {
   return { type: types.SOCKET_WRITE }
@@ -82,7 +87,7 @@ export const socketListDir = (route) => {
         dispatch(socketWriteSuccess())
       })
       .catch((error) => {
-        NotifyApi.notify('Error', error.label)
+        NotifyApi.notify('Error', error.toString())
         dispatch(socketWriteFailure())
       })
   }
@@ -240,6 +245,21 @@ export const socketRemoveDir = (file) => {
       .then((data) => {
         NotifyApi.notify('Delete', `'${file.path}' was removed from your PARSEC forlder.`)
         dispatch(deleteFileSuccess(file))
+        dispatch(socketWriteSuccess())
+      })
+      .catch((error) => {
+        NotifyApi.notify('Error', error.label)
+        dispatch(socketWriteFailure())
+      })
+  }
+}
+export const socketHistory = (summary=false) => {
+  const cmd = `{"cmd": "user_manifest_history", "summary": "${summary}"}\n`
+  return (dispatch) => {
+    dispatch(socketWrite())
+    return SocketApi.write(cmd)
+      .then((data) => {
+        dispatch(loadHistorySuccess(data.detailed_history))
         dispatch(socketWriteSuccess())
       })
       .catch((error) => {

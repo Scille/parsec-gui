@@ -9,6 +9,7 @@ import {
 
 import PersonalFilesContainer from '../containers/PersonalFilesContainer'
 import DeletedFilesContainer from '../containers/DeletedFilesContainer'
+import ManifestHistoryContainer from '../containers/ManifestHistoryContainer'
 import SocketApi from '../api/socketApi'
 
 import './App.css'
@@ -44,6 +45,7 @@ export class App extends Component {
               <ul className="navbar">
                 <li><Link to="/personal-files"><i className="fa fa-files-o fa-2x"/></Link></li>
                 <li><Link to="/deleted-files"><i className="fa fa-trash-o fa-2x"/></Link></li>
+                <li><Link to="/history"><i className="fa fa-history fa-2x"/></Link></li>
               </ul>
               <ul className="footer">
                 <li><Link to="/parameters"><i className="fa fa-cog fa-2x"/></Link></li>
@@ -58,6 +60,8 @@ export class App extends Component {
               <Route path='/personal-files' component={PersonalFilesContainer}/>
               {/* DeletedFiles component */}
               <Route path='/deleted-files' component={DeletedFilesContainer}/>
+              {/* History component */}
+              <Route path='/history' component={ManifestHistoryContainer}/>
               {/* Parameters component */}
               {/* <Route path='/parameters' component={NoMatchError}/> */}
               <Redirect from='/parameters' to='/404'/>
