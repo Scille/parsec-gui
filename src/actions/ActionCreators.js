@@ -54,6 +54,9 @@ export const socketWriteFailure = () => {
 export const socketConnectSuccess = () => {
   return { type: types.SOCKET_CONNECT_SUCCESS }
 }
+export const socketEndSuccess = () => {
+  return { type: types.SOCKET_END_SUCCESS }
+}
 export const socketConnect = () => {
   return (dispatch) => {
     return SocketApi.connect()
@@ -65,7 +68,10 @@ export const socketConnect = () => {
   }
 }
 export const socketEnd = () => {
-  return (dispatch) => SocketApi.end()
+  return (dispatch) => {
+    SocketApi.end()
+    dispatch(socketEndSuccess())
+  }
 }
 export const socketListDir = (route) => {
   const Q = require('q')
