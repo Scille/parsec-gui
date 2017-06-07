@@ -5,7 +5,7 @@ describe('Combine Reducers', () => {
     breadcrumbReducer: [{ route: '/', libelle: 'Home' }],
     filesReducer: [],
     modalReducer: { modalType: null, modalProps: {} },
-    socketReducer: false,
+    socketReducer: { connected: false, loading: false },
     viewSwitcherReducer: false,
   }
 

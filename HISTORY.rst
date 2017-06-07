@@ -24,7 +24,7 @@ Tools
 Done
 ----
 - Parsec-GUI
- - Coverage [33%]
+ - Coverage [51%]
  - PersonalFiles
   - Connect to unix socket
   - Redirection -> NoSocket Page
@@ -42,6 +42,9 @@ Done
   - Redirection -> NoSocket Page
   - List deleted files
   - Restore file
+ - History
+  - Connect to unix socket
+  - Redirection -> NoSocket Page
  - Error pages
   - NoSocket
   - NotFound
@@ -49,6 +52,7 @@ Done
   - */* -> PersonalFiles
   - */personal-files* -> PersonalFiles
   - */deleted-files* -> DeletedFiles
+  - */history* -> History
   - */socket-error* -> NoSocket
   - */404* -> NotFound
  - Modals
@@ -84,20 +88,19 @@ Done
   - Remove file
   - Remove directory
   - Restore file
+ - API
+  - Notify api
+  - Socket api
 
 Todo
 ----
 
-02/06/2017
+09/06/2017
 **********************
 - Parsec-GUI
  - History
-  - Connect to unix socket
-  - Redirection -> NoSocket Page
   - Show history
   - Restore history
- - Routes
-  - */history* -> History
  - Modals
   - Restore history
  - Unix Socket
@@ -106,9 +109,29 @@ Todo
  - Notifications
   - Restore history
  - API
+  - Socket api
+
+02/06/2017
+**********************
+- Parsec-GUI
+ - History
+  - Connect to unix socket
+  - Redirection -> NoSocket Page
+  - Show history                                                [~OK]
+  - Restore history                                             [KO]
+ - Routes
+  - */history* -> History
+ - Modals
+  - Restore history                                             [KO]
+ - Unix Socket
+  - USER_MANIFEST_HISTORY                                       [~OK]
+  - USER_MANIFEST_RESTORE                                       [~OK]
+ - Notifications
+  - Restore history                                             [KO]
+ - API
   - Remove custom middlewares + use thunk with custom API
   - Notify api
-  - socket api
+  - Socket api                                                  [~OK]
 
 26/05/2017
 **********************

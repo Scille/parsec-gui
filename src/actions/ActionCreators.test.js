@@ -99,18 +99,37 @@ describe('File Actions', () => {
   })
 })
 
+describe('History Actions', () => {
+  it('should create an action to get history', () => {
+    const history = [
+      {
+          version: 1,
+          entries: { added: {}, changed: {}, removed: {} },
+          groups: { added: {}, changed: {}, removed: {} },
+          dustbin: { added: [], removed: [] },
+          versions: { added: {}, changed: {}, removed: {} }
+      }
+    ]
+    const expectedAction = {
+      type: types.LOAD_HISTORY_SUCCESS,
+      history
+    }
+    expect(actions.loadHistorySuccess(history)).toEqual(expectedAction)
+  })
+})
+
 describe('Socket Actions', () => {
   it('should create an action to create loading spinner', () => {
     const expectedAction = { type: types.SOCKET_WRITE }
     expect(actions.socketWrite()).toEqual(expectedAction)
   })
-  it('should create an action to remove loading spinner if success', () => {
-    const expectedAction = { type: types.SOCKET_WRITE_SUCCESS }
-    expect(actions.socketWriteSuccess()).toEqual(expectedAction)
-  })
-  it('should create an action to remove loading spinner if failure', () => {
+  it('should create an action to remove loading spinner if write failure', () => {
     const expectedAction = { type: types.SOCKET_WRITE_FAILURE }
     expect(actions.socketWriteFailure()).toEqual(expectedAction)
+  })
+  it('should create an action to remove connexion spinner if connect success', () => {
+    const expectedAction = { type: types.SOCKET_CONNECT_SUCCESS }
+    expect(actions.socketConnectSuccess()).toEqual(expectedAction)
   })
 })
 
@@ -143,6 +162,17 @@ describe('Socket Commands', () => {
     guid: '337d1aae-8eb4-41b3-8be3-501df75944e4',
   }
 
+  it('socket connect successful, creates SOCKET_CONNECT_SUCCESS', () => {
+    const expectedActions = [{ type: types.SOCKET_CONNECT_SUCCESS }]
+    // mock the SocketApi.write method, so it will just resolve the Promise.
+    SocketApi.connect = jest.fn(() => Promise.resolve({ status: 'ok' }))
+    // mock the dispatch function from Redux thunk.
+    const dispatch = jest.fn()
+    return actions.socketConnect()(dispatch).then(() => {
+      // SOCKET_CONNECT_SUCCESS
+      expect(dispatch.mock.calls[0][0]).toEqual(expectedActions[0])
+    })
+  })
   it('list files successful, creates SOCKET_WRITE, LOAD_FILES_SUCCESS and SOCKET_WRITE_SUCCESS', () => {
     const expectedActions = [
       { type: types.SOCKET_WRITE },
@@ -152,8 +182,7 @@ describe('Socket Commands', () => {
           ...file,
           guid: undefined
         }]
-      },
-      { type: types.SOCKET_WRITE_SUCCESS }
+      }
     ]
     // mock the SocketApi.write method, so it will just resolve the Promise.
     SocketApi.write = jest.fn((cmd) => {
@@ -173,17 +202,14 @@ describe('Socket Commands', () => {
       else
         return Promise.resolve(fileStat)
     })
-    // mock the dispatch and getState functions from Redux thunk.
+    // mock the dispatch function from Redux thunk.
     const dispatch = jest.fn()
-    const getState = jest.fn(() => [file])
-    return actions.socketListDir('/')(dispatch, getState).then(() => {
+    return actions.socketListDir('/')(dispatch).then(() => {
       // SOCKET_WRITE
       expect(dispatch.mock.calls[0][0]).toEqual(expectedActions[0])
       // LOAD_FILES_SUCCESS
       delete dispatch.mock.calls[1][0].files[0].guid
       expect(dispatch.mock.calls[1][0]).toEqual(expectedActions[1])
-      // SOCKET_WRITE_SUCCESS
-      expect(dispatch.mock.calls[2][0]).toEqual(expectedActions[2])
     })
   })
   it('list files failure, creates SOCKET_WRITE and SOCKET_WRITE_FAILURE', () => {
@@ -195,10 +221,9 @@ describe('Socket Commands', () => {
     SocketApi.write = jest.fn((cmd) => {
       return Promise.reject({ label: 'label' })
     })
-    // mock the dispatch and getState functions from Redux thunk.
+    // mock the dispatch function from Redux thunk.
     const dispatch = jest.fn()
-    const getState = jest.fn(() => [])
-    return actions.socketListDir('/')(dispatch, getState).then(() => {
+    return actions.socketListDir('/')(dispatch).then(() => {
       // SOCKET_WRITE
       expect(dispatch.mock.calls[0][0]).toEqual(expectedActions[0])
       // SOCKET_WRITE_FAILURE
@@ -217,8 +242,7 @@ describe('Socket Commands', () => {
           name: file.name,
           removed_date
         }]
-      },
-      { type: types.SOCKET_WRITE_SUCCESS }
+      }
     ]
     // mock the SocketApi.write method, so it will just resolve the Promise.
     SocketApi.write = jest.fn((cmd) => {
@@ -231,17 +255,14 @@ describe('Socket Commands', () => {
         status: 'ok'
       })
     })
-    // mock the dispatch and getState functions from Redux thunk.
+    // mock the dispatch function from Redux thunk.
     const dispatch = jest.fn()
-    const getState = jest.fn(() => [file])
-    return actions.socketShowDustbin()(dispatch, getState).then(() => {
+    return actions.socketShowDustbin()(dispatch).then(() => {
       // SOCKET_WRITE
       expect(dispatch.mock.calls[0][0]).toEqual(expectedActions[0])
       // LOAD_FILES_SUCCESS
       delete dispatch.mock.calls[1][0].files[0].guid
       expect(dispatch.mock.calls[1][0]).toEqual(expectedActions[1])
-      // SOCKET_WRITE_SUCCESS
-      expect(dispatch.mock.calls[2][0]).toEqual(expectedActions[2])
     })
   })
   it('show dustbin failure, creates SOCKET_WRITE and SOCKET_WRITE_FAILURE', () => {
@@ -253,10 +274,9 @@ describe('Socket Commands', () => {
     SocketApi.write = jest.fn((cmd) => {
       return Promise.reject({ label: 'label' })
     })
-    // mock the dispatch and getState functions from Redux thunk.
+    // mock the dispatch function from Redux thunk.
     const dispatch = jest.fn()
-    const getState = jest.fn(() => [])
-    return actions.socketShowDustbin()(dispatch, getState).then(() => {
+    return actions.socketShowDustbin()(dispatch).then(() => {
       // SOCKET_WRITE
       expect(dispatch.mock.calls[0][0]).toEqual(expectedActions[0])
       // SOCKET_WRITE_FAILURE
@@ -273,8 +293,7 @@ describe('Socket Commands', () => {
           ...file,
           guid: undefined
         }
-      },
-      { type: types.SOCKET_WRITE_SUCCESS }
+      }
     ]
     // mock the SocketApi.write method, so it will just resolve the Promise.
     SocketApi.write = jest.fn((cmd) => {
@@ -286,17 +305,14 @@ describe('Socket Commands', () => {
       else
         return Promise.resolve(fileStat)
     })
-    // mock the dispatch and getState functions from Redux thunk.
+    // mock the dispatch function from Redux thunk.
     const dispatch = jest.fn()
-    const getState = jest.fn(() => [file])
-    return actions.socketCreateFile(file.path, fileR)(dispatch, getState).then(() => {
+    return actions.socketCreateFile(file.path, fileR)(dispatch).then(() => {
       // SOCKET_WRITE
       expect(dispatch.mock.calls[0][0]).toEqual(expectedActions[0])
       // ADD_FILE_SUCCESS
       delete dispatch.mock.calls[1][0].file.guid
       expect(dispatch.mock.calls[1][0]).toEqual(expectedActions[1])
-      // SOCKET_WRITE_SUCCESS
-      expect(dispatch.mock.calls[2][0]).toEqual(expectedActions[2])
     })
   })
   it('create file failure, creates SOCKET_WRITE and SOCKET_WRITE_FAILURE', () => {
@@ -309,10 +325,9 @@ describe('Socket Commands', () => {
     SocketApi.write = jest.fn((cmd) => {
       return Promise.reject({ label: 'label' })
     })
-    // mock the dispatch and getState functions from Redux thunk.
+    // mock the dispatch function from Redux thunk.
     const dispatch = jest.fn()
-    const getState = jest.fn(() => [])
-    return actions.socketCreateFile(file.path, fileR)(dispatch, getState).then(() => {
+    return actions.socketCreateFile(file.path, fileR)(dispatch).then(() => {
       // SOCKET_WRITE
       expect(dispatch.mock.calls[0][0]).toEqual(expectedActions[0])
       // SOCKET_WRITE_FAILURE
@@ -327,23 +342,19 @@ describe('Socket Commands', () => {
     }
     const expectedActions = [
       { type: types.SOCKET_WRITE },
-      { type: types.UPDATE_FILE_SUCCESS, file: rename },
-      { type: types.SOCKET_WRITE_SUCCESS }
+      { type: types.UPDATE_FILE_SUCCESS, file: rename }
     ]
     // mock the SocketApi.write method, so it will just resolve the Promise.
     SocketApi.write = jest.fn((cmd) => {
       return Promise.resolve({ status: 'ok' })
     })
-    // mock the dispatch and getState functions from Redux thunk.
+    // mock the dispatch function from Redux thunk.
     const dispatch = jest.fn()
-    const getState = jest.fn(() => [file])
-    return actions.socketRenameFile(file, rename.name)(dispatch, getState).then(() => {
+    return actions.socketRenameFile(file, rename.name)(dispatch).then(() => {
       // SOCKET_WRITE
       expect(dispatch.mock.calls[0][0]).toEqual(expectedActions[0])
       // UPDATE_FILE_SUCCESS
       expect(dispatch.mock.calls[1][0]).toEqual(expectedActions[1])
-      // SOCKET_WRITE_SUCCESS
-      expect(dispatch.mock.calls[2][0]).toEqual(expectedActions[2])
     })
   })
   it('rename file failure, creates SOCKET_WRITE and SOCKET_WRITE_FAILURE', () => {
@@ -360,10 +371,9 @@ describe('Socket Commands', () => {
     SocketApi.write = jest.fn((cmd) => {
       return Promise.reject({ label: 'label' })
     })
-    // mock the dispatch and getState functions from Redux thunk.
+    // mock the dispatch function from Redux thunk.
     const dispatch = jest.fn()
-    const getState = jest.fn(() => [])
-    return actions.socketRenameFile(file, rename.name)(dispatch, getState).then(() => {
+    return actions.socketRenameFile(file, rename.name)(dispatch).then(() => {
       // SOCKET_WRITE
       expect(dispatch.mock.calls[0][0]).toEqual(expectedActions[0])
       // SOCKET_WRITE_FAILURE
@@ -373,23 +383,19 @@ describe('Socket Commands', () => {
   it('delete file successful, creates SOCKET_WRITE, DELETE_FILE_SUCCESS and SOCKET_WRITE_SUCCESS', () => {
     const expectedActions = [
       { type: types.SOCKET_WRITE },
-      { type: types.DELETE_FILE_SUCCESS, file },
-      { type: types.SOCKET_WRITE_SUCCESS }
+      { type: types.DELETE_FILE_SUCCESS, file }
     ]
     // mock the SocketApi.write method, so it will just resolve the Promise.
     SocketApi.write = jest.fn((cmd) => {
       return Promise.resolve({ status: 'ok' })
     })
-    // mock the dispatch and getState functions from Redux thunk.
+    // mock the dispatch function from Redux thunk.
     const dispatch = jest.fn()
-    const getState = jest.fn(() => files)
-    return actions.socketDeleteFile(file)(dispatch, getState).then(() => {
+    return actions.socketDeleteFile(file)(dispatch).then(() => {
       // SOCKET_WRITE
       expect(dispatch.mock.calls[0][0]).toEqual(expectedActions[0])
       // DELETE_FILE_SUCCESS
       expect(dispatch.mock.calls[1][0]).toEqual(expectedActions[1])
-      // SOCKET_WRITE_SUCCESS
-      expect(dispatch.mock.calls[2][0]).toEqual(expectedActions[2])
     })
   })
   it('delete file failure, creates SOCKET_WRITE and SOCKET_WRITE_FAILURE', () => {
@@ -401,10 +407,9 @@ describe('Socket Commands', () => {
     SocketApi.write = jest.fn((cmd) => {
       return Promise.reject({ label: 'label' })
     })
-    // mock the dispatch and getState functions from Redux thunk.
+    // mock the dispatch function from Redux thunk.
     const dispatch = jest.fn()
-    const getState = jest.fn(() => [])
-    return actions.socketDeleteFile(file)(dispatch, getState).then(() => {
+    return actions.socketDeleteFile(file)(dispatch).then(() => {
       // SOCKET_WRITE
       expect(dispatch.mock.calls[0][0]).toEqual(expectedActions[0])
       // SOCKET_WRITE_FAILURE
@@ -414,23 +419,19 @@ describe('Socket Commands', () => {
   it('restore file successful, creates SOCKET_WRITE, DELETE_FILE_SUCCESS and SOCKET_WRITE_SUCCESS', () => {
     const expectedActions = [
       { type: types.SOCKET_WRITE },
-      { type: types.DELETE_FILE_SUCCESS, file },
-      { type: types.SOCKET_WRITE_SUCCESS }
+      { type: types.DELETE_FILE_SUCCESS, file }
     ]
     // mock the SocketApi.write method, so it will just resolve the Promise.
     SocketApi.write = jest.fn((cmd) => {
       return Promise.resolve({ status: 'ok' })
     })
-    // mock the dispatch and getState functions from Redux thunk.
+    // mock the dispatch function from Redux thunk.
     const dispatch = jest.fn()
-    const getState = jest.fn(() => files)
-    return actions.socketRestoreFile(file)(dispatch, getState).then(() => {
+    return actions.socketRestoreFile(file)(dispatch).then(() => {
       // SOCKET_WRITE
       expect(dispatch.mock.calls[0][0]).toEqual(expectedActions[0])
       // DELETE_FILE_SUCCESS
       expect(dispatch.mock.calls[1][0]).toEqual(expectedActions[1])
-      // SOCKET_WRITE_SUCCESS
-      expect(dispatch.mock.calls[2][0]).toEqual(expectedActions[2])
     })
   })
   it('restore file failure, creates SOCKET_WRITE and SOCKET_WRITE_FAILURE', () => {
@@ -442,10 +443,9 @@ describe('Socket Commands', () => {
     SocketApi.write = jest.fn((cmd) => {
       return Promise.reject({ label: 'label' })
     })
-    // mock the dispatch and getState functions from Redux thunk.
+    // mock the dispatch function from Redux thunk.
     const dispatch = jest.fn()
-    const getState = jest.fn(() => [])
-    return actions.socketRestoreFile(file)(dispatch, getState).then(() => {
+    return actions.socketRestoreFile(file)(dispatch).then(() => {
       // SOCKET_WRITE
       expect(dispatch.mock.calls[0][0]).toEqual(expectedActions[0])
       // SOCKET_WRITE_FAILURE
@@ -453,24 +453,18 @@ describe('Socket Commands', () => {
     })
   })
   it('download file successful, creates SOCKET_WRITE and SOCKET_WRITE_SUCCESS', () => {
-    const expectedActions = [
-      { type: types.SOCKET_WRITE },
-      { type: types.SOCKET_WRITE_SUCCESS }
-    ]
+    const expectedActions = [{ type: types.SOCKET_WRITE }]
     // mock the SocketApi.write method, so it will just resolve the Promise.
     SocketApi.write = jest.fn((cmd) => {
       return Promise.resolve({ status: 'ok', content: 'dGVzdA==', version: 1 })
     })
     // mock the window.URL.createObjectURL method
     window.URL.createObjectURL = jest.fn()
-    // mock the dispatch and getState functions from Redux thunk.
+    // mock the dispatch function from Redux thunk.
     const dispatch = jest.fn()
-    const getState = jest.fn(() => files)
-    return actions.socketDownloadFile(file)(dispatch, getState).then(() => {
+    return actions.socketDownloadFile(file)(dispatch).then(() => {
       // SOCKET_WRITE
       expect(dispatch.mock.calls[0][0]).toEqual(expectedActions[0])
-      // SOCKET_WRITE_SUCCESS
-      expect(dispatch.mock.calls[1][0]).toEqual(expectedActions[1])
     })
   })
   it('download file failure, creates SOCKET_WRITE and SOCKET_WRITE_FAILURE', () => {
@@ -482,10 +476,9 @@ describe('Socket Commands', () => {
     SocketApi.write = jest.fn((cmd) => {
       return Promise.reject({ label: 'label' })
     })
-    // mock the dispatch and getState functions from Redux thunk.
+    // mock the dispatch function from Redux thunk.
     const dispatch = jest.fn()
-    const getState = jest.fn(() => [])
-    return actions.socketDownloadFile(file)(dispatch, getState).then(() => {
+    return actions.socketDownloadFile(file)(dispatch).then(() => {
       // SOCKET_WRITE
       expect(dispatch.mock.calls[0][0]).toEqual(expectedActions[0])
       // SOCKET_WRITE_FAILURE
@@ -501,24 +494,20 @@ describe('Socket Commands', () => {
           ...directory,
           guid: undefined
         }
-      },
-      { type: types.SOCKET_WRITE_SUCCESS }
+      }
     ]
     // mock the SocketApi.write method, so it will just resolve the Promise.
     SocketApi.write = jest.fn((cmd) => {
       return Promise.resolve({ status: 'ok' })
     })
-    // mock the dispatch and getState functions from Redux thunk.
+    // mock the dispatch function from Redux thunk.
     const dispatch = jest.fn()
-    const getState = jest.fn(() => [directory])
-    return actions.socketCreateDir('/', directory.name)(dispatch, getState).then(() => {
+    return actions.socketCreateDir('/', directory.name)(dispatch).then(() => {
       // SOCKET_WRITE
       expect(dispatch.mock.calls[0][0]).toEqual(expectedActions[0])
       // ADD_FILE_SUCCESS
       delete dispatch.mock.calls[1][0].file.guid
       expect(dispatch.mock.calls[1][0]).toEqual(expectedActions[1])
-      // SOCKET_WRITE_SUCCESS
-      expect(dispatch.mock.calls[2][0]).toEqual(expectedActions[2])
     })
   })
   it('create directory failure, creates SOCKET_WRITE and SOCKET_WRITE_FAILURE', () => {
@@ -530,10 +519,9 @@ describe('Socket Commands', () => {
     SocketApi.write = jest.fn((cmd) => {
       return Promise.reject({ label: 'label' })
     })
-    // mock the dispatch and getState functions from Redux thunk.
+    // mock the dispatch function from Redux thunk.
     const dispatch = jest.fn()
-    const getState = jest.fn(() => [])
-    return actions.socketCreateDir('/', directory.name)(dispatch, getState).then(() => {
+    return actions.socketCreateDir('/', directory.name)(dispatch).then(() => {
       // SOCKET_WRITE
       expect(dispatch.mock.calls[0][0]).toEqual(expectedActions[0])
       // SOCKET_WRITE_FAILURE
@@ -543,23 +531,19 @@ describe('Socket Commands', () => {
   it('remove directory successful, creates SOCKET_WRITE, DELETE_FILE_SUCCESS and SOCKET_WRITE_SUCCESS', () => {
     const expectedActions = [
       { type: types.SOCKET_WRITE },
-      { type: types.DELETE_FILE_SUCCESS, file: directory },
-      { type: types.SOCKET_WRITE_SUCCESS }
+      { type: types.DELETE_FILE_SUCCESS, file: directory }
     ]
     // mock the SocketApi.write method, so it will just resolve the Promise.
     SocketApi.write = jest.fn((cmd) => {
       return Promise.resolve({ status: 'ok' })
     })
-    // mock the dispatch and getState functions from Redux thunk.
+    // mock the dispatch function from Redux thunk.
     const dispatch = jest.fn()
-    const getState = jest.fn(() => [directory])
-    return actions.socketRemoveDir(directory)(dispatch, getState).then(() => {
+    return actions.socketRemoveDir(directory)(dispatch).then(() => {
       // SOCKET_WRITE
       expect(dispatch.mock.calls[0][0]).toEqual(expectedActions[0])
       // DELETE_FILE_SUCCESS
       expect(dispatch.mock.calls[1][0]).toEqual(expectedActions[1])
-      // SOCKET_WRITE_SUCCESS
-      expect(dispatch.mock.calls[2][0]).toEqual(expectedActions[2])
     })
   })
   it('remove directory failure, creates SOCKET_WRITE and SOCKET_WRITE_FAILURE', () => {
@@ -571,10 +555,9 @@ describe('Socket Commands', () => {
     SocketApi.write = jest.fn((cmd) => {
       return Promise.reject({ label: 'label' })
     })
-    // mock the dispatch and getState functions from Redux thunk.
+    // mock the dispatch function from Redux thunk.
     const dispatch = jest.fn()
-    const getState = jest.fn(() => [])
-    return actions.socketRemoveDir(directory)(dispatch, getState).then(() => {
+    return actions.socketRemoveDir(directory)(dispatch).then(() => {
       // SOCKET_WRITE
       expect(dispatch.mock.calls[0][0]).toEqual(expectedActions[0])
       // SOCKET_WRITE_FAILURE
