@@ -8,7 +8,7 @@ import ManifestHistory from '../components/ManifestHistory'
 ManifestHistory.propTypes = {
   state: PropTypes.shape({
     history: PropTypes.array.isRequired,
-    loading: PropTypes.bool.isRequired,
+    socket: PropTypes.object.isRequired,
   }),
   dispatch: PropTypes.shape({
     init: PropTypes.func.isRequired,
@@ -23,7 +23,7 @@ const mapStateToProps = (state) => {
   return {
     state: {
       history: state.historyReducer,
-      loading: state.socketReducer,
+      socket: state.socketReducer,
     }
   }
 }

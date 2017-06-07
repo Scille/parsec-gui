@@ -10,30 +10,22 @@ import {
 import PersonalFilesContainer from '../containers/PersonalFilesContainer'
 import DeletedFilesContainer from '../containers/DeletedFilesContainer'
 import ManifestHistoryContainer from '../containers/ManifestHistoryContainer'
-import SocketApi from '../api/socketApi'
 
 import './App.css'
 
-const LoadingPage = () => (
-  <div id="loader-wrapper"><div id="loader"></div></div>
-)
-
 export class App extends Component {
   componentDidMount() {
-    SocketApi.connect()
-      .then((data) => {
-        window.location.hash = '/personal-files'
-      })
-      .catch((error) => {
-        window.location.hash = '/socket-error'
-      })
+    this.props.dispatch.init()
   }
 
   componentWillUnmount() {
-    SocketApi.end()
+    this.props.dispatch.end()
   }
 
   render() {
+    const connected = this.props.state.socket.connected
+    if(!connected) return (<div id="loader-wrapper"><div id="loader"></div></div>)
+
     return (
       <Router>
         <div className="app">
@@ -55,9 +47,9 @@ export class App extends Component {
 
           <div className="content">
             <Switch>
-              <Route exact path='/' component={LoadingPage}/>
               {/* PersonalFiles component */}
-              <Route path='/personal-files' component={PersonalFilesContainer}/>
+              <Route exact path='/' component={PersonalFilesContainer}/>
+              <Redirect from='/personal-files' to='/'/>
               {/* DeletedFiles component */}
               <Route path='/deleted-files' component={DeletedFilesContainer}/>
               {/* History component */}

@@ -29,19 +29,18 @@ a:hover {
 
 /*Spinner cf.https://ihatetomatoes.net/create-css3-spinning-preloader/*/
 #loader-wrapper {
-  position:absolute;
-  left:50%;
-  top:50%;
   z-index: 1000;
 }
 #loader {
   display: block;
-  position: relative;
-  left: 50%;
-  top: 50%;
-  width: 130px;
-  height: 130px;
-  margin: -75px 0 0 -75px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  width: 150px;
+  height: 150px;
+  margin: auto;
   border-radius: 50%;
   border: 3px solid transparent;
   border-top-color: var(--second-color);

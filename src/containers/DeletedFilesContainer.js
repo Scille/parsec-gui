@@ -9,7 +9,7 @@ DeletedFiles.propTypes = {
   state: PropTypes.shape({
     files: PropTypes.array.isRequired,
     listView: PropTypes.bool.isRequired,
-    loading: PropTypes.bool.isRequired,
+    socket: PropTypes.object.isRequired,
   }),
   dispatch: PropTypes.shape({
     init: PropTypes.func.isRequired,
@@ -26,7 +26,7 @@ const mapStateToProps = (state) => {
     state: {
       files: state.filesReducer,
       listView: state.viewSwitcherReducer,
-      loading: state.socketReducer,
+      socket: state.socketReducer,
     }
   }
 }

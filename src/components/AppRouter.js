@@ -5,7 +5,7 @@ import {
   Switch,
 } from 'react-router-dom'
 
-import App from '../components/App'
+import AppContainer from '../containers/AppContainer'
 import { SocketError, NoMatchError } from './Errors.js'
 
 const AppRouter = () => (
@@ -15,7 +15,7 @@ const AppRouter = () => (
       <Route path='/socket-error' component={SocketError}/>
       <Route path='/404' component={NoMatchError}/>
       {/* App component */}
-      <Route path='/' component={App}/>
+      <Route path='/' component={AppContainer}/>
     </Switch>
   </Router>
 )

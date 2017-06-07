@@ -48,11 +48,24 @@ export const loadHistorySuccess = (history) => {
 export const socketWrite = () => {
   return { type: types.SOCKET_WRITE }
 }
-export const socketWriteSuccess = () => {
-  return { type: types.SOCKET_WRITE_SUCCESS }
-}
 export const socketWriteFailure = () => {
   return { type: types.SOCKET_WRITE_FAILURE }
+}
+export const socketConnectSuccess = () => {
+  return { type: types.SOCKET_CONNECT_SUCCESS }
+}
+export const socketConnect = () => {
+  return (dispatch) => {
+    return SocketApi.connect()
+      .then((data) => dispatch(socketConnectSuccess()))
+      .catch((error) => {
+        window.location.hash = '/socket-error'
+        NotifyApi.notify('Error', error.label)
+      })
+  }
+}
+export const socketEnd = () => {
+  return (dispatch) => SocketApi.end()
 }
 export const socketListDir = (route) => {
   const Q = require('q')
@@ -82,10 +95,7 @@ export const socketListDir = (route) => {
         })
         return chain
       })
-      .then(() => {
-        dispatch(loadFilesSuccess(files))
-        dispatch(socketWriteSuccess())
-      })
+      .then(() => dispatch(loadFilesSuccess(files)))
       .catch((error) => {
         NotifyApi.notify('Error', error.toString())
         dispatch(socketWriteFailure())
@@ -105,7 +115,6 @@ export const socketShowDustbin = () => {
           guid: guid()
         }))
         dispatch(loadFilesSuccess(files))
-        dispatch(socketWriteSuccess())
       })
       .catch((error) => {
         NotifyApi.notify('Error', error.label)
@@ -134,7 +143,6 @@ export const socketCreateFile = (route, fileR) => {
       .then((data) => {
         file = Object.assign(file, data)
         dispatch(addFileSuccess(file))
-        dispatch(socketWriteSuccess())
       })
       .catch((error) => {
         NotifyApi.notify('Error', error.label)
@@ -156,7 +164,6 @@ export const socketRenameFile = (file, name) => {
           path
         }
         dispatch(updateFileSuccess(file))
-        dispatch(socketWriteSuccess())
       })
       .catch((error) => {
         NotifyApi.notify('Error', error.label)
@@ -172,7 +179,6 @@ export const socketDeleteFile = (file) => {
       .then((data) => {
         NotifyApi.notify('Delete', `'${file.path}' was removed from your PARSEC forlder.`)
         dispatch(deleteFileSuccess(file))
-        dispatch(socketWriteSuccess())
       })
       .catch((error) => {
         NotifyApi.notify('Error', error.label)
@@ -188,7 +194,6 @@ export const socketRestoreFile = (file) => {
       .then((data) => {
         NotifyApi.notify('Restore', `'${file.path}' was added in your PARSEC forlder.`)
         dispatch(deleteFileSuccess(file))
-        dispatch(socketWriteSuccess())
       })
       .catch((error) => {
         NotifyApi.notify('Error', error.label)
@@ -206,7 +211,6 @@ export const socketDownloadFile = (file) => {
         const blob = new Blob([buffer.toString()], { type: 'application/octet-binary' })
         const url = window.URL.createObjectURL(blob)
         saveAs(url, file.name)
-        dispatch(socketWriteSuccess())
       })
       .catch((error) => {
         NotifyApi.notify('Error', error.label)
@@ -229,7 +233,6 @@ export const socketCreateDir = (route, name) => {
         }
         NotifyApi.notify('Create', `'${file.path}' was added in your PARSEC forlder.`)
         dispatch(addFileSuccess(file))
-        dispatch(socketWriteSuccess())
       })
       .catch((error) => {
         NotifyApi.notify('Error', error.label)
@@ -245,7 +248,6 @@ export const socketRemoveDir = (file) => {
       .then((data) => {
         NotifyApi.notify('Delete', `'${file.path}' was removed from your PARSEC forlder.`)
         dispatch(deleteFileSuccess(file))
-        dispatch(socketWriteSuccess())
       })
       .catch((error) => {
         NotifyApi.notify('Error', error.label)
@@ -258,10 +260,7 @@ export const socketHistory = (summary=false) => {
   return (dispatch) => {
     dispatch(socketWrite())
     return SocketApi.write(cmd)
-      .then((data) => {
-        dispatch(loadHistorySuccess(data.detailed_history))
-        dispatch(socketWriteSuccess())
-      })
+      .then((data) => dispatch(loadHistorySuccess(data.detailed_history)))
       .catch((error) => {
         NotifyApi.notify('Error', error.label)
         dispatch(socketWriteFailure())

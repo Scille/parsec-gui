@@ -18,7 +18,7 @@ class PersonalFiles extends Component {
   render() {
     const files = this.props.state.files
     const listView = this.props.state.listView
-    const loading = this.props.state.loading
+    const loading = this.props.state.socket.loading
     const breadcrumb = this.props.state.breadcrumb
     const path = breadcrumb[breadcrumb.length -1].route
 
@@ -98,10 +98,7 @@ class PersonalFiles extends Component {
           </div>
       	</div>
         <div className={listView ? 'file-view grid-view' : 'file-view list-view'}>
-          { loading && <div id="loader-wrapper"><div id="loader"></div></div> }
-          <ul>
-            { listFiles }
-          </ul>
+          { loading ? (<div id="loader-wrapper"><div id="loader"></div></div>) : (<ul>{ listFiles }</ul>) }
         </div>
 
         <ModalsContainer></ModalsContainer>

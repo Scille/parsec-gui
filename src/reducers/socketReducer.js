@@ -1,12 +1,31 @@
 import * as types from '../actions/ActionTypes';
 
-const socketReducer = (state=false, action) => {
+const initialState = {
+  connected: false,
+  loading: false
+}
+
+const socketReducer = (state=initialState, action) => {
   switch(action.type) {
     case types.SOCKET_WRITE:
-      return true
-    case types.SOCKET_WRITE_SUCCESS:
+      return {
+        ...state,
+        loading: true
+      }
+    case types.SOCKET_CONNECT_SUCCESS:
+      return {
+        ...state,
+        connected: true
+      }
+    case types.LOAD_FILES_SUCCESS:
+    case types.UPDATE_FILE_SUCCESS:
+    case types.DELETE_FILE_SUCCESS:
+    case types.ADD_FILE_SUCCESS:
     case types.SOCKET_WRITE_FAILURE:
-      return false
+      return {
+        ...state,
+        loading: false
+      }
     default:
       return state
   }

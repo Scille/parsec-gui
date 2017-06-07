@@ -12,7 +12,7 @@ class ManifestHistory extends Component {
 
   render() {
     const history = this.props.state.history
-    const loading = this.props.state.loading
+    const loading = this.props.state.socket.loading
 
     const refresh = this.props.dispatch.refresh
     const restore = this.props.dispatch.restore
@@ -87,10 +87,7 @@ class ManifestHistory extends Component {
           </div>
       	</div>
         <div className='history-view'>
-          { loading && <div id="loader-wrapper"><div id="loader"></div></div> }
-          <ul>
-            { listVersions }
-          </ul>
+          { loading ? (<div id="loader-wrapper"><div id="loader"></div></div>) : (<ul>{ listVersions }</ul>) }
         </div>
 
         <ModalsContainer></ModalsContainer>
