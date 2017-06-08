@@ -192,3 +192,9 @@ textarea:focus {
 .third-button {
   background-color: var(--third-color);
 }
+.disabled-button {
+  background-color: var(--third-color);
+}
+.disabled-button:hover {
+  cursor: default;
+}

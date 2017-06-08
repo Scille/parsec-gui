@@ -118,6 +118,10 @@ describe('History Actions', () => {
     }
     expect(actions.loadHistorySuccess(history)).toEqual(expectedAction)
   })
+  it('should create an action to show restore user_manifest success', () => {
+    const expectedAction = { type: types.RESTORE_VERSION_SUCCESS }
+    expect(actions.restoreVersionSuccess()).toEqual(expectedAction)
+  })
 })
 
 describe('Socket Actions', () => {
@@ -655,6 +659,46 @@ describe('Socket Commands', () => {
     // mock the dispatch function from Redux thunk.
     const dispatch = jest.fn()
     return actions.socketHistory()(dispatch).then(() => {
+      // SOCKET_WRITE
+      expect(dispatch.mock.calls[0][0]).toEqual(expectedActions[0])
+      // SOCKET_WRITE_FAILURE
+      expect(dispatch.mock.calls[1][0]).toEqual(expectedActions[1])
+      // Create notification
+      expect(NotifyApi.notify.mock.calls.length).toEqual(1)
+    })
+  })
+  it('restore successful, creates SOCKET_WRITE and RESTORE_VERSION_SUCCESS', () => {
+    const expectedActions = [
+      { type: types.SOCKET_WRITE },
+      { type: types.RESTORE_VERSION_SUCCESS }
+    ]
+    // mock the SocketApi.write method, so it will just resolve the Promise.
+    SocketApi.write = jest.fn((cmd) => Promise.resolve({ status: 'ok' }))
+    // mock the NotifyApi.notify.
+    NotifyApi.notify = jest.fn()
+    // mock the dispatch function from Redux thunk.
+    const dispatch = jest.fn()
+    return actions.socketRestoreVersion(1)(dispatch).then(() => {
+      // SOCKET_WRITE
+      expect(dispatch.mock.calls[0][0]).toEqual(expectedActions[0])
+      // RESTORE_VERSION_SUCCESS
+      expect(dispatch.mock.calls[1][0]).toEqual(expectedActions[1])
+      // Create notification
+      expect(NotifyApi.notify.mock.calls.length).toEqual(1)
+    })
+  })
+  it('restore failure, creates SOCKET_WRITE and SOCKET_WRITE_FAILURE', () => {
+    const expectedActions = [
+      { type: types.SOCKET_WRITE },
+      { type: types.SOCKET_WRITE_FAILURE }
+    ]
+    // mock the SocketApi.write method, so it will just resolve the Promise.
+    SocketApi.write = jest.fn((cmd) => Promise.reject({ label: 'label' }))
+    // mock the NotifyApi.notify.
+    NotifyApi.notify = jest.fn()
+    // mock the dispatch function from Redux thunk.
+    const dispatch = jest.fn()
+    return actions.socketRestoreVersion(1)(dispatch).then(() => {
       // SOCKET_WRITE
       expect(dispatch.mock.calls[0][0]).toEqual(expectedActions[0])
       // SOCKET_WRITE_FAILURE

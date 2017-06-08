@@ -64,10 +64,6 @@
 	display: block;
 	position: relative;
 }
-.view-switcher .file-view ul li a {
-  color: var(--third-color);
-  text-decoration: none;
-}
 .view-switcher .file-view ul li a:hover {
   color: var(--main-color);
 }

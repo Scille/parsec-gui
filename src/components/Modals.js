@@ -263,12 +263,58 @@ export class DetailsModal extends Component {
   }
 }
 
+export class RestoreVersionModal extends Component {
+  constructor(props) {
+    super(props)
+
+    this.handleCancel = this.handleCancel.bind(this)
+    this.handleRestore = this.handleRestore.bind(this)
+  }
+
+  handleCancel(event) {
+    const hideModal = this.props.hideModal
+
+    event.preventDefault()
+    hideModal()
+  }
+
+  handleRestore(event) {
+    const version = this.props.version
+    const restoreVersion = this.props.restoreVersion
+
+    event.preventDefault()
+    restoreVersion(version)
+  }
+
+  render() {
+    const version = this.props.version
+
+    return (
+      <div className="modal">
+        <div className="modal-content">
+          <div className="modal-header">
+            <h3>RESTORE VERSION</h3>
+          </div>
+          <div className="modal-body">
+            <p>Are you sure you want to restore this version (<b>V.{version}</b>) ?</p>
+          </div>
+          <div className="modal-footer">
+            <button onClick={this.handleCancel} className="button third-button">Cancel</button>
+            <button onClick={this.handleRestore} className="button main-button">Restore</button>
+          </div>
+        </div>
+      </div>
+    )
+  }
+}
+
 const MODAL_COMPONENTS = Object.freeze({
   "renameModal": RenameModal,
   "createDirModal": CreateDirModal,
   "removeModal": RemoveModal,
   "restoreModal": RestoreModal,
-  "detailsModal": DetailsModal
+  "detailsModal": DetailsModal,
+  "restoreVersionModal": RestoreVersionModal
 })
 
 class Modals extends Component {

@@ -8,7 +8,8 @@ import Modals, {
   CreateDirModal,
   RemoveModal,
   RestoreModal,
-  DetailsModal
+  DetailsModal,
+  RestoreVersionModal
 } from './Modals'
 
 describe('Modals components', () => {
@@ -60,6 +61,13 @@ describe('Modals components', () => {
       const enzymeWrapper = shallow(<Modals {...props} />)
 
       expect(enzymeWrapper.find('DetailsModal').exists()).toBe(true)
+    })
+
+    it('should render RestoreVersionModal', () => {
+      const props = { modalType: 'restoreVersionModal' }
+      const enzymeWrapper = shallow(<Modals {...props} />)
+
+      expect(enzymeWrapper.find('RestoreVersionModal').exists()).toBe(true)
     })
 
     it('should render nothing', () => {
@@ -281,6 +289,45 @@ describe('Modals components', () => {
       enzymeWrapper.find('.third-button').simulate('click', { preventDefault: () => {} })
       expect(handleClose.calledOnce)
       expect(props.hideModal.mock.calls.length).toBe(1)
+    })
+  })
+
+  describe('RestoreVersionModal', () => {
+    const setup = () => {
+      const props = {
+        version: 1,
+        restoreVersion: jest.fn(),
+        hideModal: jest.fn()
+      }
+      const enzymeWrapper = shallow(<RestoreVersionModal {...props} />)
+      return { props, enzymeWrapper }
+    }
+
+    it('should render self', () => {
+      const { enzymeWrapper, props } = setup()
+
+      expect(enzymeWrapper.find('h3').text()).toBe('RESTORE VERSION')
+      expect(enzymeWrapper.find('p').text()).toBe(`Are you sure you want to restore this version (V.${props.version}) ?`)
+      expect(enzymeWrapper.find('.third-button').exists()).toBe(true)
+      expect(enzymeWrapper.find('.main-button').exists()).toBe(true)
+    })
+
+    it('cancel button should call hideModal() when clicked', () => {
+      const { enzymeWrapper, props } = setup()
+      const handleCancel = sinon.spy(RestoreVersionModal.prototype, 'handleCancel')
+
+      enzymeWrapper.find('.third-button').simulate('click', { preventDefault: () => {} })
+      expect(handleCancel.calledOnce)
+      expect(props.hideModal.mock.calls.length).toBe(1)
+    })
+
+    it('restore button should call restoreVersion() when clicked', () => {
+      const { enzymeWrapper, props } = setup()
+      const handleRestore = sinon.spy(RestoreVersionModal.prototype, 'handleRestore')
+
+      enzymeWrapper.find('.main-button').simulate('click', { preventDefault: () => {} })
+      expect(handleRestore.calledOnce)
+      expect(props.restoreVersion.mock.calls.length).toBe(1)
     })
   })
 })

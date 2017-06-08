@@ -66,21 +66,21 @@
   color: green;
 }
 .history .history-view .tree-view .fa-added:before {
-  content: "\f067";
+  content: "\f196";
   font-family: FontAwesome;
 }
 .history .history-view .tree-view .fa-changed {
   color: var(--main-color);
 }
 .history .history-view .tree-view .fa-changed:before {
-  content: "\f074";
+  content: "\f044";
   font-family: FontAwesome;
 }
 .history .history-view .tree-view .fa-removed {
   color: red;
 }
 .history .history-view .tree-view .fa-removed:before {
-  content: "\f068";
+  content: "\f147";
   font-family: FontAwesome;
 }
 .history .history-view .tree-view label {

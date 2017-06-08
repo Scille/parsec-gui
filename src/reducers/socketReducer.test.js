@@ -26,6 +26,8 @@ describe('SocketReducer Reducer', () => {
       { type: types.UPDATE_FILE_SUCCESS },
       { type: types.DELETE_FILE_SUCCESS },
       { type: types.ADD_FILE_SUCCESS },
+      { type: types.LOAD_HISTORY_SUCCESS },
+      { type: types.RESTORE_VERSION_SUCCESS },
       { type: types.SOCKET_WRITE_FAILURE }
     ]
     actions.forEach((action) => expect(socketReducer(state, action)).toEqual(newState))

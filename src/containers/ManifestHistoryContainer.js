@@ -13,7 +13,7 @@ ManifestHistory.propTypes = {
   dispatch: PropTypes.shape({
     init: PropTypes.func.isRequired,
     refresh: PropTypes.func.isRequired,
-    restore: PropTypes.func.isRequired,
+    restoreVersion: PropTypes.func.isRequired,
     showModal: PropTypes.func.isRequired,
     hideModal: PropTypes.func.isRequired,
   }),
@@ -33,7 +33,7 @@ const mapDispatchToProps = (dispatch) => {
     dispatch: {
       init: () => dispatch(actionsCreators.socketHistory()),
       refresh: () => dispatch(actionsCreators.socketHistory()),
-      restore: (version) => dispatch(actionsCreators.socketHistory()),
+      restoreVersion: (version) => dispatch(actionsCreators.socketRestoreVersion(version)),
       showModal: (modalType, modalProps) => dispatch(actionsCreators.showModal(modalType, modalProps)),
       hideModal: () => dispatch(actionsCreators.hideModal()),
     }

@@ -15,7 +15,7 @@ class ManifestHistory extends Component {
     const loading = this.props.state.socket.loading
 
     const refresh = this.props.dispatch.refresh
-    const restore = this.props.dispatch.restore
+    const restoreVersion = this.props.dispatch.restoreVersion
     const showModal = this.props.dispatch.showModal
     const hideModal = this.props.dispatch.hideModal
 
@@ -29,7 +29,7 @@ class ManifestHistory extends Component {
       return(
         <label>
           <i className="fa fa-folder-o"/> Personal Files
-          <input type="checkbox"/>
+          <input type="checkbox" defaultChecked="checked"/>
           <ul>
             { added.map((data) => <li key={data}><i className="fa fa-added"> {data}</i></li>) }
             { changed.map((data) => <li key={data}><i className="fa fa-changed"> {data}</i></li>) }
@@ -40,24 +40,26 @@ class ManifestHistory extends Component {
     }
 
     const dustbin = (data) => {
-      const added = Object.keys(data.added)
-      const removed = Object.keys(data.removed)
+      const added = data.added
+      const removed = data.removed
       const length = added.length + removed.length
       if(length === 0) return null
 
       return(
         <label>
           <i className="fa fa-folder-o"/> Deleted Files
-          <input type="checkbox"/>
+          <input type="checkbox" defaultChecked="checked"/>
           <ul>
-            { added.map((data) => <li key={data}><i className="fa fa-added"> {data}</i></li>) }
-            { removed.map((data) => <li key={data}><i className="fa fa-removed"> {data}</i></li>) }
+            { added.map((data) => <li key="dustbin_{data.id}"><i className="fa fa-added"> {data.path}</i></li>) }
+            { removed.map((data) => <li key="dustbin_{data.id}"><i className="fa fa-removed"> {data.path}</i></li>) }
           </ul>
         </label>
       )
     }
 
-    const listVersions = history.map((data) => {
+    const listVersions = history.reverse().map((data, i) => {
+      const restoreVersionModal = { version: data.version, restoreVersion, hideModal }
+
       return (
         <li key={data.version}>
           <div className="version">V.{data.version}</div>
@@ -66,7 +68,12 @@ class ManifestHistory extends Component {
             { dustbin(data.dustbin) }
           </div>
           <div className="options">
-            <a onClick={() => restore(data.version)} className="button main-button">Restore</a>
+            {
+              i === 0 ?
+              <a className="button disabled-button">Current</a>
+              :
+              <a onClick={() => showModal('restoreVersionModal', restoreVersionModal)} className="button main-button">Restore</a>
+            }
           </div>
         </li>
       )

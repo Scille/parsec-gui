@@ -43,6 +43,9 @@ export const loadFilesSuccess = (files) => {
 export const loadHistorySuccess = (history) => {
   return { type: types.LOAD_HISTORY_SUCCESS, history }
 }
+export const restoreVersionSuccess = () => {
+  return { type: types.RESTORE_VERSION_SUCCESS }
+}
 
 // SOCKET
 export const socketWrite = () => {
@@ -193,7 +196,7 @@ export const socketDeleteFile = (file) => {
   }
 }
 export const socketRestoreFile = (file) => {
-  const cmd = `{"cmd": "user_manifest_restore", "vlob": "${file.id}"}\n`
+  const cmd = `{"cmd": "user_manifest_restore_file", "vlob": "${file.id}"}\n`
   return (dispatch) => {
     dispatch(socketWrite())
     return SocketApi.write(cmd)
@@ -267,6 +270,22 @@ export const socketHistory = (summary=false) => {
     dispatch(socketWrite())
     return SocketApi.write(cmd)
       .then((data) => dispatch(loadHistorySuccess(data.detailed_history)))
+      .catch((error) => {
+        NotifyApi.notify('Error', error.label)
+        dispatch(socketWriteFailure())
+      })
+  }
+}
+export const socketRestoreVersion = (version) => {
+  const cmd = `{"cmd": "user_manifest_restore", "version": "${version}"}\n`
+  return (dispatch) => {
+    dispatch(socketWrite())
+    return SocketApi.write(cmd)
+      .then((data) => {
+        window.location.hash = '/personal_files'
+        NotifyApi.notify('Restore', `All files restored to the user_manifest's version V.${version}.`)
+        dispatch(restoreVersionSuccess())
+      })
       .catch((error) => {
         NotifyApi.notify('Error', error.label)
         dispatch(socketWriteFailure())
