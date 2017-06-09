@@ -58,14 +58,14 @@ class DeletedFiles extends Component {
               <i className="fa fa-ellipsis-v"/>
               <div className="dropdown-content">
                 <div>Views</div>
-                <a onClick={switchView}><i className={!listView ? 'fa fa-th-large' : 'fa fa-th-list'}/>{!listView ? ' Grid' : ' List'}</a>
+                <a onClick={() => switchView()}><i className={listView ? 'fa fa-th-large' : 'fa fa-th-list'}/>{listView ? ' Grid' : ' List'}</a>
                 <div>Actions</div>
                 <a onClick={() => refresh()}><i className="fa fa-refresh"/> Refresh</a>
               </div>
             </div>
           </div>
       	</div>
-        <div className={listView ? 'file-view grid-view' : 'file-view list-view'}>
+        <div className={listView ? 'file-view list-view' : 'file-view grid-view'}>
           { loading ? (<div id="loader-wrapper"><div id="loader"></div></div>) : (<ul>{ listFiles }</ul>) }
         </div>
 
