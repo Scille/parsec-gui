@@ -9,10 +9,13 @@ class SocketApi {
       this._socket.on("error", (error) => reject(error))
       this._socket.connect({ path }, () => {
         this._socket.setEncoding('utf8')
-        SocketApi.write(`{"cmd": "identity_load", "identity": null}\n`)
-          .then((data) => SocketApi.write(`{"cmd": "user_manifest_load"}\n`))
-          .then((data) => resolve(data))
-          .catch((error) => reject(error))
+        // TODO: Without identity_load
+        resolve({ status: 'ok' })
+        // TODO: With identity_load
+        // SocketApi.write(`{"cmd": "identity_load", "identity": null}\n`)
+        //   .then((data) => SocketApi.write(`{"cmd": "user_manifest_load"}\n`))
+        //   .then((data) => resolve(data))
+        //   .catch((error) => reject(error))
       })
     })
   }
@@ -26,7 +29,7 @@ class SocketApi {
     return new Promise((resolve, reject) => {
       this._socket.once("data", (data) => {
         data = JSON.parse(data)
-        setTimeout(() => data.status === 'ok' ? resolve(data) : reject(data), 1000)
+        setTimeout(() => data.status === 'ok' ? resolve(data) : reject(data), 100)
       })
       this._socket.write(cmd)
     })

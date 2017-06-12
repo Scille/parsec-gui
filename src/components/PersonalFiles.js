@@ -38,18 +38,18 @@ class PersonalFiles extends Component {
     const createDirModal = { path, createDir, hideModal }
 
     const listFiles = files.map((file, i) => {
-      const icon = file.id !== null? 'fa fa-file-o' : 'fa fa-folder-o'
+      const icon = file.type === 'file' ? 'fa fa-file-o' : 'fa fa-folder-o'
       const detailsModal = { file, hideModal }
       const renameModal = { file, renameFile, hideModal }
       const removeModal = {
         file,
-        title: file.id !== null? 'DELETE FILE' : 'DELETE DIRECTORY',
-        removeFunc: file.id !== null? deleteFile : removeDir,
+        title: file.type === 'file' ? 'DELETE FILE' : 'DELETE DIRECTORY',
+        removeFunc: file.type === 'file' ? deleteFile : removeDir,
         hideModal
       }
       return (
         <li key={i}>
-          <a onClick={() => file.id === null? moveTo(path, file.name) : null}>
+          <a onClick={() => file.type === 'folder' ? moveTo(path, file.name) : null}>
             <div className="icon"><i className={icon}/></div>
             <div className="title">{file.name}</div>
             <div className="details">{bytesToSize(file['size'])}</div>
@@ -59,7 +59,7 @@ class PersonalFiles extends Component {
               <i className="fa fa-ellipsis-h"/>
               <div className="dropdown-content">
                 <a onClick={() => showModal('detailsModal', detailsModal)}><i className="fa fa-info"/> Details</a>
-                { file.id && <a onClick={() => downloadFile(file)}><i className="fa fa-download"/> Download</a> }
+                { file.type === 'file' && <a onClick={() => downloadFile(file)}><i className="fa fa-download"/> Download</a> }
                 <a onClick={() => showModal('renameModal', renameModal)}><i className="fa fa-pencil-square-o"/> Rename</a>
                 <a onClick={() => console.log("Share")}><i className="fa fa-user-plus"/> Share</a>
                 <a onClick={() => showModal('removeModal', removeModal)}><i className="fa fa-trash-o"/> Delete</a>

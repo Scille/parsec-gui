@@ -2,7 +2,7 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 
-import * as actionsCreators from '../actions/ActionCreators'
+import * as actionsCreators from '../actions/ActionCreators.v2'
 import PersonalFiles from '../components/PersonalFiles'
 
 PersonalFiles.propTypes = {
