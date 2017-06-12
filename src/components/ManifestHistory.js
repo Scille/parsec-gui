@@ -27,8 +27,8 @@ class ManifestHistory extends Component {
       if(length === 0) return null
 
       return(
-        <label>
-          <i className="fa fa-folder-o"/> Personal Files
+        <label className="personal-files">
+          <i className="fa fa-folder-o"> Personal Files</i>
           <input type="checkbox" defaultChecked="checked"/>
           <ul>
             { added.map((data) => <li key={data}><i className="fa fa-added"> {data}</i></li>) }
@@ -46,8 +46,8 @@ class ManifestHistory extends Component {
       if(length === 0) return null
 
       return(
-        <label>
-          <i className="fa fa-folder-o"/> Deleted Files
+        <label className="deleted-files">
+          <i className="fa fa-folder-o"> Deleted Files</i>
           <input type="checkbox" defaultChecked="checked"/>
           <ul>
             { added.map((data) => <li key="dustbin_{data.id}"><i className="fa fa-added"> {data.path}</i></li>) }
@@ -61,7 +61,7 @@ class ManifestHistory extends Component {
       const restoreVersionModal = { version: data.version, restoreVersion, hideModal }
 
       return (
-        <li key={data.version}>
+        <li key={data.version} className="history-versions">
           <div className="version">V.{data.version}</div>
           <div className="tree-view">
             { entries(data.entries) }
