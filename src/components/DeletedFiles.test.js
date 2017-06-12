@@ -8,7 +8,7 @@ describe('DeletedFiles Component', () => {
       state: {
         files: [
           { id: '1',  guid: 'file1', name: 'file1.txt', path: '/file1.txt' },
-          { id: '2',  guid: 'file2', name: 'file2.txt', path: '/file1.txt' }
+          { id: '2',  guid: 'file2', name: 'file2.txt', path: '/file2.txt' }
         ],
         listView,
         socket: { connected: true, loading }
@@ -76,7 +76,7 @@ describe('DeletedFiles Component', () => {
   })
 
   describe('should dispatch actions', () => {
-    it('Trash button should call refresh() when clicked', () => {
+    it('breadcrumb Trash should call refresh() when clicked', () => {
       const { enzymeWrapper, props } = setup(false)
 
       enzymeWrapper.find('.breadcrumb').find('a').simulate('click', { preventDefault: () => {} })
