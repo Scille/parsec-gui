@@ -7,7 +7,7 @@ import './Modals.css'
 export class RenameModal extends Component {
   constructor(props) {
     super(props)
-    this.state = { newName: '' }
+    this.state = { newName: this.props.file.name }
 
     this.handleChange = this.handleChange.bind(this)
     this.handleCancel = this.handleCancel.bind(this)
@@ -20,6 +20,13 @@ export class RenameModal extends Component {
     const name = target.name
 
     this.setState({ [name]: value })
+  }
+
+  handleFocus(event) {
+    const target = event.target
+    const value = target.value
+
+    target.setSelectionRange(0, value.lastIndexOf('.'))
   }
 
   handleCancel(event) {
@@ -39,7 +46,6 @@ export class RenameModal extends Component {
   }
 
   render() {
-    const name = this.props.file.name
     const newName = this.state.newName
 
     return (
@@ -52,7 +58,7 @@ export class RenameModal extends Component {
             <div className="modal-body">
               <label>
                 Enter file name<br/>
-                <input type="text" name="newName" placeholder={name} value={newName} onChange={this.handleChange} autoFocus/>
+                <input type="text" name="newName" value={newName} onChange={this.handleChange} onFocus={this.handleFocus} autoFocus/>
               </label>
             </div>
             <div className="modal-footer">
@@ -84,6 +90,10 @@ export class CreateDirModal extends Component {
     this.setState({ [name]: value })
   }
 
+  handleFocus(event) {
+    event.target.select()
+  }
+
   handleCancel(event) {
     const hideModal = this.props.hideModal
 
@@ -113,7 +123,7 @@ export class CreateDirModal extends Component {
             <div className="modal-body">
               <label>
                 Enter new directory name<br/>
-                <input type="text" name="newName" value={newName} onChange={this.handleChange} autoFocus/>
+                <input type="text" name="newName" value={newName} onChange={this.handleChange} onFocus={this.handleFocus} autoFocus/>
               </label>
             </div>
             <div className="modal-footer">
