@@ -32,8 +32,8 @@ export const addFileSuccess = (file) => {
 export const deleteFileSuccess = (file) => {
   return { type: types.DELETE_FILE_SUCCESS, file }
 }
-export const updateFileSuccess = (file) => {
-  return { type: types.UPDATE_FILE_SUCCESS, file }
+export const updateFileSuccess = (path, updatedFile) => {
+  return { type: types.UPDATE_FILE_SUCCESS, path, updatedFile }
 }
 export const loadFilesSuccess = (files) => {
   return { type: types.LOAD_FILES_SUCCESS, files }
@@ -171,12 +171,12 @@ export const socketRenameFile = (file, name) => {
     return SocketApi.write(cmd)
       .then((data) => {
         NotifyApi.notify('Update', `'${file.path}' is renamed to '${path}'.`)
-        file = {
+        const renamedFile = {
           ...file,
           name,
           path
         }
-        dispatch(updateFileSuccess(file))
+        dispatch(updateFileSuccess(file.path, renamedFile))
       })
       .catch((error) => {
         NotifyApi.notify('Error', error.label)

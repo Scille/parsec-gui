@@ -11,8 +11,8 @@ const filesReducer = (state=[], action) => {
       return state.filter(file => file.path !== action.file.path)
     case types.UPDATE_FILE_SUCCESS:
       return state.map(file => {
-        if(file.path !== action.file.path) return file
-        return Object.assign(file, action.file)
+        if(file.path !== action.path) return file
+        return Object.assign(file, action.updatedFile)
       })
     case types.LOAD_FILES_SUCCESS:
       return action.files
