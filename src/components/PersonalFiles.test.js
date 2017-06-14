@@ -2,14 +2,35 @@ import React from 'react'
 import { shallow } from 'enzyme'
 import PersonalFiles from './PersonalFiles'
 
-describe('DeletedFiles Component', () => {
+describe('PersonalFiles Component', () => {
   const setup = (loading, listView=true) => {
     const props = {
       state: {
         files: [
-          { id: '1',  guid: 'file1', name: 'file1.txt', path: '/dir/file1.txt', size: 25 },
-          { id: '2',  guid: 'file2', name: 'file2.txt', path: '/dir/file2.txt', size: 25 },
-          { id: null, guid: 'sub-dir', name: 'sub-dir', path: '/dir/sub-dir' }
+          {
+            name: "file1.txt",
+            path: "/dir/file1.txt",
+            size: 1048,
+            type: "file",
+            created: "2017-01-01T00:00:00+00:00",
+            updated: "2017-01-01T00:00:00+00:00",
+          },
+          {
+            name: "file2.txt",
+            path: "/dir/file2.txt",
+            size: 1048,
+            type: "file",
+            created: "2017-01-01T00:00:00+00:00",
+            updated: "2017-01-01T00:00:00+00:00",
+          },
+          {
+            name: "sub-dir",
+            path: "/dir/sub-dir",
+            type: "folder",
+            children: [],
+            created: "2017-01-01T00:00:00+00:00",
+            updated: "2017-01-01T00:00:00+00:00"
+          }
         ],
         listView,
         socket: { connected: true, loading },
@@ -68,7 +89,7 @@ describe('DeletedFiles Component', () => {
       expect(file.find('.icon').find('.fa-file-o').exists()).toBe(true)
       expect(file.find('.icon').find('.fa-folder-o').exists()).toBe(false)
       expect(file.find('.title').text()).toBe('file1.txt')
-      expect(file.find('.details').text()).toBe('25 Bytes')
+      expect(file.find('.details').text()).toBe('1.0 KB')
       expect(file.find('.fa-info').exists()).toBe(true)
       expect(file.find('.fa-download').exists()).toBe(true)
       expect(file.find('.fa-pencil-square-o').exists()).toBe(true)

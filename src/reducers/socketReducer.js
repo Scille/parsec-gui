@@ -23,6 +23,7 @@ const socketReducer = (state=initialState, action) => {
     case types.ADD_FILE_SUCCESS:
     case types.LOAD_HISTORY_SUCCESS:
     case types.RESTORE_VERSION_SUCCESS:
+    case types.LOAD_FILES_FAILURE:
     case types.SOCKET_WRITE_FAILURE:
       return {
         ...state,

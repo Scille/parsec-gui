@@ -14,17 +14,21 @@ import Modals, {
 
 describe('Modals components', () => {
   const file = {
-    id: 'a5a394e27c184854b22a59b658aae61c',
-    name: 'file.txt',
-    key: 'lbR/4r6T7bWHbNBjwuJ17Qa4aJjIvvD6x3JkXruN3ug=\n',
-    path: '/file.txt',
-    size: 5,
-    removed_date: 1496319612.273644,
-    atime: 1496317138.262896,
-    ctime: 1496317138.262896,
-    mtime: 1496317138.262896,
-    write_trust_seed: '1L6H3PIC5RUY',
-    read_trust_seed: 'CHJHVATQJF9V'
+    name: "file1.txt",
+    path: "/dir/file1.txt",
+    size: 1048,
+    type: "file",
+    created: "2017-01-01T00:00:00+00:00",
+    updated: "2017-01-01T00:00:00+00:00",
+    removed_date: 1496319612.273644
+  }
+  const directory = {
+    name: "sub-dir",
+    path: "/dir/sub-dir",
+    type: "folder",
+    children: [],
+    created: "2017-01-01T00:00:00+00:00",
+    updated: "2017-01-01T00:00:00+00:00"
   }
 
   describe('Modals', () => {
@@ -269,16 +273,10 @@ describe('Modals components', () => {
 
       expect(enzymeWrapper.find('h3').text()).toBe('DETAILS')
       expect(enzymeWrapper.findWhere(n => n.text() === 'Name').find('input').props().value).toBe(props.file.name)
-      expect(enzymeWrapper.findWhere(n => n.text() === 'ID').find('input').props().value).toBe(props.file.id)
-      expect(enzymeWrapper.findWhere(n => n.text() === 'Key').find('input').props().value).toBe(props.file.key)
       expect(enzymeWrapper.findWhere(n => n.text() === 'Path').find('input').props().value).toBe(props.file.path)
+      expect(enzymeWrapper.findWhere(n => n.text() === 'Type').find('input').props().value).toBe(props.file.type)
       expect(enzymeWrapper.findWhere(n => n.text() === 'Size').find('input').props().value).toBe(bytesToSize(props.file.size))
       expect(enzymeWrapper.findWhere(n => n.text() === 'Removed Date').find('input').props().value).toBe(dateToUTC(props.file.removed_date))
-      expect(enzymeWrapper.findWhere(n => n.text() === 'ATime').find('input').props().value).toBe(dateToUTC(props.file.atime))
-      expect(enzymeWrapper.findWhere(n => n.text() === 'MTime').find('input').props().value).toBe(dateToUTC(props.file.mtime))
-      expect(enzymeWrapper.findWhere(n => n.text() === 'CTime').find('input').props().value).toBe(dateToUTC(props.file.ctime))
-      expect(enzymeWrapper.findWhere(n => n.text() === 'Read Trust Seed').find('input').props().value).toBe(props.file.read_trust_seed)
-      expect(enzymeWrapper.findWhere(n => n.text() === 'Write Trust Seed').find('input').props().value).toBe(props.file.write_trust_seed)
       expect(enzymeWrapper.find('.third-button').exists()).toBe(true)
     })
 

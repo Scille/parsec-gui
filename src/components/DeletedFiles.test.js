@@ -7,8 +7,24 @@ describe('DeletedFiles Component', () => {
     const props = {
       state: {
         files: [
-          { id: '1',  guid: 'file1', name: 'file1.txt', path: '/file1.txt' },
-          { id: '2',  guid: 'file2', name: 'file2.txt', path: '/file2.txt' }
+          {
+            name: "file1.txt",
+            path: "/file1.txt",
+            size: 1048,
+            type: "file",
+            created: "2017-01-01T00:00:00+00:00",
+            updated: "2017-01-01T00:00:00+00:00",
+            removed_date: 1496319612.273644
+          },
+          {
+            name: "file2.txt",
+            path: "/file2.txt",
+            size: 1048,
+            type: "file",
+            created: "2017-01-01T00:00:00+00:00",
+            updated: "2017-01-01T00:00:00+00:00",
+            removed_date: 1496319612.273644
+          },
         ],
         listView,
         socket: { connected: true, loading }

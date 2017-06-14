@@ -1,6 +1,8 @@
 import * as types from '../actions/ActionTypes'
 
-const filesReducer = (state=[], action) => {
+const initialState = []
+
+const filesReducer = (state=initialState, action) => {
   switch(action.type) {
     case types.ADD_FILE_SUCCESS:
       return [
@@ -16,6 +18,8 @@ const filesReducer = (state=[], action) => {
       })
     case types.LOAD_FILES_SUCCESS:
       return action.files
+    case types.LOAD_FILES_FAILURE:
+      return initialState
     default:
       return state
   }

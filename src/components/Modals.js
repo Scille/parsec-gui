@@ -253,16 +253,13 @@ export class DetailsModal extends Component {
           </div>
           <div className="modal-body">
             <label>Name<input type="text" value={file.name} readOnly/></label>
-            { file.id && <label>ID<input type="text" value={file.id} readOnly/></label> }
-            { file.key && <label>Key<input type="text" value={file.key} readOnly/></label> }
             <label>Path<input type="text" value={file.path} readOnly/></label>
+            <label>Type<input type="text" value={file.type} readOnly/></label>
             { file.size && <label>Size<input type="text" value={bytesToSize(file.size)} readOnly/></label> }
+            { file.children && <label>List directory contents<textarea value={file.children} readOnly/></label> }
+            { /* file.created && <label>Created<input type="text" value={dateToUTC(file.created)} readOnly/></label> */ }
+            { /* file.updated && <label>Updated<input type="text" value={dateToUTC(file.updated)} readOnly/></label> */ }
             { file.removed_date && <label>Removed Date<input type="text" value={dateToUTC(file.removed_date)} readOnly/></label> }
-            { file.atime && <label>ATime<input type="text" value={dateToUTC(file.atime)} readOnly/></label> }
-            { file.mtime && <label>MTime<input type="text" value={dateToUTC(file.mtime)} readOnly/></label> }
-            { file.ctime && <label>CTime<input type="text" value={dateToUTC(file.ctime)} readOnly/></label> }
-            { file.read_trust_seed && <label>Read Trust Seed<input type="text" value={file.read_trust_seed} readOnly/></label> }
-            { file.write_trust_seed && <label>Write Trust Seed<input type="text" value={file.write_trust_seed} readOnly/></label> }
           </div>
           <div className="modal-footer">
             <button onClick={this.handleClose} className="button third-button">Close</button>
