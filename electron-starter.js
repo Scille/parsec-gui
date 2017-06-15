@@ -16,7 +16,7 @@ const pjson = require('./package.json')
 let mainWindow
 const createWindow = () => {
   // Create the browser window.
-  mainWindow = new BrowserWindow({ width: 800, height: 600, minWidth: 760, minHeight: 600 })
+  mainWindow = new BrowserWindow({ width: 800, height: 600, minWidth: 760, minHeight: 600, icon: path.join(__dirname, '/public/favicon.png') })
 
   // Create the application menu
   const menu = Menu.buildFromTemplate([
