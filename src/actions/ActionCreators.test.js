@@ -178,7 +178,7 @@ describe('Socket Commands', () => {
     })
   })
   it('socket connect failure', () => {
-    // mock the SocketApi.write method, so it will just resolve the Promise.
+    // mock the SocketApi.write method, so it will just reject the Promise.
     SocketApi.connect = jest.fn(() => Promise.reject({ label: 'label' }))
     // mock the NotifyApi.notify.
     NotifyApi.notify = jest.fn()
@@ -227,12 +227,32 @@ describe('Socket Commands', () => {
       expect(dispatch.mock.calls[1][0]).toEqual(expectedActions[1])
     })
   })
-  it('list files failure, creates SOCKET_WRITE and LOAD_FILES_FAILURE', () => {
+  it('list files failure (Not a directory), creates SOCKET_WRITE and LOAD_FILES_FAILURE', () => {
     const expectedActions = [
       { type: types.SOCKET_WRITE },
       { type: types.LOAD_FILES_FAILURE }
     ]
     // mock the SocketApi.write method, so it will just resolve the Promise.
+    SocketApi.write = jest.fn((cmd) => Promise.resolve(file))
+    // mock the NotifyApi.notify.
+    NotifyApi.notify = jest.fn()
+    // mock the dispatch function from Redux thunk.
+    const dispatch = jest.fn()
+    return actions.socketListDir('/')(dispatch).then(() => {
+      // SOCKET_WRITE
+      expect(dispatch.mock.calls[0][0]).toEqual(expectedActions[0])
+      // LOAD_FILES_FAILURE
+      expect(dispatch.mock.calls[1][0]).toEqual(expectedActions[1])
+      // Create notification
+      expect(NotifyApi.notify.mock.calls.length).toEqual(1)
+    })
+  })
+  it('list files failure, creates SOCKET_WRITE and LOAD_FILES_FAILURE', () => {
+    const expectedActions = [
+      { type: types.SOCKET_WRITE },
+      { type: types.LOAD_FILES_FAILURE }
+    ]
+    // mock the SocketApi.write method, so it will just reject the Promise.
     SocketApi.write = jest.fn((cmd) => Promise.reject({ label: 'label' }))
     // mock the NotifyApi.notify.
     NotifyApi.notify = jest.fn()
@@ -283,7 +303,7 @@ describe('Socket Commands', () => {
       { type: types.SOCKET_WRITE },
       { type: types.LOAD_FILES_FAILURE }
     ]
-    // mock the SocketApi.write method, so it will just resolve the Promise.
+    // mock the SocketApi.write method, so it will just reject the Promise.
     SocketApi.write = jest.fn((cmd) => Promise.reject({ label: 'label' }))
     // mock the NotifyApi.notify.
     NotifyApi.notify = jest.fn()
@@ -335,7 +355,7 @@ describe('Socket Commands', () => {
       { type: types.SOCKET_WRITE },
       { type: types.SOCKET_WRITE_FAILURE }
     ]
-    // mock the SocketApi.write method, so it will just resolve the Promise.
+    // mock the SocketApi.write method, so it will just reject the Promise.
     SocketApi.write = jest.fn((cmd) => Promise.reject({ label: 'label' }))
     // mock the NotifyApi.notify.
     NotifyApi.notify = jest.fn()
@@ -385,7 +405,7 @@ describe('Socket Commands', () => {
       { type: types.SOCKET_WRITE },
       { type: types.SOCKET_WRITE_FAILURE }
     ]
-    // mock the SocketApi.write method, so it will just resolve the Promise.
+    // mock the SocketApi.write method, so it will just reject the Promise.
     SocketApi.write = jest.fn((cmd) => Promise.reject({ label: 'label' }))
     // mock the NotifyApi.notify.
     NotifyApi.notify = jest.fn()
@@ -425,7 +445,7 @@ describe('Socket Commands', () => {
       { type: types.SOCKET_WRITE },
       { type: types.SOCKET_WRITE_FAILURE }
     ]
-    // mock the SocketApi.write method, so it will just resolve the Promise.
+    // mock the SocketApi.write method, so it will just reject the Promise.
     SocketApi.write = jest.fn((cmd) => Promise.reject({ label: 'label' }))
     // mock the NotifyApi.notify.
     NotifyApi.notify = jest.fn()
@@ -465,7 +485,7 @@ describe('Socket Commands', () => {
       { type: types.SOCKET_WRITE },
       { type: types.SOCKET_WRITE_FAILURE }
     ]
-    // mock the SocketApi.write method, so it will just resolve the Promise.
+    // mock the SocketApi.write method, so it will just reject the Promise.
     SocketApi.write = jest.fn((cmd) => Promise.reject({ label: 'label' }))
     // mock the NotifyApi.notify.
     NotifyApi.notify = jest.fn()
@@ -493,7 +513,7 @@ describe('Socket Commands', () => {
     })
   })
   it('download file failure, creates Error Notification', () => {
-    // mock the SocketApi.write method, so it will just resolve the Promise.
+    // mock the SocketApi.write method, so it will just reject the Promise.
     SocketApi.write = jest.fn((cmd) => Promise.reject({ label: 'label' }))
     // mock the NotifyApi.notify.
     NotifyApi.notify = jest.fn()
@@ -537,7 +557,7 @@ describe('Socket Commands', () => {
       { type: types.SOCKET_WRITE },
       { type: types.SOCKET_WRITE_FAILURE }
     ]
-    // mock the SocketApi.write method, so it will just resolve the Promise.
+    // mock the SocketApi.write method, so it will just reject the Promise.
     SocketApi.write = jest.fn((cmd) => Promise.reject({ label: 'label' }))
     // mock the NotifyApi.notify.
     NotifyApi.notify = jest.fn()
@@ -577,7 +597,7 @@ describe('Socket Commands', () => {
       { type: types.SOCKET_WRITE },
       { type: types.SOCKET_WRITE_FAILURE }
     ]
-    // mock the SocketApi.write method, so it will just resolve the Promise.
+    // mock the SocketApi.write method, so it will just reject the Promise.
     SocketApi.write = jest.fn((cmd) => Promise.reject({ label: 'label' }))
     // mock the NotifyApi.notify.
     NotifyApi.notify = jest.fn()
@@ -613,7 +633,7 @@ describe('Socket Commands', () => {
       { type: types.SOCKET_WRITE },
       { type: types.SOCKET_WRITE_FAILURE }
     ]
-    // mock the SocketApi.write method, so it will just resolve the Promise.
+    // mock the SocketApi.write method, so it will just reject the Promise.
     SocketApi.write = jest.fn((cmd) => Promise.reject({ label: 'label' }))
     // mock the NotifyApi.notify.
     NotifyApi.notify = jest.fn()
@@ -653,7 +673,7 @@ describe('Socket Commands', () => {
       { type: types.SOCKET_WRITE },
       { type: types.SOCKET_WRITE_FAILURE }
     ]
-    // mock the SocketApi.write method, so it will just resolve the Promise.
+    // mock the SocketApi.write method, so it will just reject the Promise.
     SocketApi.write = jest.fn((cmd) => Promise.reject({ label: 'label' }))
     // mock the NotifyApi.notify.
     NotifyApi.notify = jest.fn()

@@ -14,8 +14,8 @@ import Modals, {
 
 describe('Modals components', () => {
   const file = {
-    name: "file1.txt",
-    path: "/dir/file1.txt",
+    name: "file.txt",
+    path: "/dir/file.txt",
     size: 1048,
     type: "file",
     created: "2017-01-01T00:00:00+00:00",
@@ -26,7 +26,7 @@ describe('Modals components', () => {
     name: "sub-dir",
     path: "/dir/sub-dir",
     type: "folder",
-    children: [],
+    children: ['file1.txt', 'file2.txt'],
     created: "2017-01-01T00:00:00+00:00",
     updated: "2017-01-01T00:00:00+00:00"
   }
@@ -129,6 +129,22 @@ describe('Modals components', () => {
       })
       expect(handleChange.calledOnce)
     })
+
+    it('input focus should call handleFocus() when clicked', () => {
+      const { enzymeWrapper, props } = setup()
+      const handleFocus = sinon.spy(RenameModal.prototype, 'handleFocus')
+      const target = {
+        value: 'rename_file.txt',
+        setSelectionRange: jest.fn()
+      }
+
+      enzymeWrapper.find('input').simulate('focus', {
+        preventDefault: () => {},
+        target
+      })
+      expect(handleFocus.calledOnce)
+      expect(target.setSelectionRange.mock.calls.length).toEqual(1)
+    })
   })
 
   describe('CreateDirModal', () => {
@@ -176,6 +192,19 @@ describe('Modals components', () => {
         target: { value: 'directory' }
       })
       expect(handleChange.calledOnce)
+    })
+
+    it('input focus should call handleFocus() when clicked', () => {
+      const { enzymeWrapper, props } = setup()
+      const handleFocus = sinon.spy(CreateDirModal.prototype, 'handleFocus')
+      const target = { select: jest.fn() }
+
+      enzymeWrapper.find('input').simulate('focus', {
+        preventDefault: () => {},
+        target
+      })
+      expect(handleFocus.calledOnce)
+      expect(target.select.mock.calls.length).toEqual(1)
     })
   })
 
@@ -259,16 +288,16 @@ describe('Modals components', () => {
   })
 
   describe('DetailsModal', () => {
-    const setup = () => {
+    const setup = (propsFile=file) => {
       const props = {
-        file,
+        file: propsFile,
         hideModal: jest.fn()
       }
       const enzymeWrapper = shallow(<DetailsModal {...props} />)
       return { props, enzymeWrapper }
     }
 
-    it('should render self', () => {
+    it('should render self (propsFile as file)', () => {
       const { enzymeWrapper, props } = setup()
 
       expect(enzymeWrapper.find('h3').text()).toBe('DETAILS')
@@ -276,7 +305,21 @@ describe('Modals components', () => {
       expect(enzymeWrapper.findWhere(n => n.text() === 'Path').find('input').props().value).toBe(props.file.path)
       expect(enzymeWrapper.findWhere(n => n.text() === 'Type').find('input').props().value).toBe(props.file.type)
       expect(enzymeWrapper.findWhere(n => n.text() === 'Size').find('input').props().value).toBe(bytesToSize(props.file.size))
-      expect(enzymeWrapper.findWhere(n => n.text() === 'Removed Date').find('input').props().value).toBe(dateToUTC(props.file.removed_date))
+      expect(enzymeWrapper.findWhere(n => n.text() === 'Created').find('input').props().value).toBe(dateToUTC(props.file.created))
+      expect(enzymeWrapper.findWhere(n => n.text() === 'Updated').find('input').props().value).toBe(dateToUTC(props.file.updated))
+      expect(enzymeWrapper.findWhere(n => n.text() === 'Removed').find('input').props().value).toBe(dateToUTC(props.file.removed_date))
+      expect(enzymeWrapper.find('.third-button').exists()).toBe(true)
+    })
+
+    it('should render self (propsFile as folder)', () => {
+      const { enzymeWrapper, props } = setup(directory)
+      expect(enzymeWrapper.find('h3').text()).toBe('DETAILS')
+      expect(enzymeWrapper.findWhere(n => n.text() === 'Name').find('input').props().value).toBe(props.file.name)
+      expect(enzymeWrapper.findWhere(n => n.text() === 'Path').find('input').props().value).toBe(props.file.path)
+      expect(enzymeWrapper.findWhere(n => n.text() === 'Type').find('input').props().value).toBe(props.file.type)
+      expect(enzymeWrapper.findWhere(n => n.text() === 'List directory contents').find('textarea').props().value).toBe(props.file.children)
+      expect(enzymeWrapper.findWhere(n => n.text() === 'Created').find('input').props().value).toBe(dateToUTC(props.file.created))
+      expect(enzymeWrapper.findWhere(n => n.text() === 'Updated').find('input').props().value).toBe(dateToUTC(props.file.updated))
       expect(enzymeWrapper.find('.third-button').exists()).toBe(true)
     })
 

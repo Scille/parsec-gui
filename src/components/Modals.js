@@ -257,9 +257,9 @@ export class DetailsModal extends Component {
             <label>Type<input type="text" value={file.type} readOnly/></label>
             { file.size && <label>Size<input type="text" value={bytesToSize(file.size)} readOnly/></label> }
             { file.children && <label>List directory contents<textarea value={file.children} readOnly/></label> }
-            { /* file.created && <label>Created<input type="text" value={dateToUTC(file.created)} readOnly/></label> */ }
-            { /* file.updated && <label>Updated<input type="text" value={dateToUTC(file.updated)} readOnly/></label> */ }
-            { file.removed_date && <label>Removed Date<input type="text" value={dateToUTC(file.removed_date)} readOnly/></label> }
+            { file.created && <label>Created<input type="text" value={dateToUTC(file.created)} readOnly/></label> }
+            { file.updated && <label>Updated<input type="text" value={dateToUTC(file.updated)} readOnly/></label> }
+            { file.removed_date && <label>Removed<input type="text" value={dateToUTC(file.removed_date)} readOnly/></label> }
           </div>
           <div className="modal-footer">
             <button onClick={this.handleClose} className="button third-button">Close</button>

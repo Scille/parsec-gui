@@ -8,7 +8,9 @@ export const bytesToSize = (bytes=0) => {
 }
 
 export const dateToUTC = (date) => {
-  return new Date(date.toFixed(0) * 1000).toUTCString()
+  if(typeof(date) === 'number')
+    date = date.toFixed(0) * 1000
+  return new Date(date).toUTCString()
 }
 
 export const saveAs = (url, filename) => {
@@ -18,14 +20,6 @@ export const saveAs = (url, filename) => {
   link.setAttribute('download', filename)
   link.click()
   document.body.removeChild(link)
-}
-
-export const guid = () => {
-  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
-    const r = Math.random() * 16 | 0
-    const v = c === 'x' ? r : ((r & 0x3) | 0x8)
-    return v.toString(16)
-  })
 }
 
 export const getPath = (directory, file) => {

@@ -34,6 +34,10 @@ describe('Common Functions', () => {
     it('converting unix timestamp to human readable date', () => {
       expect(dateToUTC(1483228800)).toEqual('Sun, 01 Jan 2017 00:00:00 GMT')
     })
+
+    it('converting string date to human readable date', () => {
+      expect(dateToUTC('2017-01-01T00:00:00+00:00')).toEqual('Sun, 01 Jan 2017 00:00:00 GMT')
+    })
   })
 
   describe('getPath', () => {
