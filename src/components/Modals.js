@@ -10,6 +10,7 @@ export class RenameModal extends Component {
     this.state = { newName: this.props.file.name }
 
     this.handleChange = this.handleChange.bind(this)
+    this.handleFocus = this.handleFocus.bind(this)
     this.handleCancel = this.handleCancel.bind(this)
     this.handleSubmit = this.handleSubmit.bind(this)
   }
@@ -78,6 +79,7 @@ export class CreateDirModal extends Component {
     this.state = { newName: 'Untitled Folder' }
 
     this.handleChange = this.handleChange.bind(this)
+    this.handleFocus = this.handleFocus.bind(this)
     this.handleCancel = this.handleCancel.bind(this)
     this.handleSubmit = this.handleSubmit.bind(this)
   }
@@ -129,6 +131,72 @@ export class CreateDirModal extends Component {
             <div className="modal-footer">
               <button onClick={this.handleCancel} className="button third-button">Cancel</button>
               <button type="submit" className="button main-button" value="Submit">OK</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    )
+  }
+}
+
+export class SearchModal extends Component {
+  constructor(props) {
+    super(props)
+    this.state = { name: '' }
+
+    this.handleChange = this.handleChange.bind(this)
+    this.handleFocus = this.handleFocus.bind(this)
+    this.handleCancel = this.handleCancel.bind(this)
+    this.handleSubmit = this.handleSubmit.bind(this)
+  }
+
+  handleChange(event) {
+    const target = event.target
+    const value = target.value
+    const name = target.name
+
+    this.setState({ [name]: value })
+  }
+
+  handleFocus(event) {
+    event.target.select()
+  }
+
+  handleCancel(event) {
+    const hideModal = this.props.hideModal
+
+    event.preventDefault()
+    hideModal()
+  }
+
+  handleSubmit(event) {
+    const path = this.props.path
+    const name = this.state.name
+    const search = this.props.search
+
+    event.preventDefault()
+    if(name !== '') search(name)
+  }
+
+  render() {
+    const name = this.state.name
+
+    return (
+      <div className="modal">
+        <div className="modal-content">
+          <div className="modal-header">
+            <h3>SEARCH FILE</h3>
+          </div>
+          <form onSubmit={this.handleSubmit}>
+            <div className="modal-body">
+              <label>
+                Enter file name<br/>
+              <input type="text" name="name" value={name} onChange={this.handleChange} onFocus={this.handleFocus} autoFocus/>
+              </label>
+            </div>
+            <div className="modal-footer">
+              <button onClick={this.handleCancel} className="button third-button">Cancel</button>
+              <button type="submit" className="button main-button" value="Submit">Search</button>
             </div>
           </form>
         </div>
@@ -321,7 +389,8 @@ const MODAL_COMPONENTS = Object.freeze({
   "removeModal": RemoveModal,
   "restoreModal": RestoreModal,
   "detailsModal": DetailsModal,
-  "restoreVersionModal": RestoreVersionModal
+  "restoreVersionModal": RestoreVersionModal,
+  "searchModal": SearchModal
 })
 
 class Modals extends Component {

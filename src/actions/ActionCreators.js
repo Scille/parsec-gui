@@ -133,6 +133,21 @@ export const socketShowDustbin = () => {
       })
   }
 }
+export const socketSearchFile = (name) => {
+  const cmd = `{"cmd": "user_manifest_search_file", "name": "${name}"}\n`
+  return (dispatch) => {
+    dispatch(socketWrite())
+    return SocketApi.write(cmd)
+      .then((data) => {
+        const files = []
+        dispatch(loadFilesSuccess(files))
+      })
+      .catch((error) => {
+        NotifyApi.notify('Error', error.label)
+        dispatch(loadFilesFailure())
+      })
+  }
+}
 export const socketCreateFile = (route, fileR) => {
   return (dispatch) => {
     dispatch(socketWrite())

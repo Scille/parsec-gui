@@ -86,7 +86,7 @@ class ManifestHistory extends Component {
           <div className="options">
             <div className="dropdown">
               <i className="fa fa-ellipsis-v"/>
-              <div className="dropdown-content">
+              <div className="dropdown-content dropdown-content-right">
                 <div>Actions</div>
                 <a onClick={() => refresh()}><i className="fa fa-refresh"/> Refresh</a>
               </div>

@@ -5,6 +5,10 @@
   --sidebar-width: 60px;
 }
 
+.view-switcher {
+  height: 100%;
+}
+
 .view-switcher .header {
 	padding: 10px 20px;
   text-align: left;
@@ -25,13 +29,19 @@
   font-size: 17px;
 }
 .view-switcher .header>.breadcrumb ul li {
-  display: inline;
+  display: inline-block;
+}
+.view-switcher .header>.breadcrumb ul li+li {
+  max-width: 70%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 .view-switcher .header>.breadcrumb ul li+li:before {
-  /* Add a slash symbol (/) before/behind each list item */
+  /* Add a slash symbol (>) before/behind each list item */
   padding: 8px;
   color: var(--third-color);
-  content: "/\00a0";
+  content: "\203a";
 }
 .view-switcher .header>.breadcrumb ul li a {
   color: var(--third-color);
@@ -44,7 +54,7 @@
 .view-switcher .header .options {
 	position: absolute;
   right: 25px;
-  top: 75px;
+  top: 85px;
 }
 
 .view-switcher .file-view ul {

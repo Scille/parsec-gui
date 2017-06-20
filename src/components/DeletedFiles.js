@@ -34,7 +34,7 @@ class DeletedFiles extends Component {
           <div className="options">
             <div className="dropdown">
               <i className="fa fa-ellipsis-h"/>
-              <div className="dropdown-content">
+              <div className="dropdown-content dropdown-content-right">
                 <a onClick={() => showModal('detailsModal', detailsModal)}><i className="fa fa-info"/> Details</a>
                 <a onClick={() => showModal('restoreModal', restoreModal)}><i className="fa fa-undo"/> Restore</a>
               </div>
@@ -50,13 +50,18 @@ class DeletedFiles extends Component {
           <div className="title">Deleted Files</div>
           <div className="breadcrumb">
             <ul>
-              <li><a onClick={() => refresh()}>Trash</a></li>
+              <li>
+                <div className="dropdown">
+                  <i className="fa fa-2x fa-folder-open"/>
+                </div>
+              </li>
+              <li>Trash</li>
             </ul>
           </div>
           <div className="options">
             <div className="dropdown">
               <i className="fa fa-ellipsis-v"/>
-              <div className="dropdown-content">
+              <div className="dropdown-content dropdown-content-right">
                 <div>Views</div>
                 <a onClick={() => switchView()}><i className={listView ? 'fa fa-th-large' : 'fa fa-th-list'}/>{listView ? ' Grid' : ' List'}</a>
                 <div>Actions</div>

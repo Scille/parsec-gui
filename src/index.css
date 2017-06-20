@@ -116,20 +116,26 @@ a:hover {
 .dropdown-content {
  display: none;
  position: absolute;
- right: 0;
  text-align: left;
  background-color: white;
  color: var(--second-color);
  border: 2px solid var(--main-color);
- min-width: 150px;
+ max-width: 150px;
  padding: 7px 12px;
  z-index: 1;
+}
+.dropdown-content-right {
+ position: absolute;
+ right: 0;
 }
 .dropdown-content a {
   color: var(--third-color);
   padding: 5px 16px;
   text-decoration: none;
   display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 .dropdown-content a:hover {
   color: var(--main-color);
@@ -144,6 +150,25 @@ a:hover {
 }
 .dropdown-content a .input-file + label {
 	cursor: pointer;
+}
+
+/*Dropzone*/
+.dropzone {
+  position: relative;
+}
+/*.dropzone:before {
+  content: "\f0ee";
+  font-family: FontAwesome;
+  font-size: 100px;
+  line-height: 100px;
+  color: var(--main-color);
+}*/
+.dropzone [type="file"] {
+  border: 2px solid var(--main-color);
+  position: absolute;
+  bottom: 0;
+  top: 0;
+  width: 100%;
 }
 
 /*Inputs*/

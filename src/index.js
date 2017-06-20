@@ -12,5 +12,7 @@ ReactDOM.render(
   <Provider store={store}>
     <AppRouter />
   </Provider>,
-  document.getElementById('root')
+  document.getElementById('root'),
+  document.addEventListener('dragover', event => event.preventDefault()),
+  document.addEventListener('drop', event => event.preventDefault())
 )
