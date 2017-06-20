@@ -45,6 +45,8 @@ Done
  - History
   - Connect to unix socket
   - Redirection -> NoSocket Page
+  - Show history
+  - Restore history
  - Error pages
   - NoSocket
   - NotFound
@@ -62,6 +64,7 @@ Done
   - Remove file
   - Remove directory
   - Restore file
+  - Restore history
  - ViewSwitcher
   - List view
   - Grid view
@@ -73,10 +76,12 @@ Done
   - USER_MANIFEST_CREATE_FILE
   - USER_MANIFEST_RENAME_FILE
   - USER_MANIFEST_DELETE_FILE
+  - USER_MANIFEST_RESTORE_FILE
   - USER_MANIFEST_LIST_DIR
   - USER_MANIFEST_MAKE_DIR
   - USER_MANIFEST_REMOVE_DIR
   - USER_MANIFEST_SHOW_DUSTBIN
+  - USER_MANIFEST_HISTORY
   - USER_MANIFEST_RESTORE
   - FILE_READ
   - FILE_STAT
@@ -88,12 +93,26 @@ Done
   - Remove file
   - Remove directory
   - Restore file
+  - Restore history
  - API
   - Notify api
   - Socket api
 
 Todo
 ----
+
+23/06/2017
+**********************
+- Parsec-GUI
+ - PersonalFiles
+  - Dropzone
+  - Search input
+ - Use new backend API
+
+16/06/2017
+**********************
+- Parsec-GUI
+ - Use new backend API                                          [~OK]
 
 09/06/2017
 **********************

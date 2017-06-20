@@ -7,6 +7,7 @@ Secure cloud framework
 
 * Free software: GPL v3
 * Documentation: https://parsec-cloud.readthedocs.org.
+* You need to install `libappindicator1` to get the tray working.
 
 ## Credits
 

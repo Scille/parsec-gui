@@ -1,3 +1,5 @@
+import NotifyApi from '../api/notifyApi'
+
 class SocketApi {
   static connect(path='/tmp/parsec') {
     return new Promise((resolve, reject) => {
@@ -7,8 +9,13 @@ class SocketApi {
       if(this._socket != null) this._socket.end()
       this._socket = new net.Socket()
       this._socket.on("error", (error) => reject(error))
+
       this._socket.connect({ path }, () => {
         this._socket.setEncoding('utf8')
+        this._socket.on("close", (error) => {
+          window.location.hash = '/socket-error'
+          NotifyApi.notify('Error', `Socket is fully closed (${path})`)
+        })
         // TODO: Without identity_load
         resolve({ status: 'ok' })
         // TODO: With identity_load
