@@ -6,6 +6,7 @@ import { bytesToSize, dateToUTC } from '../common'
 import Modals, {
   RenameModal,
   CreateDirModal,
+  SearchModal,
   RemoveModal,
   RestoreModal,
   DetailsModal,
@@ -44,6 +45,13 @@ describe('Modals components', () => {
       const enzymeWrapper = shallow(<Modals {...props} />)
 
       expect(enzymeWrapper.find('CreateDirModal').exists()).toBe(true)
+    })
+
+    it('should render SearchModal', () => {
+      const props = { modalType: 'searchModal' }
+      const enzymeWrapper = shallow(<Modals {...props} />)
+
+      expect(enzymeWrapper.find('SearchModal').exists()).toBe(true)
     })
 
     it('should render RemoveModal', () => {
@@ -197,6 +205,71 @@ describe('Modals components', () => {
     it('input focus should call handleFocus() when clicked', () => {
       const { enzymeWrapper, props } = setup()
       const handleFocus = sinon.spy(CreateDirModal.prototype, 'handleFocus')
+      const target = { select: jest.fn() }
+
+      enzymeWrapper.find('input').simulate('focus', {
+        preventDefault: () => {},
+        target
+      })
+      expect(handleFocus.calledOnce)
+      expect(target.select.mock.calls.length).toEqual(1)
+    })
+  })
+
+  describe('SearchModal', () => {
+    const setup = () => {
+      const props = {
+        search: jest.fn(),
+        hideModal: jest.fn()
+      }
+      const enzymeWrapper = shallow(<SearchModal {...props} />)
+      return { props, enzymeWrapper }
+    }
+
+    it('should render self', () => {
+      const { enzymeWrapper } = setup()
+
+      expect(enzymeWrapper.find('h3').text()).toBe('SEARCH FILE')
+      expect(enzymeWrapper.find('.third-button').exists()).toBe(true)
+      expect(enzymeWrapper.find('.main-button').exists()).toBe(true)
+    })
+
+    it('cancel button should call hideModal() when clicked', () => {
+      const { enzymeWrapper, props } = setup()
+      const handleCancel = sinon.spy(SearchModal.prototype, 'handleCancel')
+
+      enzymeWrapper.find('.third-button').simulate('click', { preventDefault: () => {} })
+      expect(handleCancel.calledOnce)
+      expect(props.hideModal.mock.calls.length).toBe(1)
+    })
+
+    it('submit button should call search() when clicked', () => {
+      const { enzymeWrapper, props } = setup()
+      const handleSubmit = sinon.spy(SearchModal.prototype, 'handleSubmit')
+
+      enzymeWrapper.find('input').simulate('change', {
+        preventDefault: () => {},
+        target: { value: 'search_file.txt', name: 'name' }
+      })
+      enzymeWrapper.find('form').simulate('submit', { preventDefault: () => {} })
+      expect(handleSubmit.calledOnce)
+      expect(props.search.mock.calls.length).toBe(1)
+    })
+
+    it('input change should call handleChange() when clicked', () => {
+      const { enzymeWrapper, props } = setup()
+      const handleChange = sinon.spy(SearchModal.prototype, 'handleChange')
+
+      enzymeWrapper.find('input').simulate('change', {
+        preventDefault: () => {},
+        target: { value: 'search_file.txt' }
+      })
+      expect(handleChange.calledOnce)
+    })
+
+    it('input focus should call handleFocus() when clicked', () => {
+      const { enzymeWrapper, props } = setup()
+      const handleFocus = sinon.spy(SearchModal.prototype, 'handleFocus')
       const target = { select: jest.fn() }
 
       enzymeWrapper.find('input').simulate('focus', {

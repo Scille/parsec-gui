@@ -92,12 +92,6 @@ describe('DeletedFiles Component', () => {
   })
 
   describe('should dispatch actions', () => {
-    it('breadcrumb Trash should call refresh() when clicked', () => {
-      const { enzymeWrapper, props } = setup(false)
-
-      enzymeWrapper.find('.breadcrumb').find('a').simulate('click', { preventDefault: () => {} })
-      expect(props.dispatch.refresh.mock.calls.length).toBe(1)
-    })
     it('swithView button should call switchView() when clicked', () => {
       const { enzymeWrapper, props } = setup(false)
 

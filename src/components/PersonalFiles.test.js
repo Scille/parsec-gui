@@ -43,6 +43,7 @@ describe('PersonalFiles Component', () => {
         moveUp: jest.fn(),
         refresh: jest.fn(),
         createFiles: jest.fn(),
+        searchFile: jest.fn(),
         renameFile: jest.fn(),
         deleteFile: jest.fn(),
         downloadFile: jest.fn(),
@@ -63,8 +64,8 @@ describe('PersonalFiles Component', () => {
 
       const header = enzymeWrapper.find('.header')
       expect(header.find('.title').text()).toBe('Personal Files')
-      expect(header.find('.breadcrumb').text()).toBe('HomeDir')
-      expect(header.find('.dropdown-content').text()).toBe('Views GridActions Refresh New Folder Add Files')
+      expect(header.find('.breadcrumb').find('.dropdown-content').text()).toBe('HomeDir')
+      expect(header.find('.options').find('.dropdown-content').text()).toBe('Views GridActions Search Refresh New Folder Add Files')
 
       const fileView = enzymeWrapper.find('.file-view')
       expect(fileView.find('#loader-wrapper').exists()).toBe(true)
@@ -78,8 +79,8 @@ describe('PersonalFiles Component', () => {
 
       const header = enzymeWrapper.find('.header')
       expect(header.find('.title').text()).toBe('Personal Files')
-      expect(header.find('.breadcrumb').text()).toBe('HomeDir')
-      expect(header.find('.dropdown-content').text()).toBe('Views GridActions Refresh New Folder Add Files')
+      expect(header.find('.breadcrumb').find('.dropdown-content').text()).toBe('HomeDir')
+      expect(header.find('.options').find('.dropdown-content').text()).toBe('Views GridActions Search Refresh New Folder Add Files')
 
       const fileView = enzymeWrapper.find('.file-view')
       expect(fileView.hasClass('list-view')).toBe(true)
@@ -116,8 +117,8 @@ describe('PersonalFiles Component', () => {
 
       const header = enzymeWrapper.find('.header')
       expect(header.find('.title').text()).toBe('Personal Files')
-      expect(header.find('.breadcrumb').text()).toBe('HomeDir')
-      expect(header.find('.dropdown-content').text()).toBe('Views ListActions Refresh New Folder Add Files')
+      expect(header.find('.breadcrumb').find('.dropdown-content').text()).toBe('HomeDir')
+      expect(header.find('.options').find('.dropdown-content').text()).toBe('Views ListActions Search Refresh New Folder Add Files')
 
       const fileView = enzymeWrapper.find('.file-view')
       expect(fileView.hasClass('grid-view')).toBe(true)
@@ -140,6 +141,12 @@ describe('PersonalFiles Component', () => {
 
       enzymeWrapper.find('.fa-th-large').parent().simulate('click', { preventDefault: () => {} })
       expect(props.dispatch.switchView.mock.calls.length).toBe(1)
+    })
+    it('search button should call searchModal() when clicked', () => {
+      const { enzymeWrapper, props } = setup(false)
+
+      enzymeWrapper.find('.fa-search').parent().simulate('click', { preventDefault: () => {} })
+      expect(props.dispatch.showModal.mock.calls.length).toBe(1)
     })
     it('refresh button should call refresh() when clicked', () => {
       const { enzymeWrapper, props } = setup(false)
