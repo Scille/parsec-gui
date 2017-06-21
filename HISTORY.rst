@@ -106,6 +106,7 @@ Todo
 - Parsec-GUI
  - PersonalFiles
   - Dropzone
+  - Drag & Drop files
   - Search input
  - Use new backend API
 

@@ -11,8 +11,11 @@ class PersonalFiles extends Component {
     super(props)
     this.state = { drag: false }
 
-    this.handleDrag = this.handleDrag.bind(this)
+    this.handleDrop = this.handleDrop.bind(this)
+    this.handleDragStart = this.handleDragStart.bind(this)
     this.handleDragOver = this.handleDragOver.bind(this)
+    this.handleDragLeave = this.handleDragLeave.bind(this)
+
   }
 
   componentDidMount() {
@@ -23,12 +26,31 @@ class PersonalFiles extends Component {
     this.props.dispatch.end()
   }
 
-  handleDrag() {
-    this.setState({ drag: true });
+  handleDrop(event, path, allowed=false) {
+    event.stopPropagation()
+    const file = JSON.parse(event.dataTransfer.getData('file'))
+    document.getElementById(file.path).classList.remove('drag')
+
+    if(allowed) {
+      document.getElementById(path).classList.remove('drag-over')
+      this.props.dispatch.moveFile(file, path)
+    }
   }
 
-  handleDragOver() {
-    this.setState({ drag: false });
+  handleDragStart(event, file) {
+    event.dataTransfer.setData('file', JSON.stringify(file))
+    document.getElementById(file.path).classList.add('drag')
+  }
+
+  handleDragOver(event, path, allowed=false) {
+    if(allowed){
+      event.preventDefault()
+      document.getElementById(path).classList.add('drag-over')
+    }
+  }
+
+  handleDragLeave(event, path) {
+    document.getElementById(path).classList.remove('drag-over')
   }
 
   render() {
@@ -55,7 +77,7 @@ class PersonalFiles extends Component {
     const searchModal = { search, hideModal }
     const createDirModal = { path: currentPath.route, createDir, hideModal }
 
-    const listFiles = files.map((file, i) => {
+    const listFiles = files.map((file) => {
       const icon = file.type === 'file' ? 'fa fa-file-o' : 'fa fa-folder-o'
       const detailsModal = { file, hideModal }
       const renameModal = { file, renameFile, hideModal }
@@ -66,7 +88,11 @@ class PersonalFiles extends Component {
         hideModal
       }
       return (
-        <li key={i}>
+        <li id={file.path} key={file.path} draggable="true"
+          onDrop={(event) => this.handleDrop(event, file.path, file.type === 'folder')}
+          onDragStart={(event) => this.handleDragStart(event, file)}
+          onDragOver={(event) => this.handleDragOver(event, file.path, file.type === 'folder')}
+          onDragLeave={(event) => this.handleDragLeave(event, file.path)}>
           <a onClick={() => file.type === 'folder' ? moveTo(currentPath.route, file.name) : null}>
             <div className="icon"><i className={icon}/></div>
             <div className="title">{file.name}</div>
@@ -126,11 +152,8 @@ class PersonalFiles extends Component {
             </div>
           </div>
       	</div>
-        <div className="dropzone" onDrag={this.handleDrag}>
-          <div className={listView ? 'file-view list-view' : 'file-view grid-view'}>
-            { loading ? (<div id="loader-wrapper"><div id="loader"></div></div>) : (<ul>{ listFiles }</ul>) }
-          </div>
-          { this.state.drag && <input type="file" onChange={(event) => {createFiles(currentPath.route, event.target.files)}}/> }
+        <div className={listView ? 'file-view list-view' : 'file-view grid-view'}>
+          { loading ? (<div id="loader-wrapper"><div id="loader"></div></div>) : (<ul>{ listFiles }</ul>) }
         </div>
         <ModalsContainer></ModalsContainer>
       </div>

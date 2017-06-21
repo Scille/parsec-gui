@@ -170,7 +170,6 @@ export class SearchModal extends Component {
   }
 
   handleSubmit(event) {
-    const path = this.props.path
     const name = this.state.name
     const search = this.props.search
 

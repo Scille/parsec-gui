@@ -246,6 +246,26 @@ export const socketDownloadFile = (file) => {
       })
   }
 }
+export const socketMoveFile = (file, path) => {
+  const newPath = path.concat('/', file.name)
+  const cmd = `{"cmd": "move", "src": "${file.path}", "dst": "${newPath}"}\n`
+  return (dispatch) => {
+    dispatch(socketWrite())
+    return SocketApi.write(cmd)
+      .then((data) => {
+        return SocketApi.write(`{"cmd": "stat", "path": "${path}"}\n`)
+      })
+      .then((data) => {
+        NotifyApi.notify('Move', `'${file.path}' is moved to '${newPath}'.`)
+        dispatch(deleteFileSuccess(file))
+        dispatch(updateFileSuccess(path, data))
+      })
+      .catch((error) => {
+        NotifyApi.notify('Error', error.label)
+        dispatch(socketWriteFailure())
+      })
+  }
+}
 export const socketCreateDir = (route, name) => {
   const path = getPath(route, name)
   const cmd = `{"cmd": "folder_create", "path": "${path}"}\n`

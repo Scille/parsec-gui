@@ -21,11 +21,11 @@ class DeletedFiles extends Component {
     const showModal = this.props.dispatch.showModal
     const hideModal = this.props.dispatch.hideModal
 
-    const listFiles = files.map((file, i) => {
+    const listFiles = files.map((file) => {
       const detailsModal = { file, hideModal }
       const restoreModal = { file, restoreFile, hideModal }
       return (
-        <li key={i}>
+        <li key={file.path}>
           <a>
             <div className="icon"><i className='fa fa-file-o'/></div>
             <div className="title">{file.name}</div>

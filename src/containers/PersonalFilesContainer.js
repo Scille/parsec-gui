@@ -23,6 +23,7 @@ PersonalFiles.propTypes = {
     renameFile: PropTypes.func.isRequired,
     deleteFile: PropTypes.func.isRequired,
     downloadFile: PropTypes.func.isRequired,
+    moveFile: PropTypes.func.isRequired,
     createDir: PropTypes.func.isRequired,
     removeDir: PropTypes.func.isRequired,
     switchView: PropTypes.func.isRequired,
@@ -77,9 +78,8 @@ const mapDispatchToProps = (dispatch) => {
         dispatch(actionsCreators.socketDeleteFile(file))
         dispatch(actionsCreators.hideModal())
       },
-      downloadFile: (file) => {
-        dispatch(actionsCreators.socketDownloadFile(file))
-      },
+      downloadFile: (file) => dispatch(actionsCreators.socketDownloadFile(file)),
+      moveFile: (file, path) => dispatch(actionsCreators.socketMoveFile(file, path)),
       createDir: (route, name) => {
         dispatch(actionsCreators.socketCreateDir(route, name))
         dispatch(actionsCreators.hideModal())
