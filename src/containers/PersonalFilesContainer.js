@@ -17,9 +17,9 @@ PersonalFiles.propTypes = {
     end: PropTypes.func.isRequired,
     moveTo: PropTypes.func.isRequired,
     moveUp: PropTypes.func.isRequired,
-    search: PropTypes.func.isRequired,
     refresh: PropTypes.func.isRequired,
     createFiles: PropTypes.func.isRequired,
+    searchFile: PropTypes.func.isRequired,
     renameFile: PropTypes.func.isRequired,
     deleteFile: PropTypes.func.isRequired,
     downloadFile: PropTypes.func.isRequired,
@@ -60,7 +60,6 @@ const mapDispatchToProps = (dispatch) => {
         dispatch(actionsCreators.socketListDir(route))
         dispatch(actionsCreators.removePath(index))
       },
-      search: (route) => dispatch(actionsCreators.socketSearchFile(name)),
       refresh: (route) => dispatch(actionsCreators.socketListDir(route)),
       createFiles: (route, files={}) => {
         for(const file of files) {
@@ -69,6 +68,11 @@ const mapDispatchToProps = (dispatch) => {
             file
           ))
         }
+      },
+      searchFile: (name) => {
+        dispatch(actionsCreators.removePath(0))
+        dispatch(actionsCreators.socketSearchFile(name))
+        dispatch(actionsCreators.hideModal())
       },
       renameFile: (file, name) => {
         dispatch(actionsCreators.socketRenameFile(file, name))

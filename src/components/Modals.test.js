@@ -219,7 +219,7 @@ describe('Modals components', () => {
   describe('SearchModal', () => {
     const setup = () => {
       const props = {
-        search: jest.fn(),
+        searchFile: jest.fn(),
         hideModal: jest.fn()
       }
       const enzymeWrapper = shallow(<SearchModal {...props} />)
@@ -253,7 +253,7 @@ describe('Modals components', () => {
       })
       enzymeWrapper.find('form').simulate('submit', { preventDefault: () => {} })
       expect(handleSubmit.calledOnce)
-      expect(props.search.mock.calls.length).toBe(1)
+      expect(props.searchFile.mock.calls.length).toBe(1)
     })
 
     it('input change should call handleChange() when clicked', () => {

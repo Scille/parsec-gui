@@ -67,8 +67,7 @@ describe('PersonalFiles Component', () => {
       expect(header.find('.breadcrumb').find('.dropdown-content').text()).toBe('HomeDir')
       expect(header.find('.options').find('.dropdown-content').text()).toBe('Views GridActions Search Refresh New Folder Add Files')
 
-      const fileView = enzymeWrapper.find('.file-view')
-      expect(fileView.find('#loader-wrapper').exists()).toBe(true)
+      expect(enzymeWrapper.find('#loader-wrapper').exists()).toBe(true)
 
       const modalsContainer = enzymeWrapper.find('ModalsContainer')
       expect(modalsContainer.exists()).toBe(false)

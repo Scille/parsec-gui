@@ -171,10 +171,10 @@ export class SearchModal extends Component {
 
   handleSubmit(event) {
     const name = this.state.name
-    const search = this.props.search
+    const searchFile = this.props.searchFile
 
     event.preventDefault()
-    if(name !== '') search(name)
+    if(name !== '') searchFile(name)
   }
 
   render() {

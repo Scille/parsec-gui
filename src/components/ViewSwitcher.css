@@ -57,6 +57,17 @@
   top: 85px;
 }
 
+.view-switcher .empty-list {
+  padding: 0;
+	margin: 100px auto;
+  text-align: center;
+  color: var(--second-color);
+}
+.view-switcher .empty-list i {
+  font-size: 140px;
+  height: 150px;
+}
+
 .view-switcher .file-view ul {
 	list-style: none;
 	padding: 0;

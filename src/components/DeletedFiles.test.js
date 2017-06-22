@@ -51,8 +51,7 @@ describe('DeletedFiles Component', () => {
       expect(header.find('.breadcrumb').text()).toBe('Trash')
       expect(header.find('.dropdown-content').text()).toBe('Views GridActions Refresh')
 
-      const fileView = enzymeWrapper.find('.file-view')
-      expect(fileView.find('#loader-wrapper').exists()).toBe(true)
+      expect(enzymeWrapper.find('#loader-wrapper').exists()).toBe(true)
 
       const modalsContainer = enzymeWrapper.find('ModalsContainer')
       expect(modalsContainer.exists()).toBe(false)
