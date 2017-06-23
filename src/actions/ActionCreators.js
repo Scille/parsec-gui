@@ -247,7 +247,7 @@ export const socketDownloadFile = (file) => {
   }
 }
 export const socketMoveFile = (file, path) => {
-  const newPath = path.concat('/', file.name)
+  const newPath = path === '/' ? path.concat(file.name) : path.concat('/', file.name)
   const cmd = `{"cmd": "move", "src": "${file.path}", "dst": "${newPath}"}\n`
   return (dispatch) => {
     dispatch(socketWrite())

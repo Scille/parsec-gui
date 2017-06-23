@@ -1,12 +1,10 @@
 const electron = require('electron')
 // Module to control application life.
 const app = electron.app
-const ipcMain = electron.ipcMain;
 const BrowserWindow = electron.BrowserWindow
 const Menu = electron.Menu
 const Tray = electron.Tray
 
-const notifier = require('node-notifier')
 const path = require('path')
 const url = require('url')
 const pjson = require('./package.json')
@@ -19,7 +17,35 @@ const createWindow = () => {
   mainWindow = new BrowserWindow({ width: 800, height: 600, minWidth: 760, minHeight: 600, icon: path.join(__dirname, '/public/favicon.png') })
 
   // Create the application menu
-  const menu = Menu.buildFromTemplate([
+  const template = [
+    {
+      label: 'View',
+      submenu: [
+        { role: 'togglefullscreen' },
+        {
+          label: 'Developer',
+          submenu: [
+            {
+              label: 'Reload',
+              accelerator: 'CmdOrCtrl+R',
+              click: (item, focusedWindow) => { if(focusedWindow) focusedWindow.reload() }
+            },
+            {
+              label: 'Toggle Developer Tools',
+              accelerator: process.platform === 'darwin' ? 'Alt+Command+I' : 'Ctrl+Shift+I',
+              click: (item, focusedWindow) => { if(focusedWindow) focusedWindow.webContents.toggleDevTools() }
+            }
+          ]
+        },
+      ]
+    },
+    {
+      role: 'window',
+      submenu: [
+        { role: 'minimize' },
+        { role: 'close' }
+      ]
+    },
     {
       role: 'help',
       submenu: [
@@ -31,46 +57,98 @@ const createWindow = () => {
           label: `Version ${pjson['version']}`,
           enabled: false
         },
+        { type: 'separator' },
         {
-          type: 'separator'
+          label: 'Documentation',
+          click: () => electron.shell.openExternal('www.parsec.io')
+        },
+        { type: 'separator' },
+        {
+          label: 'Repport Issue',
+          click: () => electron.shell.openExternal('https://github.com/Scille/parsec-gui/blob/master/CONTRIBUTING.rst')
         },
         {
-          role: 'close'
+          label: 'Search Issues',
+          click: () => electron.shell.openExternal('https://github.com/Scille/parsec-gui/issues')
         },
+      ]
+    }
+  ]
+  if (process.platform === 'darwin') {
+    template.unshift({
+      label: pjson['name'],
+      submenu: [
+        { role: 'about' },
+        {
+          label: 'View Licence',
+          click: () => electron.shell.openExternal('https://github.com/Scille/parsec-gui/blob/master/LICENSE')
+        },
+        {
+          label: `Version ${pjson['version']}`,
+          enabled: false
+        },
+        { type: 'separator' },
+        {
+          role: 'services',
+          submenu: []
+        },
+        { type: 'separator' },
+        { role: 'hide' },
+        { role: 'hideothers' },
+        { role: 'unhide' },
+        { type: 'separator' },
         {
           label: 'Quit',
-          accelerator: 'CmdOrCtrl+Q',
+          accelerator: 'Cmd+Q',
           click: () => {
             app.isQuiting = true
             app.quit()
           }
         }
       ]
-    }
-  ])
+    })
+    // Window menu.
+    template[2].submenu = [
+      {
+        label: 'Minimize',
+        accelerator: 'CmdOrCtrl+M',
+        role: 'minimize'
+      },
+      {
+        label: 'Zoom',
+        role: 'zoom'
+      }
+    ]
+    // Help menu.
+    template[3].submenu.splice(0, 3)
+  }
+
+  const menu = Menu.buildFromTemplate(template)
   Menu.setApplicationMenu(menu)
 
   // Create an icon in an operating system's notification area.
-  tray = new Tray(path.join(__dirname, '/public/favicon.png'))
-  const trayMenu = Menu.buildFromTemplate([
-    {
-      label: pjson['name'],
-      enabled: false
-    },
-    {
-      label: 'Open',
-      click: () => mainWindow.show()
-    },
-    {
-      label: 'Quit',
-      click: () => {
-        app.isQuiting = true
-        app.quit()
+  if(process.platform !== 'darwin') {
+    tray = new Tray(path.join(__dirname, '/public/favicon.png'))
+    const trayMenu = Menu.buildFromTemplate([
+      {
+        label: pjson['name'],
+        enabled: false
+      },
+      {
+        label: 'Open',
+        click: () => mainWindow.show()
+      },
+      {
+        label: 'Quit',
+        click: () => {
+          app.isQuiting = true
+          app.quit()
+        }
       }
-    }
-  ])
-  tray.setToolTip(pjson['name'])
-  tray.setContextMenu(trayMenu)
+    ])
+    tray.setToolTip(pjson['name'])
+    tray.setContextMenu(trayMenu)
+  }
 
   // Load the index.html of the app.
   if(process.env.ELECTRON_DEV) {
@@ -98,33 +176,6 @@ const createWindow = () => {
     }
     return false
   })
-
-  // Show Notifications
-  const sendNotification = (title, message) => {
-    notifier.notify({
-      title: title,
-      message: message,
-      sound: true,
-      wait: false,
-      icon : path.join(__dirname, '/public/favicon.png'),
-    }, (error, response) => console.log(response))
-  }
-  ipcMain.on('catch_error', (event, message) => sendNotification('Error', message))
-  ipcMain.on('add_file', (event, name) => {
-    const title = `'${name}' added`
-    const message = `'${name}' was added in your PARSEC forlder.`
-    sendNotification(title, message)
-  })
-  ipcMain.on('update_file', (event, name, newName) => {
-    const title = `'${name}' updated`
-    const message = `'${name}' is renamed to '${newName}'.`
-    sendNotification(title, message)
-  })
-  ipcMain.on('delete_file', (event, name) => {
-    const title = `'${name}' deleted`
-    const message = `'${name}' was removed from your PARSEC forlder.`
-    sendNotification(title, message)
-  })
 }
 
 // This method will be called when Electron has finished
@@ -144,7 +195,6 @@ app.on('window-all-closed', () => {
 app.on('activate', () => {
   // On OS X it's common to re-create a window in the app when the
   // dock icon is clicked and there are no other windows open.
-  if(mainWindow === null) {
-    createWindow()
-  }
+  if(mainWindow === null) createWindow()
+  else mainWindow.show()
 })
