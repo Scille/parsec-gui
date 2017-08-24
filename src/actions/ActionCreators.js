@@ -50,6 +50,38 @@ export const restoreVersionSuccess = () => {
   return { type: types.RESTORE_VERSION_SUCCESS }
 }
 
+// SIGNUP
+export const signupSuccess = (identity) => {
+  return { type: types.SIGNUP_SUCCESS, identity }
+}
+export const signupFailure = (identity) => {
+  return { type: types.SIGNUP_FAILURE, identity }
+}
+
+// LOGIN
+export const loginSuccess = (identity) => {
+  return { type: types.LOGIN_SUCCESS, identity }
+}
+export const loginFailure = (identity) => {
+  return { type: types.LOGIN_FAILURE, identity }
+}
+
+// LOGGED
+export const loggedSuccess = () => {
+  return { type: types.LOGGED_SUCCESS }
+}
+export const loggedFailure = () => {
+  return { type: types.LOGGED_FAILURE }
+}
+
+// LOGOUT
+export const logoutSuccess = () => {
+  return { type: types.LOGOUT_SUCCESS }
+}
+export const logoutFailure = () => {
+  return { type: types.LOGOUT_FAILURE }
+}
+
 // SOCKET
 export const socketWrite = () => {
   return { type: types.SOCKET_WRITE }
@@ -77,6 +109,73 @@ export const socketEnd = () => {
   return (dispatch) => {
     SocketApi.end()
     dispatch(socketEndSuccess())
+  }
+}
+export const socketSignup = (identity, password) => {
+  const cmd = `{"cmd": "identity_signup", "id": "${identity}", "password": "${password}"}\n`
+  return (dispatch) => {
+    dispatch(socketWrite())
+    return SocketApi.write(cmd)
+      .then((data) => {
+        NotifyApi.notify('Signup', `'${identity}' successfully signed up.`)
+        dispatch(signupSuccess(identity))
+      })
+      .catch((error) => {
+        NotifyApi.notify('Error', error.label)
+        dispatch(socketWriteFailure())
+      })
+  }
+}
+export const socketLogin = (identity, password) => {
+  const cmd = `{"cmd": "identity_login", "id": "${identity}", "password": "${password}"}\n`
+  return (dispatch) => {
+    dispatch(socketWrite())
+    return SocketApi.write(cmd)
+      .then((data) => {
+        NotifyApi.notify('Login', `'${identity}' successfully logged in.`)
+        dispatch(loginSuccess(identity))
+      })
+      .catch((error) => {
+        NotifyApi.notify('Error', error.label)
+        if(error['status'] === 'privkey_not_found')
+          dispatch(loginFailure())
+        else
+          dispatch(socketWriteFailure())
+      })
+  }
+}
+export const socketLogged = () => {
+  const cmd = `{"cmd": "identity_info"}\n`
+  return (dispatch) => {
+    dispatch(socketWrite())
+    return SocketApi.write(cmd)
+      .then((data) => {
+        if(data['loaded'] === true)
+          dispatch(loggedSuccess())
+        else
+          dispatch(loggedFailure())
+      })
+      .catch((error) => {
+        dispatch(socketWriteFailure())
+      })
+  }
+}
+export const socketLogout = () => {
+  const cmd = `{"cmd": "identity_unload"}\n`
+  return (dispatch) => {
+    dispatch(socketWrite())
+    return SocketApi.write(cmd)
+      .then((data) => {
+        NotifyApi.notify('Logout', `Successfully logged out.`)
+        dispatch(logoutSuccess())
+      })
+      .catch((error) => {
+        NotifyApi.notify('Error', error.label)
+        if(error['status'] === 'identity_not_loaded')
+          dispatch(logoutFailure())
+        else
+          dispatch(socketWriteFailure())
+      })
   }
 }
 export const socketListDir = (route) => {
@@ -167,7 +266,7 @@ export const socketCreateFile = (route, fileR) => {
         return SocketApi.write(cmd)
       })
       .then((data) => {
-        NotifyApi.notify('Create', `'${route}' was added in your PARSEC forlder.`)
+        NotifyApi.notify('Create', `'${route}' was added in your PARSEC folder.`)
         return SocketApi.write(`{"cmd": "stat", "path": "${route}"}\n`)
       })
       .then((data) => {
@@ -207,7 +306,7 @@ export const socketDeleteFile = (file) => {
     dispatch(socketWrite())
     return SocketApi.write(cmd)
       .then((data) => {
-        NotifyApi.notify('Delete', `'${file.path}' was removed from your PARSEC forlder.`)
+        NotifyApi.notify('Delete', `'${file.path}' was removed from your PARSEC folder.`)
         dispatch(deleteFileSuccess(file))
       })
       .catch((error) => {
@@ -222,7 +321,7 @@ export const socketRestoreFile = (file) => {
     dispatch(socketWrite())
     return SocketApi.write(cmd)
       .then((data) => {
-        NotifyApi.notify('Restore', `'${file.path}' was added in your PARSEC forlder.`)
+        NotifyApi.notify('Restore', `'${file.path}' was added in your PARSEC folder.`)
         dispatch(deleteFileSuccess(file))
       })
       .catch((error) => {
@@ -277,7 +376,7 @@ export const socketCreateDir = (route, name) => {
     dispatch(socketWrite())
     return SocketApi.write(cmd)
       .then((data) => {
-        NotifyApi.notify('Create', `'${path}' was added in your PARSEC forlder.`)
+        NotifyApi.notify('Create', `'${path}' was added in your PARSEC folder.`)
         return SocketApi.write(`{"cmd": "stat", "path": "${path}"}\n`)
       })
       .then((data) => {
@@ -296,7 +395,7 @@ export const socketRemoveDir = (file) => {
     dispatch(socketWrite())
     return SocketApi.write(cmd)
       .then((data) => {
-        NotifyApi.notify('Delete', `'${file.path}' was removed from your PARSEC forlder.`)
+        NotifyApi.notify('Delete', `'${file.path}' was removed from your PARSEC folder.`)
         dispatch(deleteFileSuccess(file))
       })
       .catch((error) => {

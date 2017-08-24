@@ -10,21 +10,46 @@ import {
 import PersonalFilesContainer from '../containers/PersonalFilesContainer'
 import DeletedFilesContainer from '../containers/DeletedFilesContainer'
 import ManifestHistoryContainer from '../containers/ManifestHistoryContainer'
+import LoginContainer from '../containers/LoginContainer'
+import SignupContainer from '../containers/SignupContainer'
 
 import './App.css'
 
 export class App extends Component {
+
+  constructor(props) {
+    super(props)
+    this.handleLogout = this.handleLogout.bind(this)
+  }
+
   componentDidMount() {
     this.props.dispatch.init()
+    const logged = this.props.dispatch.logged
+    logged()
   }
 
   componentWillUnmount() {
     this.props.dispatch.end()
   }
 
+  handleLogout() {
+    const logout = this.props.dispatch.logout
+    logout()
+  }
+
   render() {
     const connected = this.props.state.socket.connected
     if(!connected) return (<div id="loader-wrapper"><div id="loader"></div></div>)
+    const authenticated = this.props.state.authentication.authenticated
+    if(!authenticated) {
+      return (
+        <Switch>
+          <Route path='/signup' component={SignupContainer}/>
+          <Route path='/login' component={LoginContainer}/>
+          <Redirect from='/' to='/login'/>
+        </Switch>
+      )
+    }
 
     return (
       <Router>
@@ -40,6 +65,7 @@ export class App extends Component {
                 <li><Link to="/history"><i className="fa fa-history fa-2x"/></Link></li>
               </ul>
               <ul className="footer">
+                <li><a onClick={this.handleLogout} href="#"><i className="fa fa-power-off fa-2x"/></a></li>
                 <li><Link to="/parameters"><i className="fa fa-cog fa-2x"/></Link></li>
               </ul>
             </nav>
@@ -48,7 +74,7 @@ export class App extends Component {
           <div className="content">
             <Switch>
               {/* PersonalFiles component */}
-              <Route exact path='/' component={PersonalFilesContainer}/>
+              <Route path='/' component={PersonalFilesContainer}/>
               <Redirect from='/personal-files' to='/'/>
               {/* DeletedFiles component */}
               <Route path='/deleted-files' component={DeletedFilesContainer}/>

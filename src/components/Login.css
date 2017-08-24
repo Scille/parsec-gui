@@ -1,0 +1,22 @@
+.modal-content {
+  width: 40%;
+}
+
+input[type=password],
+select,
+textarea {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid var(--third-color);
+  background: white;
+  box-sizing: border-box;
+  margin-top: 6px;
+  margin-bottom: 16px;
+  resize: none;
+}
+input[type=password]:focus,
+select:focus,
+textarea:focus {
+  border-color: var(--main-color);
+  outline: none;
+}

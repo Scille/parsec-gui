@@ -2,6 +2,7 @@ import * as types from '../actions/ActionTypes';
 
 const initialState = {
   connected: false,
+  authenticated: false,
   loading: false
 }
 
@@ -23,8 +24,10 @@ const socketReducer = (state=initialState, action) => {
     case types.ADD_FILE_SUCCESS:
     case types.LOAD_HISTORY_SUCCESS:
     case types.RESTORE_VERSION_SUCCESS:
+    case types.LOGIN_SUCCESS:
     case types.LOAD_FILES_FAILURE:
     case types.SOCKET_WRITE_FAILURE:
+    case types.LOGIN_FAILURE:
       return {
         ...state,
         loading: false

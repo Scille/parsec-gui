@@ -12,12 +12,15 @@ App.propTypes = {
   dispatch: PropTypes.shape({
     init: PropTypes.func.isRequired,
     end: PropTypes.func.isRequired,
+    logged: PropTypes.func.isRequired,
+    logout: PropTypes.func.isRequired,
   }),
 }
 
 const mapStateToProps = (state) => {
   return {
     state: {
+      authentication: state.authenticationReducer,
       socket: state.socketReducer,
     }
   }
@@ -28,6 +31,8 @@ const mapDispatchToProps = (dispatch) => {
     dispatch: {
       init: () => dispatch(actionsCreators.socketConnect()),
       end: () => dispatch(actionsCreators.socketEnd()),
+      logged: () => dispatch(actionsCreators.socketLogged()),
+      logout: () => dispatch(actionsCreators.socketLogout()),
     }
   }
 }
