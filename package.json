@@ -19,11 +19,13 @@
     "electron": "^1.6.5",
     "electron-packager": "^8.6.0",
     "enzyme": "^2.8.2",
+    "mocha": "^3.5.0",
     "react-addons-test-utils": "^15.5.1",
     "react-scripts": "0.9.5",
     "react-test-renderer": "^15.5.4",
     "rimraf": "^2.6.1",
     "sinon": "^2.2.0",
+    "spectron": "^3.7.2",
     "wait-on": "^2.0.2"
   },
   "scripts": {
@@ -34,6 +36,7 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
+    "test:e2e": "./node_modules/mocha/bin/mocha tests/test.js",
     "test:coverage": "react-scripts test --env=jsdom --coverage --collectCoverageFrom='[\"src/**/*.{js,jsx}\", \"!src/index.js\"]'",
     "eject": "react-scripts eject",
     "electron": "npm run build && electron .",
