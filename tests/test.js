@@ -13,23 +13,23 @@ var app = new Application({
             args: [appPath]
         });
 
-describe('Starts Parsec', function () {
+describe('Starts Parsec', () => {
   this.timeout(30000);
 
-  beforeEach(function () {
+  beforeEach(() => {
     return app.start();
   });
 
-  afterEach(function () {
+  afterEach(() => {
     return app.stop();
   });
 
-  // it('opens a window', function () {
+  // it('opens a window', () => {
   //   return app.client.waitUntilWindowLoaded()
   //     .getWindowCount().should.eventually.equal(1);
   // });
 
-  // it('tests the title', function () {
+  // it('tests the title', () => {
   //   return app.client.waitUntilWindowLoaded()
   //     .getTitle().should.eventually.equal('PARSEC');
   // });
