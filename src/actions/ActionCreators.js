@@ -5,6 +5,12 @@ import NotifyApi from '../api/notifyApi'
 import SocketApi from '../api/socketApi'
 
 // VIEW
+export const loadingAnimation = (state) => {
+  if(state)
+    return { type: types.ENABLE_LOADING_ANIMATION }
+  else
+    return { type: types.DISABLE_LOADING_ANIMATION }
+}
 export const switchView = () => {
   return { type: types.SWITCH_VIEW }
 }
@@ -178,10 +184,11 @@ export const socketLogout = () => {
       })
   }
 }
-export const socketListDir = (route) => {
+export const socketListDir = (route, animation) => {
   const Q = require('q')
   const cmd = `{"cmd": "stat", "path": "${route}"}\n`
   return (dispatch) => {
+    dispatch(loadingAnimation(animation))
     dispatch(socketWrite())
     const files = []
     return SocketApi.write(cmd)
@@ -207,6 +214,7 @@ export const socketListDir = (route) => {
         else return Promise.reject({label: 'Not a directory'})
       })
       .then(() => dispatch(loadFilesSuccess(files)))
+      .then(() => dispatch(loadingAnimation(true)))
       .catch((error) => {
         NotifyApi.notify('Error', error.label)
         dispatch(loadFilesFailure())

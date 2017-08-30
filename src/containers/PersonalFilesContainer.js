@@ -8,7 +8,7 @@ import PersonalFiles from '../components/PersonalFiles'
 PersonalFiles.propTypes = {
   state: PropTypes.shape({
     files: PropTypes.array.isRequired,
-    listView: PropTypes.bool.isRequired,
+    view: PropTypes.object.isRequired,
     breadcrumb: PropTypes.array.isRequired,
     socket: PropTypes.object.isRequired,
   }),
@@ -36,7 +36,7 @@ const mapStateToProps = (state) => {
   return {
     state: {
       files: state.filesReducer,
-      listView: state.viewSwitcherReducer,
+      view: state.viewSwitcherReducer,
       breadcrumb: state.breadcrumbReducer,
       socket: state.socketReducer,
     }
@@ -60,7 +60,7 @@ const mapDispatchToProps = (dispatch) => {
         dispatch(actionsCreators.socketListDir(route))
         dispatch(actionsCreators.removePath(index))
       },
-      refresh: (route) => dispatch(actionsCreators.socketListDir(route)),
+      refresh: (route, animate) => dispatch(actionsCreators.socketListDir(route, animate)),
       createFiles: (route, files={}) => {
         for(const file of files) {
           dispatch(actionsCreators.socketCreateFile(

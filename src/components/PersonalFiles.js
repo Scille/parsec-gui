@@ -16,14 +16,19 @@ class PersonalFiles extends Component {
     this.handleDragOver = this.handleDragOver.bind(this)
     this.handleDragLeave = this.handleDragLeave.bind(this)
 
+    var breadcrumb = this.props.state.breadcrumb
+    this.currentPath = breadcrumb[breadcrumb.length -1]
+    this.refresh = this.props.dispatch.refresh
   }
 
   componentDidMount() {
     this.props.dispatch.init()
+    this.interval = setInterval(this.tick, 3000, this)
   }
 
   componentWillUnmount() {
     this.props.dispatch.end()
+    clearInterval(this.interval)
   }
 
   handleDrop(event, path, allowed=false) {
@@ -53,16 +58,21 @@ class PersonalFiles extends Component {
     document.getElementById(path).classList.remove('drag-over')
   }
 
+  tick(obj) {
+    obj.refresh(obj.currentPath.route, false)
+  }
+
   render() {
     const files = this.props.state.files
-    const listView = this.props.state.listView
+    const view = this.props.state.view
     const loading = this.props.state.socket.loading
+    const loading_animation = this.props.state.view.loading_animation
     const breadcrumb = this.props.state.breadcrumb
-    const currentPath = breadcrumb[breadcrumb.length -1]
+    this.currentPath = breadcrumb[breadcrumb.length -1]
 
     const moveTo = this.props.dispatch.moveTo
     const moveUp = this.props.dispatch.moveUp
-    const refresh = this.props.dispatch.refresh
+    this.refresh = this.props.dispatch.refresh
     const createFiles = this.props.dispatch.createFiles
     const searchFile = this.props.dispatch.searchFile
     const renameFile = this.props.dispatch.renameFile
@@ -75,10 +85,10 @@ class PersonalFiles extends Component {
     const hideModal = this.props.dispatch.hideModal
 
     const searchModal = { searchFile, hideModal }
-    const createDirModal = { path: currentPath.route, createDir, hideModal }
+    const createDirModal = { path: this.currentPath.route, createDir, hideModal }
 
     const ListFiles = () => {
-      if(loading)
+      if(loading && loading_animation)
         return (<div id="loader-wrapper"><div id="loader"></div></div>)
 
       if(files.length === 0)
@@ -105,7 +115,7 @@ class PersonalFiles extends Component {
             onDragStart={(event) => this.handleDragStart(event, file)}
             onDragOver={(event) => this.handleDragOver(event, file.path, file.type === 'folder')}
             onDragLeave={(event) => this.handleDragLeave(event, file.path)}>
-            <a onClick={() => file.type === 'folder' ? moveTo(currentPath.route, file.name) : null}>
+            <a onClick={() => file.type === 'folder' ? moveTo(this.currentPath.route, file.name) : null}>
               <div className="icon"><i className={icon}/></div>
               <div className="title">{file.name}</div>
               <div className="details">{bytesToSize(file['size'])}</div>
@@ -126,7 +136,7 @@ class PersonalFiles extends Component {
         )
       })
       return (
-        <div className={listView ? 'file-view list-view' : 'file-view grid-view'}>
+        <div className={view.list ? 'file-view list-view' : 'file-view grid-view'}>
           <ul>{ listFiles }</ul>
         </div>
       )
@@ -148,7 +158,7 @@ class PersonalFiles extends Component {
                   </div>
                 </div>
               </li>
-              <li>{ currentPath.libelle }</li>
+              <li>{ this.currentPath.libelle }</li>
             </ul>
           </div>
           <div className="options">
@@ -156,14 +166,14 @@ class PersonalFiles extends Component {
               <i className="fa fa-ellipsis-v"/>
               <div className="dropdown-content dropdown-content-right">
                 <div>Views</div>
-                <a onClick={switchView}><i className={listView ? 'fa fa-th-large' : 'fa fa-th-list'}/>{listView ? ' Grid' : ' List'}</a>
+                <a onClick={switchView}><i className={view ? 'fa fa-th-large' : 'fa fa-th-list'}/>{view ? ' Grid' : ' List'}</a>
                 <div>Actions</div>
                 <a onClick={() => showModal('searchModal', searchModal)}><i className="fa fa-search"/> Search</a>
-                <a onClick={() => refresh(currentPath.route)}><i className="fa fa-refresh"/> Refresh</a>
+                <a onClick={() => this.refresh(this.currentPath.route, true)}><i className="fa fa-refresh"/> Refresh</a>
                 <a onClick={() => showModal('createDirModal', createDirModal)}><i className="fa fa-folder"/> New Folder</a>
                 <a>
                   <i className="fa fa-file"/>
-                  <input type="file" name="file" id="file" className="input-file" onChange={(event) => {createFiles(currentPath.route, event.target.files)}} multiple/>
+                  <input type="file" name="file" id="file" className="input-file" onChange={(event) => {createFiles(this.currentPath.route, event.target.files)}} multiple/>
                   <label htmlFor="file"> Add Files</label>
                 </a>
               </div>
