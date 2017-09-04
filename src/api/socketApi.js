@@ -16,13 +16,7 @@ class SocketApi {
           window.location.hash = '/socket-error'
           NotifyApi.notify('Error', `Socket is fully closed (${path})`)
         })
-        // TODO: Without identity_load
         resolve({ status: 'ok' })
-        // TODO: With identity_load
-        // SocketApi.write(`{"cmd": "identity_load", "identity": null}\n`)
-        //   .then((data) => SocketApi.write(`{"cmd": "user_manifest_load"}\n`))
-        //   .then((data) => resolve(data))
-        //   .catch((error) => reject(error))
       })
     })
   }

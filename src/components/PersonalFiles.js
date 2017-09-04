@@ -23,7 +23,7 @@ class PersonalFiles extends Component {
 
   componentDidMount() {
     this.props.dispatch.init()
-    this.interval = setInterval(this.tick, 3000, this)
+    this.interval = setInterval(this.tick, 300000, this)
   }
 
   componentWillUnmount() {

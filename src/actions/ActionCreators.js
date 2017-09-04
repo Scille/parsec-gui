@@ -339,18 +339,40 @@ export const socketRestoreFile = (file) => {
   }
 }
 export const socketDownloadFile = (file) => {
-  const cmd = `{"cmd": "file_read", "path": "${file.path}", "size": "${file.size}"}\n`
+  var size = 40000
   return (dispatch) => {
-    return SocketApi.write(cmd)
-      .then((data) => {
-        const buffer = new Buffer(data.content, 'base64')
-        const blob = new Blob([buffer.toString()], { type: 'application/octet-binary' })
-        const url = window.URL.createObjectURL(blob)
-        saveAs(url, file.name)
-      })
-      .catch((error) => {
-        NotifyApi.notify('Error', error.label)
-      })
+    var chunks = []
+
+    function readFile(size, offset) {
+      const cmd = `{"cmd": "file_read", "path": "${file.path}", "size": "${size}", "offset": "${offset}"}\n`
+      return SocketApi.write(cmd)
+    }
+
+    function addChunk(data) {
+      const buffer = new Buffer(data.content, 'base64')
+      chunks.push(buffer)
+    }
+
+    function downloadFile() {
+      const blob = new Blob(chunks, { type: 'application/octet-binary' })
+      const url = window.URL.createObjectURL(blob)
+      saveAs(url, file.name)
+    }
+
+    Promise.resolve(0).then(function loop(offset) {
+      if (offset < file.size) {
+          return readFile(size, offset)
+            .then((data) => {
+              addChunk(data)
+              return offset + size
+            })
+            .then(loop)
+      }
+    }).then(function() {
+      downloadFile()
+    }).catch(function(e) {
+      console.log('error', e)
+    })
   }
 }
 export const socketMoveFile = (file, path) => {
