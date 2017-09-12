@@ -32,7 +32,7 @@ describe('PersonalFiles Component', () => {
             updated: "2017-01-01T00:00:00+00:00"
           }
         ],
-        listView,
+        view: { list: listView, loading_animation: true},
         socket: { connected: true, loading },
         breadcrumb: [{ route: '/', libelle: 'Home' }, { route: '/dir', libelle: 'Dir' }]
       },
@@ -46,7 +46,7 @@ describe('PersonalFiles Component', () => {
         searchFile: jest.fn(),
         renameFile: jest.fn(),
         deleteFile: jest.fn(),
-        downloadFile: jest.fn(),
+        openFile: jest.fn(),
         createDir: jest.fn(),
         removeDir: jest.fn(),
         switchView: jest.fn(),
@@ -91,7 +91,7 @@ describe('PersonalFiles Component', () => {
       expect(file.find('.title').text()).toBe('file1.txt')
       expect(file.find('.details').text()).toBe('1.0 KB')
       expect(file.find('.fa-info').exists()).toBe(true)
-      expect(file.find('.fa-download').exists()).toBe(true)
+      expect(file.find('.fa-external-link').exists()).toBe(true)
       expect(file.find('.fa-pencil-square-o').exists()).toBe(true)
       expect(file.find('.fa-user-plus').exists()).toBe(true)
       expect(file.find('.fa-trash-o').exists()).toBe(true)
@@ -102,7 +102,7 @@ describe('PersonalFiles Component', () => {
       expect(dir.find('.title').text()).toBe('sub-dir')
       expect(dir.find('.details').text()).toBe('---')
       expect(dir.find('.fa-info').exists()).toBe(true)
-      expect(dir.find('.fa-download').exists()).toBe(false)
+      expect(dir.find('.fa-external-link').exists()).toBe(false)
       expect(dir.find('.fa-pencil-square-o').exists()).toBe(true)
       expect(dir.find('.fa-user-plus').exists()).toBe(true)
       expect(dir.find('.fa-trash-o').exists()).toBe(true)
@@ -186,12 +186,12 @@ describe('PersonalFiles Component', () => {
       file1.find('.fa-info').parent().simulate('click', { preventDefault: () => {} })
       expect(props.dispatch.showModal.mock.calls.length).toBe(1)
     })
-    it('download button should call downloadFile() when clicked', () => {
+    it('open button should call openFile() when clicked', () => {
       const { enzymeWrapper, props } = setup(false)
 
       const file1 = enzymeWrapper.find('.file-view').find('li').at(0)
-      file1.find('.fa-download').parent().simulate('click', { preventDefault: () => {} })
-      expect(props.dispatch.downloadFile.mock.calls.length).toBe(1)
+      file1.find('.fa-external-link').parent().simulate('click', { preventDefault: () => {} })
+      expect(props.dispatch.openFile.mock.calls.length).toBe(1)
     })
     it('rename button should call showModal() when clicked', () => {
       const { enzymeWrapper, props } = setup(false)

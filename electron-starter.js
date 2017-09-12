@@ -4,6 +4,7 @@ const app = electron.app
 const BrowserWindow = electron.BrowserWindow
 const Menu = electron.Menu
 const Tray = electron.Tray
+let tray = null
 
 const path = require('path')
 const url = require('url')

@@ -1,4 +1,4 @@
-import { saveAs, getPath } from '../common'
+import { getPath } from '../common'
 import * as types from './ActionTypes'
 import FileReaderApi from '../api/fileReaderApi'
 import NotifyApi from '../api/notifyApi'
@@ -32,6 +32,12 @@ export const hideModal = () => {
 }
 
 // FILES
+export const openFileSuccess = (mountpoint) => {
+  return { type: types.OPEN_FILE_SUCCESS, mountpoint }
+}
+export const openFileFailure = (mountpoint) => {
+  return { type: types.OPEN_FILE_FAILURE, mountpoint }
+}
 export const addFileSuccess = (file) => {
   return { type: types.ADD_FILE_SUCCESS, file }
 }
@@ -184,6 +190,37 @@ export const socketLogout = () => {
       })
   }
 }
+export const openFile = (file) => {
+  return (dispatch) => {
+    return new Promise((resolve, reject) => {
+      if(file.mountpoint) {
+        const new_process = window.require('child_process').spawn
+        const open_file = new_process('xdg-open', [file.mountpoint])
+        open_file.stdout.on('data', (data) => {
+          console.log(`stdout: ${data}`)
+        })
+        open_file.stderr.on('data', (data) => {
+          console.log(`stderr: ${data}`)
+        })
+        open_file.on('close', (code) => {
+          if(code === 0) {
+            dispatch(openFileSuccess(file.mountpoint))
+            resolve(file.mountpoint)
+          } else {
+            NotifyApi.notify('Error', 'Unable to open the file.')
+            console.log(`child process exited with code ${code}`)
+            dispatch(openFileFailure(file.mountpoint))
+            reject(file.mountpoint)
+          }
+        })
+      } else {
+        NotifyApi.notify('Error', 'Mountpoint not available.')
+        dispatch(openFileFailure(file.mountpoint))
+        reject(file.mountpoint)
+      }
+    }).catch(() => {})
+  }
+}
 export const socketListDir = (route, animation) => {
   const Q = require('q')
   const cmd = `{"cmd": "stat", "path": "${route}"}\n`
@@ -214,11 +251,11 @@ export const socketListDir = (route, animation) => {
         else return Promise.reject({label: 'Not a directory'})
       })
       .then(() => dispatch(loadFilesSuccess(files)))
-      .then(() => dispatch(loadingAnimation(true)))
       .catch((error) => {
         NotifyApi.notify('Error', error.label)
         dispatch(loadFilesFailure())
       })
+      .then(() => dispatch(loadingAnimation(true)))
   }
 }
 export const socketShowDustbin = () => {
@@ -336,43 +373,6 @@ export const socketRestoreFile = (file) => {
         NotifyApi.notify('Error', error.label)
         dispatch(socketWriteFailure())
       })
-  }
-}
-export const socketDownloadFile = (file) => {
-  var size = 40000
-  return (dispatch) => {
-    var chunks = []
-
-    function readFile(size, offset) {
-      const cmd = `{"cmd": "file_read", "path": "${file.path}", "size": "${size}", "offset": "${offset}"}\n`
-      return SocketApi.write(cmd)
-    }
-
-    function addChunk(data) {
-      const buffer = new Buffer(data.content, 'base64')
-      chunks.push(buffer)
-    }
-
-    function downloadFile() {
-      const blob = new Blob(chunks, { type: 'application/octet-binary' })
-      const url = window.URL.createObjectURL(blob)
-      saveAs(url, file.name)
-    }
-
-    Promise.resolve(0).then(function loop(offset) {
-      if (offset < file.size) {
-          return readFile(size, offset)
-            .then((data) => {
-              addChunk(data)
-              return offset + size
-            })
-            .then(loop)
-      }
-    }).then(function() {
-      downloadFile()
-    }).catch(function(e) {
-      console.log('error', e)
-    })
   }
 }
 export const socketMoveFile = (file, path) => {

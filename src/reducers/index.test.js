@@ -6,7 +6,7 @@ describe('Combine Reducers', () => {
     filesReducer: [],
     modalReducer: { modalType: null, modalProps: {} },
     socketReducer: { connected: false, loading: false },
-    viewSwitcherReducer: true,
+    viewSwitcherReducer: {list: true, loading_animation: true},
   }
 
   it('should return the initial state', () => {

@@ -23,7 +23,7 @@ class PersonalFiles extends Component {
 
   componentDidMount() {
     this.props.dispatch.init()
-    this.interval = setInterval(this.tick, 300000, this)
+    this.interval = setInterval(this.tick, 3000, this)
   }
 
   componentWillUnmount() {
@@ -77,7 +77,7 @@ class PersonalFiles extends Component {
     const searchFile = this.props.dispatch.searchFile
     const renameFile = this.props.dispatch.renameFile
     const deleteFile = this.props.dispatch.deleteFile
-    const downloadFile = this.props.dispatch.downloadFile
+    const openFile = this.props.dispatch.openFile
     const createDir = this.props.dispatch.createDir
     const removeDir = this.props.dispatch.removeDir
     const switchView = this.props.dispatch.switchView
@@ -125,7 +125,7 @@ class PersonalFiles extends Component {
                 <i className="fa fa-ellipsis-h"/>
                 <div className="dropdown-content dropdown-content-right">
                   <a onClick={() => showModal('detailsModal', detailsModal)}><i className="fa fa-info"/> Details</a>
-                  { file.type === 'file' && <a onClick={() => downloadFile(file)}><i className="fa fa-download"/> Download</a> }
+                  { file.type === 'file' && <a onClick={() => openFile(file)}><i className="fa fa-external-link"/> Open</a> }
                   <a onClick={() => showModal('renameModal', renameModal)}><i className="fa fa-pencil-square-o"/> Rename</a>
                   <a onClick={() => console.log("Share")}><i className="fa fa-user-plus"/> Share</a>
                   <a onClick={() => showModal('removeModal', removeModal)}><i className="fa fa-trash-o"/> Delete</a>
@@ -166,7 +166,7 @@ class PersonalFiles extends Component {
               <i className="fa fa-ellipsis-v"/>
               <div className="dropdown-content dropdown-content-right">
                 <div>Views</div>
-                <a onClick={switchView}><i className={view ? 'fa fa-th-large' : 'fa fa-th-list'}/>{view ? ' Grid' : ' List'}</a>
+                <a onClick={switchView}><i className={view.list ? 'fa fa-th-large' : 'fa fa-th-list'}/>{view.list ? ' Grid' : ' List'}</a>
                 <div>Actions</div>
                 <a onClick={() => showModal('searchModal', searchModal)}><i className="fa fa-search"/> Search</a>
                 <a onClick={() => this.refresh(this.currentPath.route, true)}><i className="fa fa-refresh"/> Refresh</a>

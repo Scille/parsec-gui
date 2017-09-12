@@ -1,5 +1,6 @@
 require('babel-polyfill')
 
+import { mockSpawn } from 'spawn-mock'
 import * as actions from './ActionCreators'
 import * as types from './ActionTypes'
 import SocketApi from '../api/socketApi'
@@ -199,11 +200,13 @@ describe('Socket Commands', () => {
   })
   it('list files successful, creates SOCKET_WRITE and LOAD_FILES_SUCCESS', () => {
     const expectedActions = [
+      { type: types.DISABLE_LOADING_ANIMATION },
       { type: types.SOCKET_WRITE },
       {
         type: types.LOAD_FILES_SUCCESS,
         files: [file]
-      }
+      },
+      { type: types.ENABLE_LOADING_ANIMATION }
     ]
     // mock the SocketApi.write method, so it will just resolve the Promise.
     SocketApi.write = jest.fn((cmd) => {
@@ -220,17 +223,23 @@ describe('Socket Commands', () => {
     })
     // mock the dispatch function from Redux thunk.
     const dispatch = jest.fn()
-    return actions.socketListDir('/')(dispatch).then(() => {
-      // SOCKET_WRITE
+    return actions.socketListDir('/', false)(dispatch).then(() => {
+      // DISABLE_LOADING_ANIMATION
       expect(dispatch.mock.calls[0][0]).toEqual(expectedActions[0])
-      // LOAD_FILES_SUCCESS
+      // SOCKET_WRITE
       expect(dispatch.mock.calls[1][0]).toEqual(expectedActions[1])
+      // LOAD_FILES_SUCCESS
+      expect(dispatch.mock.calls[2][0]).toEqual(expectedActions[2])
+      // ENABLE_LOADING_ANIMATION
+      expect(dispatch.mock.calls[3][0]).toEqual(expectedActions[3])
     })
   })
   it('list files failure (Not a directory), creates SOCKET_WRITE and LOAD_FILES_FAILURE', () => {
     const expectedActions = [
+      { type: types.DISABLE_LOADING_ANIMATION },
       { type: types.SOCKET_WRITE },
-      { type: types.LOAD_FILES_FAILURE }
+      { type: types.LOAD_FILES_FAILURE },
+      { type: types.ENABLE_LOADING_ANIMATION }
     ]
     // mock the SocketApi.write method, so it will just resolve the Promise.
     SocketApi.write = jest.fn((cmd) => Promise.resolve(file))
@@ -238,19 +247,25 @@ describe('Socket Commands', () => {
     NotifyApi.notify = jest.fn()
     // mock the dispatch function from Redux thunk.
     const dispatch = jest.fn()
-    return actions.socketListDir('/')(dispatch).then(() => {
-      // SOCKET_WRITE
+    return actions.socketListDir('/', false)(dispatch).then(() => {
+      // DISABLE_LOADING_ANIMATION
       expect(dispatch.mock.calls[0][0]).toEqual(expectedActions[0])
-      // LOAD_FILES_FAILURE
+      // SOCKET_WRITE
       expect(dispatch.mock.calls[1][0]).toEqual(expectedActions[1])
+      // LOAD_FILES_FAILURE
+      expect(dispatch.mock.calls[2][0]).toEqual(expectedActions[2])
+      // ENABLE_LOADING_ANIMATION
+      expect(dispatch.mock.calls[3][0]).toEqual(expectedActions[3])
       // Create notification
       expect(NotifyApi.notify.mock.calls.length).toEqual(1)
     })
   })
   it('list files failure, creates SOCKET_WRITE and LOAD_FILES_FAILURE', () => {
     const expectedActions = [
+      { type: types.DISABLE_LOADING_ANIMATION },
       { type: types.SOCKET_WRITE },
-      { type: types.LOAD_FILES_FAILURE }
+      { type: types.LOAD_FILES_FAILURE },
+      { type: types.ENABLE_LOADING_ANIMATION }
     ]
     // mock the SocketApi.write method, so it will just reject the Promise.
     SocketApi.write = jest.fn((cmd) => Promise.reject({ label: 'label' }))
@@ -258,11 +273,15 @@ describe('Socket Commands', () => {
     NotifyApi.notify = jest.fn()
     // mock the dispatch function from Redux thunk.
     const dispatch = jest.fn()
-    return actions.socketListDir('/')(dispatch).then(() => {
-      // SOCKET_WRITE
+    return actions.socketListDir('/', false)(dispatch).then(() => {
+      // DISABLE_LOADING_ANIMATION
       expect(dispatch.mock.calls[0][0]).toEqual(expectedActions[0])
-      // LOAD_FILES_FAILURE
+      // SOCKET_WRITE
       expect(dispatch.mock.calls[1][0]).toEqual(expectedActions[1])
+      // LOAD_FILES_FAILURE
+      expect(dispatch.mock.calls[2][0]).toEqual(expectedActions[2])
+      // ENABLE_LOADING_ANIMATION
+      expect(dispatch.mock.calls[3][0]).toEqual(expectedActions[3])
       // Create notification
       expect(NotifyApi.notify.mock.calls.length).toEqual(1)
     })
@@ -539,27 +558,49 @@ describe('Socket Commands', () => {
       expect(NotifyApi.notify.mock.calls.length).toEqual(1)
     })
   })
-  it('download file successful', () => {
-    // mock the SocketApi.write method, so it will just resolve the Promise.
-    SocketApi.write = jest.fn((cmd) => Promise.resolve({ status: 'ok', content: 'dGVzdA==', version: 1 }))
-    // mock the window.URL.createObjectURL method
-    window.URL.createObjectURL = jest.fn()
-    // mock the dispatch function from Redux thunk.
-    const dispatch = jest.fn()
-    return actions.socketDownloadFile(file)(dispatch).then(() => {
-      // SOCKET_WRITE
-      expect(dispatch.mock.calls.length).toEqual(0)
+  it('open file successful', () => {
+    const mocked_spawn = mockSpawn(function (cp: MockChildProcess) {
+      cp.emit('close', 0)
+      cp.end()
     })
-  })
-  it('download file failure, creates Error Notification', () => {
-    // mock the SocketApi.write method, so it will just reject the Promise.
-    SocketApi.write = jest.fn((cmd) => Promise.reject({ label: 'label' }))
+    global.window.require = function () {
+      return {
+        spawn: mocked_spawn
+      }
+    }
+    const expectedActions = [
+      { type: types.OPEN_FILE_SUCCESS, mountpoint: '/file'}
+    ]
     // mock the NotifyApi.notify.
     NotifyApi.notify = jest.fn()
     // mock the dispatch function from Redux thunk.
     const dispatch = jest.fn()
-    return actions.socketDownloadFile(file)(dispatch).then(() => {
-      // Create notification
+    return actions.openFile({mountpoint: '/file'})(dispatch).then(() => {
+      expect(dispatch.mock.calls[0][0]).toEqual(expectedActions[0])
+      // Doesn't create notification
+      expect(NotifyApi.notify.mock.calls.length).toEqual(0)
+    })
+  })
+  it('open file failure, creates Error Notification', () => {
+    const mocked_spawn = mockSpawn(function (cp: MockChildProcess) {
+      cp.emit('close', 1)
+      cp.end()
+    })
+    global.window.require = function () {
+      return {
+        spawn: mocked_spawn
+      }
+    }
+    const expectedActions = [
+      { type: types.OPEN_FILE_FAILURE, mountpoint: '/unknown'}
+    ]
+    // mock the NotifyApi.notify.
+    NotifyApi.notify = jest.fn()
+    // mock the dispatch function from Redux thunk.
+    const dispatch = jest.fn()
+    return actions.openFile({mountpoint: '/unknown'})(dispatch).catch(() => {
+      expect(dispatch.mock.calls[0][0]).toEqual(expectedActions[0])
+      // Doesn't create notification
       expect(NotifyApi.notify.mock.calls.length).toEqual(1)
     })
   })
