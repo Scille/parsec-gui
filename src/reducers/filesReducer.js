@@ -20,6 +20,8 @@ const filesReducer = (state=initialState, action) => {
       return action.files
     case types.LOAD_FILES_FAILURE:
       return initialState
+    case types.LOGOUT_SUCCESS:
+      return initialState
     default:
       return state
   }
