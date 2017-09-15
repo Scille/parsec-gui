@@ -53,6 +53,37 @@ export const loadFilesSuccess = (files) => {
 export const loadFilesFailure = () => {
   return { type: types.LOAD_FILES_FAILURE }
 }
+export const openFile = (file) => {
+  return (dispatch) => {
+    return new Promise((resolve, reject) => {
+      if(file.mountpoint) {
+        const new_process = window.require('child_process').spawn
+        const open_file = new_process('xdg-open', [file.mountpoint])
+        open_file.stdout.on('data', (data) => {
+          console.log(`stdout: ${data}`)
+        })
+        open_file.stderr.on('data', (data) => {
+          console.log(`stderr: ${data}`)
+        })
+        open_file.on('close', (code) => {
+          if(code === 0) {
+            dispatch(openFileSuccess(file.mountpoint))
+            resolve(file.mountpoint)
+          } else {
+            NotifyApi.notify('Error', 'Unable to open the file.')
+            console.log(`child process exited with code ${code}`)
+            dispatch(openFileFailure(file.mountpoint))
+            reject(file.mountpoint)
+          }
+        })
+      } else {
+        NotifyApi.notify('Error', 'Mountpoint not available.')
+        dispatch(openFileFailure(file.mountpoint))
+        reject(file.mountpoint)
+      }
+    }).catch(() => {})
+  }
+}
 
 // HISTORY
 export const loadHistorySuccess = (history) => {
@@ -92,6 +123,63 @@ export const logoutSuccess = () => {
 }
 export const logoutFailure = () => {
   return { type: types.LOGOUT_FAILURE }
+}
+
+// MOUNTPOINT
+export const mountFilesystemSuccess = (fs_pid) => {
+  return { type: types.MOUNT_FILESYSTEM_SUCCESS, fs_pid }
+}
+export const mountFilesystemFailure = () => {
+  return { type: types.MOUNT_FILESYSTEM_FAILURE }
+}
+export const umountFilesystemSuccess = () => {
+  return { type: types.UMOUNT_FILESYSTEM_SUCCESS }
+}
+export const umountFilesystemFailure = () => {
+  return { type: types.UMOUNT_FILESYSTEM_FAILURE }
+}
+export const mountFilesystem = () => {
+  return (dispatch) => {
+    return new Promise((resolve, reject) => {
+      var mountpoint = '/home/rossigneux/parsec'
+      var fs = window.require('fs')
+      try {
+        fs.accessSync(mountpoint)
+      } catch (e) {
+        fs.mkdirSync(mountpoint)
+      }
+      const new_process = window.require('child_process').spawn
+      const mount_fs = new_process('parsec', ['fuse', mountpoint])
+      mount_fs.stdout.on('data', (data) => {
+        console.log(`stdout: ${data}`)
+      })
+      mount_fs.stderr.on('data', (data) => {
+        console.log(`stderr: ${data}`)
+      })
+      mount_fs.on('close', (code) => {
+        fs.rmdirSync(mountpoint)
+        if(code !== 0) {
+          NotifyApi.notify('Error', 'Unable to mount Parsec.')
+          console.log(`child process exited with code ${code}`)
+          dispatch(mountFilesystemFailure(mountpoint))
+          reject(mountpoint)
+        }
+      })
+      window.close()
+      dispatch(openFile({mountpoint}))
+      openFile({mountpoint})
+      dispatch(mountFilesystemSuccess(mount_fs.fs_pid))
+      resolve(mountpoint)
+    }).catch(() => {})
+  }
+}
+export const umountFilesystem = (fs_pid) => {
+  return (dispatch) => {
+    return new Promise((resolve, reject) => {
+      if (fs_pid) window.process.kill(fs_pid)
+      dispatch(umountFilesystemSuccess())
+    }).catch(() => {})
+  }
 }
 
 // SOCKET
@@ -144,6 +232,7 @@ export const socketLogin = (identity, password) => {
     dispatch(socketWrite())
     return SocketApi.write(cmd)
       .then((data) => {
+        dispatch(mountFilesystem())
         NotifyApi.notify('Login', `'${identity}' successfully logged in.`)
         dispatch(loginSuccess(identity))
       })
@@ -188,37 +277,6 @@ export const socketLogout = () => {
         else
           dispatch(socketWriteFailure())
       })
-  }
-}
-export const openFile = (file) => {
-  return (dispatch) => {
-    return new Promise((resolve, reject) => {
-      if(file.mountpoint) {
-        const new_process = window.require('child_process').spawn
-        const open_file = new_process('xdg-open', [file.mountpoint])
-        open_file.stdout.on('data', (data) => {
-          console.log(`stdout: ${data}`)
-        })
-        open_file.stderr.on('data', (data) => {
-          console.log(`stderr: ${data}`)
-        })
-        open_file.on('close', (code) => {
-          if(code === 0) {
-            dispatch(openFileSuccess(file.mountpoint))
-            resolve(file.mountpoint)
-          } else {
-            NotifyApi.notify('Error', 'Unable to open the file.')
-            console.log(`child process exited with code ${code}`)
-            dispatch(openFileFailure(file.mountpoint))
-            reject(file.mountpoint)
-          }
-        })
-      } else {
-        NotifyApi.notify('Error', 'Mountpoint not available.')
-        dispatch(openFileFailure(file.mountpoint))
-        reject(file.mountpoint)
-      }
-    }).catch(() => {})
   }
 }
 export const socketListDir = (route, animation) => {

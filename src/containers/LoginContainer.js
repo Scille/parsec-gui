@@ -28,7 +28,7 @@ const mapDispatchToProps = (dispatch) => {
   return {
     dispatch: {
       init: () => {},
-      login: (identity, password) => dispatch(actionsCreators.socketLogin(identity, password)),
+      login: (identity, password) => dispatch(actionsCreators.socketLogin(identity, password))
     }
   }
 }

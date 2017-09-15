@@ -32,7 +32,10 @@ const mapDispatchToProps = (dispatch) => {
       init: () => dispatch(actionsCreators.socketConnect()),
       end: () => dispatch(actionsCreators.socketEnd()),
       logged: () => dispatch(actionsCreators.socketLogged()),
-      logout: () => dispatch(actionsCreators.socketLogout()),
+      logout: (fs_pid) => {
+        dispatch(actionsCreators.socketLogout())
+        dispatch(actionsCreators.umountFilesystem(fs_pid))
+      }
     }
   }
 }

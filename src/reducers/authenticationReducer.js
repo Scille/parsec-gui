@@ -1,7 +1,8 @@
 import * as types from '../actions/ActionTypes';
 
 const initialState = {
-  authenticated: false
+  authenticated: false,
+  fs_pid: null
 }
 
 const authenticationReducer = (state=initialState, action) => {
@@ -21,6 +22,11 @@ const authenticationReducer = (state=initialState, action) => {
       return {
         ...state,
         authenticated: true,
+      }
+    case types.MOUNT_FILESYSTEM_SUCCESS:
+      return {
+        ...state,
+        fs_pid: action.fs_pid,
       }
     default:
       return state

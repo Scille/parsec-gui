@@ -34,7 +34,7 @@ export class App extends Component {
 
   handleLogout() {
     const logout = this.props.dispatch.logout
-    logout()
+    logout(this.props.state.authentication.fs_pid)
   }
 
   render() {
