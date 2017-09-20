@@ -168,7 +168,7 @@ export const mountFilesystem = () => {
       window.close()
       dispatch(openFile({mountpoint}))
       openFile({mountpoint})
-      dispatch(mountFilesystemSuccess(mount_fs.fs_pid))
+      dispatch(mountFilesystemSuccess(mount_fs.pid))
       resolve(mountpoint)
     }).catch(() => {})
   }

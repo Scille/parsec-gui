@@ -11,7 +11,8 @@
     "react-router-dom": "^4.1.1",
     "redux": "^3.6.0",
     "redux-thunk": "^2.2.0",
-    "spawn-mock": "^1.0.0"
+    "spawn-mock": "^1.0.0",
+    "wait-queue": "^1.1.0"
   },
   "devDependencies": {
     "babel-polyfill": "^6.23.0",
