@@ -11,6 +11,7 @@ class PersonalFiles extends Component {
     super(props)
     this.state = { drag: false }
 
+    this.selectFile = this.selectFile.bind(this)
     this.handleDrop = this.handleDrop.bind(this)
     this.handleDragStart = this.handleDragStart.bind(this)
     this.handleDragOver = this.handleDragOver.bind(this)
@@ -19,6 +20,8 @@ class PersonalFiles extends Component {
     var breadcrumb = this.props.state.breadcrumb
     this.currentPath = breadcrumb[breadcrumb.length -1]
     this.refresh = this.props.dispatch.refresh
+
+    this.selectedFiles = []
   }
 
   componentDidMount() {
@@ -31,20 +34,35 @@ class PersonalFiles extends Component {
     clearInterval(this.interval)
   }
 
-  handleDrop(event, path, allowed=false) {
-    event.stopPropagation()
-    const file = JSON.parse(event.dataTransfer.getData('file'))
-    document.getElementById(file.path).classList.remove('drag')
-
-    if(allowed) {
-      document.getElementById(path).classList.remove('drag-over')
-      this.props.dispatch.moveFile(file, path)
+  selectFile(event, file) {
+    const target = event.target
+    const selected = target.type === 'checkbox' ? target.checked : target.value;
+    if(selected) {
+      this.selectedFiles.push(file)
+    } else {
+      const index = this.selectedFiles.indexOf(file)
+      this.selectedFiles.splice(index, 1)
     }
   }
 
-  handleDragStart(event, file) {
-    event.dataTransfer.setData('file', JSON.stringify(file))
-    document.getElementById(file.path).classList.add('drag')
+  handleDrop(event, path, allowed=false) {
+    event.stopPropagation()
+    var files = JSON.parse(event.dataTransfer.getData('files'))
+    for (var i = 0; i < files.length; i++) {
+      document.getElementById(files[i].path).classList.remove('drag')
+      if(allowed) {
+        document.getElementById(path).classList.remove('drag-over')
+        this.props.dispatch.moveFile(files[i], path)
+      }
+    }
+    this.selectedFiles = []
+  }
+
+  handleDragStart(event, files) {
+    event.dataTransfer.setData('files', JSON.stringify(files))
+    for (var i = 0; i < files.length; i++) {
+      document.getElementById(files[i].path).classList.add('drag')
+    }
   }
 
   handleDragOver(event, path, allowed=false) {
@@ -112,10 +130,29 @@ class PersonalFiles extends Component {
         return (
           <li id={file.path} key={file.path} draggable="true"
             onDrop={(event) => this.handleDrop(event, file.path, file.type === 'folder')}
-            onDragStart={(event) => this.handleDragStart(event, file)}
+            onDragStart={(event) => {
+              if(this.selectedFiles.length === 0) {
+                this.handleDragStart(event, [file])
+              } else {
+                this.handleDragStart(event, this.selectedFiles)
+              }
+            }}
             onDragOver={(event) => this.handleDragOver(event, file.path, file.type === 'folder')}
             onDragLeave={(event) => this.handleDragLeave(event, file.path)}>
-            <a onClick={() => file.type === 'folder' ? moveTo(this.currentPath.route, file.name) : null}>
+            <input id={'select_' + file.path} name={file.path} type="checkbox" onChange={(event) => this.selectFile(event, file)} />
+            <a onClick={() => {
+              if(this.selectedFiles.length !== 0) {
+                var state = document.getElementById('select_' + file.path).checked
+                if(!state) {
+                  this.selectedFiles.push(file)
+                } else {
+                  const index = this.selectedFiles.indexOf(file)
+                  this.selectedFiles.splice(index, 1)
+                }
+                document.getElementById('select_' + file.path).checked = !state
+              } else {
+                file.type === 'folder' ? moveTo(this.currentPath.route, file.name) : openFile(file)}
+              }}>
               <div className="icon"><i className={icon}/></div>
               <div className="title">{file.name}</div>
               <div className="details">{bytesToSize(file['size'])}</div>
@@ -125,7 +162,6 @@ class PersonalFiles extends Component {
                 <i className="fa fa-ellipsis-h"/>
                 <div className="dropdown-content dropdown-content-right">
                   <a onClick={() => showModal('detailsModal', detailsModal)}><i className="fa fa-info"/> Details</a>
-                  { file.type === 'file' && <a onClick={() => openFile(file)}><i className="fa fa-external-link"/> Open</a> }
                   <a onClick={() => showModal('renameModal', renameModal)}><i className="fa fa-pencil-square-o"/> Rename</a>
                   <a onClick={() => console.log("Share")}><i className="fa fa-user-plus"/> Share</a>
                   <a onClick={() => showModal('removeModal', removeModal)}><i className="fa fa-trash-o"/> Delete</a>
