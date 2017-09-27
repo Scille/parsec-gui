@@ -8,6 +8,7 @@ import PersonalFiles from '../components/PersonalFiles'
 PersonalFiles.propTypes = {
   state: PropTypes.shape({
     files: PropTypes.array.isRequired,
+    selection: PropTypes.object.isRequired,
     view: PropTypes.object.isRequired,
     breadcrumb: PropTypes.array.isRequired,
     socket: PropTypes.object.isRequired,
@@ -15,20 +16,11 @@ PersonalFiles.propTypes = {
   dispatch: PropTypes.shape({
     init: PropTypes.func.isRequired,
     end: PropTypes.func.isRequired,
+    openFile: PropTypes.func.isRequired,
     moveTo: PropTypes.func.isRequired,
     moveUp: PropTypes.func.isRequired,
     refresh: PropTypes.func.isRequired,
-    createFiles: PropTypes.func.isRequired,
-    searchFile: PropTypes.func.isRequired,
-    renameFile: PropTypes.func.isRequired,
-    deleteFile: PropTypes.func.isRequired,
-    openFile: PropTypes.func.isRequired,
-    moveFile: PropTypes.func.isRequired,
-    createDir: PropTypes.func.isRequired,
-    removeDir: PropTypes.func.isRequired,
-    switchView: PropTypes.func.isRequired,
-    showModal: PropTypes.func.isRequired,
-    hideModal: PropTypes.func.isRequired,
+    selectFile: PropTypes.func.isRequired,
   }),
 }
 
@@ -36,6 +28,7 @@ const mapStateToProps = (state) => {
   return {
     state: {
       files: state.filesReducer,
+      selection: state.selectionReducer,
       view: state.viewSwitcherReducer,
       breadcrumb: state.breadcrumbReducer,
       socket: state.socketReducer,
@@ -48,6 +41,7 @@ const mapDispatchToProps = (dispatch) => {
     dispatch: {
       init: () => dispatch(actionsCreators.socketListDir('/')),
       end: () => dispatch(actionsCreators.removePath(0)),
+      openFile: (file) => dispatch(actionsCreators.openFile(file)),
       moveTo: (route, name) => {
         const path = {
           route: route === '/' ? route.concat(name) : route.concat('/', name),
@@ -61,40 +55,7 @@ const mapDispatchToProps = (dispatch) => {
         dispatch(actionsCreators.removePath(index))
       },
       refresh: (route, animate) => dispatch(actionsCreators.socketListDir(route, animate)),
-      createFiles: (route, files={}) => {
-        for(const file of files) {
-          dispatch(actionsCreators.socketCreateFile(
-            route === '/' ? route.concat(file.name) : route.concat('/', file.name),
-            file
-          ))
-        }
-      },
-      searchFile: (name) => {
-        dispatch(actionsCreators.removePath(0))
-        dispatch(actionsCreators.socketSearchFile(name))
-        dispatch(actionsCreators.hideModal())
-      },
-      renameFile: (file, name) => {
-        dispatch(actionsCreators.socketRenameFile(file, name))
-        dispatch(actionsCreators.hideModal())
-      },
-      deleteFile: (file) => {
-        dispatch(actionsCreators.socketDeleteFile(file))
-        dispatch(actionsCreators.hideModal())
-      },
-      openFile: (file) => dispatch(actionsCreators.openFile(file)),
-      moveFile: (file, path) => dispatch(actionsCreators.socketMoveFile(file, path)),
-      createDir: (route, name) => {
-        dispatch(actionsCreators.socketCreateDir(route, name))
-        dispatch(actionsCreators.hideModal())
-      },
-      removeDir: (dir) => {
-        dispatch(actionsCreators.socketRemoveDir(dir))
-        dispatch(actionsCreators.hideModal())
-      },
-      switchView: () => dispatch(actionsCreators.switchView()),
-      showModal: (modalType, modalProps) => dispatch(actionsCreators.showModal(modalType, modalProps)),
-      hideModal: () => dispatch(actionsCreators.hideModal()),
+      selectFile: (file, state) => dispatch(actionsCreators.selectFile(file, state)),
     }
   }
 }

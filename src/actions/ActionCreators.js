@@ -84,6 +84,20 @@ export const openFile = (file) => {
     }).catch(() => {})
   }
 }
+export const selectFile = (file, state) => {
+  return (dispatch) => {
+    if(state) {
+      dispatch({ type: types.SELECT_FILE, file })
+    } else {
+      dispatch({ type: types.DESELECT_FILE, file })
+    }
+  }
+}
+export const cutFiles = () => {
+  return (dispatch) => {
+    dispatch({ type: types.CUT_FILES})
+  }
+}
 
 // HISTORY
 export const loadHistorySuccess = (history) => {
@@ -434,6 +448,7 @@ export const socketRestoreFile = (file) => {
   }
 }
 export const socketMoveFile = (file, path) => {
+  console.log('MOVE TO ', path)
   const newPath = path === '/' ? path.concat(file.name) : path.concat('/', file.name)
   const cmd = `{"cmd": "move", "src": "${file.path}", "dst": "${newPath}"}\n`
   return (dispatch) => {
@@ -470,21 +485,6 @@ export const socketCreateDir = (route, name) => {
       .then((data) => {
         file = Object.assign(file, data)
         dispatch(addFileSuccess(file))
-      })
-      .catch((error) => {
-        NotifyApi.notify('Error', error.label)
-        dispatch(socketWriteFailure())
-      })
-  }
-}
-export const socketRemoveDir = (file) => {
-  const cmd = `{"cmd": "delete", "path": "${file.path}"}\n`
-  return (dispatch) => {
-    dispatch(socketWrite())
-    return SocketApi.write(cmd)
-      .then((data) => {
-        NotifyApi.notify('Delete', `'${file.path}' was removed from your PARSEC folder.`)
-        dispatch(deleteFileSuccess(file))
       })
       .catch((error) => {
         NotifyApi.notify('Error', error.label)

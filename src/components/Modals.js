@@ -220,16 +220,22 @@ export class RemoveModal extends Component {
   }
 
   handleDelete(event) {
-    const file = this.props.file
+    const files = this.props.files
     const removeFunc = this.props.removeFunc
 
     event.preventDefault()
-    removeFunc(file)
+    for (var i=0; i < files.length; i++) {
+      removeFunc(files[i])
+    }
   }
 
   render() {
     const title = this.props.title
-    const name = this.props.file.name
+    if(this.props.files.length > 1) {
+      var name = this.props.files.length + ' items'
+    } else {
+      name = this.props.files[0].name
+    }
 
     return (
       <div className="modal">

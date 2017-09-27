@@ -6,6 +6,7 @@ import historyReducer from './historyReducer'
 import authenticationReducer from './authenticationReducer'
 import modalReducer from './modalReducer'
 import socketReducer from './socketReducer'
+import selectionReducer from './selectionReducer'
 import viewSwitcherReducer from './viewSwitcherReducer'
 
 const allReducers = combineReducers({
@@ -15,6 +16,7 @@ const allReducers = combineReducers({
   historyReducer,
   modalReducer,
   socketReducer,
+  selectionReducer,
   viewSwitcherReducer
 })
 

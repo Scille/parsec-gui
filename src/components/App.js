@@ -12,6 +12,7 @@ import DeletedFilesContainer from '../containers/DeletedFilesContainer'
 import ManifestHistoryContainer from '../containers/ManifestHistoryContainer'
 import LoginContainer from '../containers/LoginContainer'
 import SignupContainer from '../containers/SignupContainer'
+import ToolsContainer from '../containers/ToolsContainer'
 
 import './App.css'
 
@@ -59,14 +60,12 @@ export class App extends Component {
               <ul className="header">
                 <li><i className="parsec-logo"/></li>
               </ul>
-              <ul className="navbar">
-                <li><Link to="/personal-files"><i className="fa fa-files-o fa-2x"/></Link></li>
-                <li><Link to="/deleted-files"><i className="fa fa-trash-o fa-2x"/></Link></li>
-                <li><Link to="/history"><i className="fa fa-history fa-2x"/></Link></li>
-              </ul>
+
+              <ToolsContainer/>
+
               <ul className="footer">
-                <li><a onClick={this.handleLogout} href="#"><i className="fa fa-power-off fa-2x"/></a></li>
-                <li><Link to="/parameters"><i className="fa fa-cog fa-2x"/></Link></li>
+                <li><a onClick={this.handleLogout} href="#"><i className="fa fa-power-off fa-2x" title="Logout"/></a></li>
+                <li><Link to="/parameters"><i className="fa fa-cog fa-2x" title="Parameters"/></Link></li>
               </ul>
             </nav>
           </div>
@@ -93,3 +92,11 @@ export class App extends Component {
   }
 }
 export default App
+
+              // <ul className="navbar">
+              //   <li><Link to="/personal-files"><i className="fa fa-home fa-2x" title="Personal Files"/></Link></li>
+              //   <li><Link to="/deleted-files"><i className="fa fa-trash-o fa-2x" title="Deleted Files"/></Link></li>
+              //   <li><Link to="/history"><i className="fa fa-history fa-2x" title="History"/></Link></li>
+              // </ul>
+              // <hr/>
+              // <hr/>
