@@ -112,7 +112,10 @@ class PersonalFiles extends Component {
           <div className="title">
             Personal Files
           </div>
-
+          <div className="search">
+            <span className="fa fa-search"></span>
+            <input onClick={() => console.log('SEARCH')} placeholder="Search"/>
+          </div>
           <div className="breadcrumb">
             <ul>
               <li>
@@ -124,6 +127,7 @@ class PersonalFiles extends Component {
               </li>
             </ul>
           </div>
+          <div className="clear"></div>
       	</div>
         { ListFiles() }
         <ModalsContainer></ModalsContainer>

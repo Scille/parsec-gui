@@ -228,3 +228,34 @@ input[type=checkbox]
 input, button, textarea, :focus {
     outline: none; // You should add some other style for :focus to help UX/a11y
 }
+
+.breadcrumb {
+  float: left;
+}
+
+.search {
+  float: right;
+  margin: 11px;
+  position: relative;
+  color: #aaa;
+}
+
+.search input {
+  width: 200px;
+  height: 34px;
+  background: #fcfcfc;
+  border: 1px solid #aaa;
+  border-radius: 5px;
+  text-indent: 32px;
+  font-size: 14px;
+}
+
+.search .fa-search {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+}
+
+.clear {
+  clear: both;
+}

@@ -64,8 +64,8 @@ export class App extends Component {
               <ToolsContainer/>
 
               <ul className="footer">
-                <li><a onClick={this.handleLogout} href="#"><i className="fa fa-power-off fa-2x" title="Logout"/></a></li>
                 <li><Link to="/parameters"><i className="fa fa-cog fa-2x" title="Parameters"/></Link></li>
+                <li><a onClick={this.handleLogout} href="#"><i className="fa fa-power-off fa-2x" title="Logout"/></a></li>
               </ul>
             </nav>
           </div>

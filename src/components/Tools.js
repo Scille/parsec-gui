@@ -65,7 +65,6 @@ class Tools extends Component {
           {cutted.length > 0 && 
             <li><a onClick={() => {for(var i = 0; i < cutted.length; i++) moveFile(cutted[i], this.currentPath.route)}}><i className="fa fa-paste" title="Paste"/></a></li>
           }
-          <li><a onClick={() => refresh(this.currentPath.route, true)}><i className="fa fa-search" title="Search"/></a></li>
           <li><a onClick={() => console.log('SHOW/HIDE DELETED FILED')}><i className="fa fa-eye" title="View deleted files"/></a></li>
           <li><a onClick={() => refresh(this.currentPath.route, true)}><i className="fa fa-refresh" title="Refresh"/></a></li>
         </ul>

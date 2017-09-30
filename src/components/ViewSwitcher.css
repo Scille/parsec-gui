@@ -10,9 +10,10 @@
 }
 
 .view-switcher .header {
-	padding: 10px 20px;
+	padding: 10px 10px;
+  padding-bottom: 0px;
+  padding-right: 0px;
   text-align: left;
-	padding-bottom: 10px;
 	border-bottom: 3px solid var(--main-color);
 }
 
@@ -23,7 +24,7 @@
 }
 
 .view-switcher .header>.breadcrumb ul {
-  padding: 10px 16px 0 16px;
+  padding: 10px 16px 0 0px;
   margin: 0;
   list-style: none;
   font-size: 17px;
