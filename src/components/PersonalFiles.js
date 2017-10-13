@@ -9,12 +9,16 @@ class PersonalFiles extends Component {
 
   constructor(props) {
     super(props)
+    this.onSearchInputChange = this.onSearchInputChange.bind(this)
     this.selectFile = this.selectFile.bind(this)
     this.isSelected = this.isSelected.bind(this)
 
     var breadcrumb = this.props.state.breadcrumb
     this.currentPath = breadcrumb[breadcrumb.length -1]
     this.refresh = this.props.dispatch.refresh
+    this.state = {
+      searchTerm: ''
+    }
   }
 
   componentDidMount() {
@@ -28,6 +32,12 @@ class PersonalFiles extends Component {
     console.log('Umount')
     this.props.dispatch.end()
     clearInterval(this.interval)
+  }
+
+  onSearchInputChange(event) {
+    this.setState({
+      searchTerm: event.target.value.toLowerCase(),
+    })
   }
 
   isSelected(file) {
@@ -65,6 +75,8 @@ class PersonalFiles extends Component {
     const moveTo = this.props.dispatch.moveTo
     const moveUp = this.props.dispatch.moveUp
 
+    let displayedFiles = files.filter(file => file.name.toLowerCase().includes(this.state.searchTerm))
+
     const ListFiles = () => {
       if(loading && loading_animation)
         return (<div id="loader-wrapper"><div id="loader"></div></div>)
@@ -77,7 +89,7 @@ class PersonalFiles extends Component {
           </div>
         )
 
-      const listFiles = files.map((file) => {
+      const listFiles = displayedFiles.map((file) => {
         const icon = file.type === 'file' ? 'fa fa-file-o' : 'fa fa-folder-o'
         const details = file.type === 'file' ? bytesToSize(file['size']) : file.children.length + ' element' + (file.children.length > 1 ? 's' : '')
         const hidden = (selected.length === 0) ? 'hidden' : ''
@@ -114,7 +126,7 @@ class PersonalFiles extends Component {
           </div>
           <div className="search">
             <span className="fa fa-search"></span>
-            <input onClick={() => console.log('SEARCH')} placeholder="Search"/>
+            <input onKeyUp={(event) => this.onSearchInputChange(event)} placeholder="Search"/>
           </div>
           <div className="breadcrumb">
             <ul>
