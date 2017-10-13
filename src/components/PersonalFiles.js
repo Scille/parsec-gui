@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 
 import ModalsContainer from '../containers/ModalsContainer'
 import { bytesToSize } from '../common'
@@ -77,6 +78,38 @@ class PersonalFiles extends Component {
 
     let displayedFiles = files.filter(file => file.name.toLowerCase().includes(this.state.searchTerm))
 
+    class IconFormatter extends React.Component {
+      static propTypes = {
+        file: PropTypes.object.isRequired
+      }
+
+      render() {
+        const file = this.props.file
+        var re = /(?:\.([^.]+))?$/
+        var type = re.exec(file['name'])[1]
+        if (type === undefined || file['type'] === 'folder')
+          type = file['type']
+        const icons = {
+          folder: 'fa-folder-o',
+          file: 'fa-file-o',
+          zip: 'fa-file-archive-o',
+          mp3: 'fa-file-audio-o',
+          py: 'fa-file-code-o',
+          xls: 'fa-file-excel-o',
+          jpg: 'fa-file-image-o',
+          pdf: 'fa-file-pdf-o',
+          txt: 'fa-file-text-o',
+          avi: 'fa-file-video-o',
+          doc: 'fa-file-word-o'
+        }
+        return (
+            <div className='icon'>
+              <i className={'fa ' + icons[type]}/>
+            </div>
+        )
+      }
+    }
+
     const ListFiles = () => {
       if(loading && loading_animation)
         return (<div id="loader-wrapper"><div id="loader"></div></div>)
@@ -90,7 +123,6 @@ class PersonalFiles extends Component {
         )
 
       const listFiles = displayedFiles.map((file) => {
-        const icon = file.type === 'file' ? 'fa fa-file-o' : 'fa fa-folder-o'
         const details = file.type === 'file' ? bytesToSize(file['size']) : file.children.length + ' element' + (file.children.length > 1 ? 's' : '')
         const hidden = (selected.length === 0) ? 'hidden' : ''
         var selected_file = this.isSelected(file)
@@ -104,7 +136,7 @@ class PersonalFiles extends Component {
             }}>
           <li className="file-item" id={file.path}>
             <input className={hidden} id={'select_' + file.path} name={file.path} type="checkbox" title={selected_file ? 'Deselect' : 'Select'} onClick={(event) => {this.selectFile(event, file); event.stopPropagation()}} checked={selected_file}/>
-            <div className="icon"><i className={icon}/></div>
+            <IconFormatter file={file}/>
             <div className="title">{file.name}</div>
             <div className="details">{details}</div>
           </li>
