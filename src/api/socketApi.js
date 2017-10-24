@@ -1,4 +1,4 @@
-const WaitQueue = require('wait-queue')
+const WaitQueue = require('wait-queue-es5')
 import NotifyApi from '../api/notifyApi'
 
 class SocketApi {
@@ -44,7 +44,7 @@ class SocketApi {
   static write(cmd) {
     return new Promise((resolve, reject) => {
       this._socket.write(cmd)
-      this.queue.shift().then((response) => {
+      this.queue.shift((error, response) => {
         setTimeout(() => response.status === 'ok' ? resolve(response) : reject(response), 100)
       })
     })

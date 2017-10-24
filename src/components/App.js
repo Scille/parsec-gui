@@ -34,6 +34,7 @@ export class App extends Component {
   }
 
   handleLogout() {
+    console.log('LOGOUT')
     const logout = this.props.dispatch.logout
     logout(this.props.state.authentication.fs_pid)
   }
@@ -65,7 +66,7 @@ export class App extends Component {
 
               <ul className="footer">
                 <li><Link to="/parameters"><i className="fa fa-cog fa-2x" title="Parameters"/></Link></li>
-                <li><a onClick={this.handleLogout} href="#"><i className="fa fa-power-off fa-2x" title="Logout"/></a></li>
+                <li><a onClick={() => this.handleLogout()} href="#"><i className="fa fa-power-off fa-2x" title="Logout"/></a></li>
               </ul>
             </nav>
           </div>
