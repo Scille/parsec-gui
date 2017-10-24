@@ -18,7 +18,8 @@ class PersonalFiles extends Component {
     this.currentPath = breadcrumb[breadcrumb.length -1]
     this.refresh = this.props.dispatch.refresh
     this.state = {
-      searchTerm: ''
+      searchTerm: '',
+      matchingFiles: []
     }
   }
 
@@ -35,10 +36,52 @@ class PersonalFiles extends Component {
     clearInterval(this.interval)
   }
 
-  onSearchInputChange(event) {
-    this.setState({
-      searchTerm: event.target.value.toLowerCase(),
-    })
+  onSearchInputChange(event, route) {
+    var grep = function(what, where, callback) {
+      console.log('onSearchInputChange')
+      console.log(route)
+      console.log(what)
+      console.log(where)
+      var exec = window.require('child_process').exec;
+      where = where.replace(' ', '\\ ')
+      console.log(where)
+      exec('grep -l ' + what + ' ' + where + ' 2> /dev/null', function(err, stdin, stdout) {
+        console.log('GREP')
+        console.log(stdin)
+        console.log(stdout)
+        console.log(err)
+        var results = stdin.split('\n')
+        console.log('RES')
+        console.log(results)
+        console.log('RES2')
+        results.pop()
+        console.log(results)
+        callback(results)
+      });
+    }
+
+    var target = event.target.value
+
+    const path = require('path')
+    console.log('SEARCH IN')
+    if (target.toLowerCase() === '') {
+      console.log('EMPTY TARGET')
+      this.setState({
+        matchingFiles: [],
+        searchTerm: target.toLowerCase()
+      })
+    } else {
+      if (!route.endsWith('/'))
+        route += '/'
+      grep(target, route + '*.txt', function(list) {
+        this.setState({
+          matchingFiles: list,
+          searchTerm: target.toLowerCase()
+        })
+        console.log('MATCHING')
+        console.log(list)
+      }.bind(this))
+    }
   }
 
   isSelected(file) {
@@ -64,7 +107,7 @@ class PersonalFiles extends Component {
   render() {
     console.log('RENDER PERSONAL FILE')
     console.log(this.props.state.selection)
-    const files = this.props.state.files
+    var files = this.props.state.files
     const selected = this.props.state.selection.selected
     const view = this.props.state.view
     const loading = this.props.state.socket.loading
@@ -76,7 +119,25 @@ class PersonalFiles extends Component {
     const moveTo = this.props.dispatch.moveTo
     const moveUp = this.props.dispatch.moveUp
 
-    let displayedFiles = files.filter(file => file.name.toLowerCase().includes(this.state.searchTerm))
+    let displayedFiles = files.filter(file => {
+      console.log('filtre')
+      console.log(this.state.searchTerm)
+      console.log(file.mountpoint)
+      console.log(this.state.matchingFiles)
+      return this.state.searchTerm === '' || file.name.toLowerCase().includes(this.state.searchTerm) || this.state.matchingFiles.indexOf(file.mountpoint) != -1
+    })
+
+    files.sort((a, b) => {
+      if(a.type === 'folder' && b.type === 'file')
+        return -1
+      else if (a.type === 'file' && b.type === 'folder')
+        return 1
+      if (a.name > b.name)
+        return 1
+      if (b.name > a.name)
+        return -1
+      return 0
+    })
 
     class IconFormatter extends React.Component {
       static propTypes = {
@@ -158,7 +219,7 @@ class PersonalFiles extends Component {
           </div>
           <div className="search">
             <span className="fa fa-search"></span>
-            <input onKeyUp={(event) => this.onSearchInputChange(event)} placeholder="Search"/>
+            <input onKeyUp={(event) => this.onSearchInputChange(event, '/home/rossigneux/parsec' + this.currentPath.route)} placeholder="Search"/>
           </div>
           <div className="breadcrumb">
             <ul>
