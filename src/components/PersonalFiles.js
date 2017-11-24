@@ -62,7 +62,6 @@ class PersonalFiles extends Component {
 
     var target = event.target.value
 
-    const path = require('path')
     console.log('SEARCH IN')
     if (target.toLowerCase() === '') {
       console.log('EMPTY TARGET')
@@ -124,7 +123,7 @@ class PersonalFiles extends Component {
       console.log(this.state.searchTerm)
       console.log(file.mountpoint)
       console.log(this.state.matchingFiles)
-      return this.state.searchTerm === '' || file.name.toLowerCase().includes(this.state.searchTerm) || this.state.matchingFiles.indexOf(file.mountpoint) != -1
+      return this.state.searchTerm === '' || file.name.toLowerCase().includes(this.state.searchTerm) || this.state.matchingFiles.indexOf(file.mountpoint) !== -1
     })
 
     files.sort((a, b) => {
