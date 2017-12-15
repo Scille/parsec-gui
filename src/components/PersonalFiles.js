@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
+import Datetime from 'react-datetime'
 
 import ModalsContainer from '../containers/ModalsContainer'
 import { bytesToSize } from '../common'
@@ -13,6 +14,8 @@ class PersonalFiles extends Component {
     this.onSearchInputChange = this.onSearchInputChange.bind(this)
     this.selectFile = this.selectFile.bind(this)
     this.isSelected = this.isSelected.bind(this)
+    this.handleCancelRestore = this.handleCancelRestore.bind(this)
+    this.handleValidateRestore = this.handleValidateRestore.bind(this)
 
     var breadcrumb = this.props.state.breadcrumb
     this.currentPath = breadcrumb[breadcrumb.length -1]
@@ -103,6 +106,14 @@ class PersonalFiles extends Component {
     this.props.dispatch.refresh(path, false)
   }
 
+  handleCancelRestore(event) {
+    this.props.dispatch.restoring(false)
+  }
+
+  handleValidateRestore(event) {
+
+  }
+
   render() {
     console.log('RENDER PERSONAL FILE')
     console.log(this.props.state.selection)
@@ -112,6 +123,7 @@ class PersonalFiles extends Component {
     const loading = this.props.state.socket.loading
     const loading_animation = this.props.state.view.loading_animation
     const breadcrumb = this.props.state.breadcrumb
+    const restoring = this.props.state.view.restoring
     this.currentPath = breadcrumb[breadcrumb.length -1]
 
     const openFile = this.props.dispatch.openFile
@@ -125,6 +137,28 @@ class PersonalFiles extends Component {
       console.log(this.state.matchingFiles)
       return this.state.searchTerm === '' || file.name.toLowerCase().includes(this.state.searchTerm) || this.state.matchingFiles.indexOf(file.mountpoint) !== -1
     })
+
+    if (restoring) {
+      displayedFiles = [{children: ['a', 'b', 'c'],
+                mountpoint: '',
+                name: "Archives",
+                path:  "/Archives",
+                type: "folder"},
+               {children: [],
+                mountpoint: '',
+                name: "Admnistratif",
+                path:  "/Admnistratif",
+                type: "folder"},
+               {created: "2012-01-01T00:00:00",
+                id: "02ab47c6df9c43fa9dfde3e7f1f280b1",
+                mountpoint: "",
+                name: "Projet.doc",
+                path: "/projet.doc",
+                size: 2231,
+                type: "file",
+                updated: "2012-01-01T00:00:00",
+                version: 1}]
+    }
 
     files.sort((a, b) => {
       if(a.type === 'folder' && b.type === 'file')
@@ -210,6 +244,16 @@ class PersonalFiles extends Component {
       )
     }
 
+    var restore = ''
+    if (restoring) {
+      // https://github.com/YouCanBookMe/react-datetime/pull/184
+      restore = <div className="restore">
+                  <Datetime defaultValue={new Date()}/>
+                  <button onClick={this.handleCancelRestore} className="button third-button">Cancel</button>
+                  <button onClick={this.handleValidateRestore} type="submit" className="button main-button" value="Submit">OK</button>
+                </div>
+    }
+
     return (
       <div className="view-switcher">
         <div className="header">
@@ -235,6 +279,7 @@ class PersonalFiles extends Component {
       	</div>
         { ListFiles() }
         <ModalsContainer></ModalsContainer>
+        {restore}
       </div>
     )
   }

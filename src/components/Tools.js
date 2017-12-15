@@ -18,6 +18,7 @@ class Tools extends Component {
     // const view = this.props.state.view
     // const loading = this.props.state.socket.loading
     // const loading_animation = this.props.state.view.loading_animation
+    const isRestoring = this.props.state.view.restoring
     const breadcrumb = this.props.state.breadcrumb
     this.currentPath = breadcrumb[breadcrumb.length -1]
 
@@ -30,6 +31,9 @@ class Tools extends Component {
     const moveFile = this.props.dispatch.moveFile
     const cutFiles = this.props.dispatch.cutFiles
     const deleteFile = this.props.dispatch.deleteFile
+    const shareFile = this.props.dispatch.shareFile
+    const historyFile = this.props.dispatch.historyFile
+    const restoring = this.props.dispatch.restoring
 
     // const openFile = this.props.dispatch.openFile
     const createDir = this.props.dispatch.createDir
@@ -41,6 +45,8 @@ class Tools extends Component {
     const createDirModal = { path: this.currentPath.route, createDir, hideModal }
     const detailsModal = (file) => {return { file, hideModal }}
     const renameModal = (file) => {return { file, renameFile, hideModal }}
+    const shareModal = (file) => {return { file, shareFile, hideModal }}
+    const historyModal = (file) => {return { file, historyFile, hideModal }}
     const removeModal = (files) => {
       if(files.length > 1) {
         var title = 'DELETE ' + files.length + ' ITEMS'
@@ -54,6 +60,11 @@ class Tools extends Component {
       hideModal
     }}
 
+    var style = {}
+    if (isRestoring) {
+      style = {'color': 'var(--main-color)'}
+    }
+
     if (selected.length === 0) {
       return (
         <ul className="tools">
@@ -65,6 +76,7 @@ class Tools extends Component {
           {cutted.length > 0 && 
             <li><a onClick={() => {for(var i = 0; i < cutted.length; i++) moveFile(cutted[i], this.currentPath.route); refresh(this.currentPath.route, true)}}><i className="fa fa-paste" title="Paste"/></a></li>
           }
+          <li><a onClick={() => restoring(!isRestoring)}><i className="fa fa-history" title="History" style={style}/></a></li>
           <li><a onClick={() => console.log('SHOW/HIDE DELETED FILED')}><i className="fa fa-eye" title="View deleted files"/></a></li>
           <li><a onClick={() => refresh(this.currentPath.route, true)}><i className="fa fa-refresh" title="Refresh"/></a></li>
         </ul>
@@ -74,8 +86,8 @@ class Tools extends Component {
         <ul className="tools">
           {selected.length === 1 &&
             [<li key='1'><a onClick={() => showModal('detailsModal', detailsModal(selected[0]))}><i className="fa fa-info" title="Details"/></a></li>,
-            <li key='2'><a onClick={() => console.log('SHARE')}><i className="fa fa-share-alt" title="Share"/></a></li>,
-            <li key='3'><a onClick={() => console.log('HISTORY')}><i className="fa fa-history" title="History"/></a></li>,
+            <li key='2'><a onClick={() => showModal('shareModal', shareModal(selected[0]))}><i className="fa fa-share-alt" title="Share"/></a></li>,
+            <li key='3'><a onClick={() => showModal('historyModal', historyModal(selected[0]))}><i className="fa fa-history" title="History"/></a></li>,
             <li key='4'><a onClick={() => {showModal('renameModal', renameModal(selected[0])); refresh(this.currentPath.route, true)}}><i className="fa fa-i-cursor" title="Rename"/></a></li>]
           }
           <li><a onClick={() => {cutFiles(selected)}}><i className="fa fa-cut" title="Cut"/></a></li>

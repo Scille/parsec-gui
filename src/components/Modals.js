@@ -1,4 +1,9 @@
-import React, { Component } from 'react'
+import React, { Component } from 'react';
+import Select from 'react-select';
+import 'react-select/dist/react-select.css';
+import Toggle from 'react-toggle'
+import "react-toggle/style.css"
+
 
 import { bytesToSize, dateToUTC } from '../common'
 
@@ -333,6 +338,8 @@ export class DetailsModal extends Component {
             { file.created && <label>Created<input type="text" value={dateToUTC(file.created)} readOnly/></label> }
             { file.updated && <label>Updated<input type="text" value={dateToUTC(file.updated)} readOnly/></label> }
             { file.removed_date && <label>Removed<input type="text" value={dateToUTC(file.removed_date)} readOnly/></label> }
+
+            { file.size && <label>Storage location<img width='420px' src={require('../../public/map.png')} alt="map"/></label>}
           </div>
           <div className="modal-footer">
             <button onClick={this.handleClose} className="button third-button">Close</button>
@@ -388,6 +395,329 @@ export class RestoreVersionModal extends Component {
   }
 }
 
+export class ShareModal extends Component {
+  constructor(props) {
+    super(props)
+    this.state = {
+      removeSelected: true,
+      disabled: false,
+      crazy: false,
+      stayOpen: false,
+      value: [],
+      rtl: false,
+    }
+
+    this.handleSelectChange = this.handleSelectChange.bind(this)
+    this.handleCancel = this.handleCancel.bind(this)
+    this.handleSubmit = this.handleSubmit.bind(this)
+  }
+
+  getInitialState () {
+    return {
+      removeSelected: true,
+      disabled: false,
+      crazy: false,
+      stayOpen: false,
+      value: [],
+      rtl: false,
+    };
+  }
+
+  handleSelectChange (value) {
+    this.setState({ value });
+  }
+
+  toggleCheckbox (e) {
+    this.setState({
+      [e.target.name]: e.target.checked,
+    });
+  }
+
+  toggleRtl (e) {
+    let rtl = e.target.checked;
+    this.setState({ rtl });
+  }
+
+  handleCancel(event) {
+    const hideModal = this.props.hideModal
+
+    event.preventDefault()
+    hideModal()
+  }
+
+  handleSubmit(event) {
+    // TODO REMOVE THIS
+    const hideModal = this.props.hideModal
+    hideModal()
+  }
+
+  render() {
+    const { disabled, stayOpen, value } = this.state;
+    return (
+      <div className="modal">
+        <div className="modal-content">
+          <div className="modal-header">
+            <h3>SHARE</h3>
+          </div>
+          <form onSubmit={this.handleSubmit}>
+            <div className="modal-body">
+              <label>
+                Recipient email<br/>
+                <Select
+                  closeOnSelect={!stayOpen}
+                  disabled={disabled}
+                  multi
+                  onChange={this.handleSelectChange}
+                  placeholder="Select the recipients"
+                  removeSelected={this.state.removeSelected}
+                  rtl={this.state.rtl}
+                  simpleValue
+                  value={value}
+                  options={[
+                    { value: 'accounting@scille.eu', label: 'Accounting (group)' },
+                    { value: 'damien.tural@gmail.com', label: 'Damien Tural' },
+                    { value: 'aline.virion@hotmail.com', label: 'Alice Virion' },
+                    { value: 'thomas.lagarde@hotmail.com', label: 'Thomas Lagarde' },
+                    { value: 'robert.acero@hotmail.com', label: 'Robert Acero' },
+                  ]}
+                />
+                <br/>
+              </label>
+              <label>
+                Save recipients in group (optional)<br/>
+                <input type="text" name="groupName" />
+              </label>
+            </div>
+            <div className="modal-footer">
+              <button onClick={this.handleCancel} className="button third-button">Cancel</button>
+              <button type="submit" className="button main-button" value="Submit">OK</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    )
+  }
+}
+
+export class HistoryModal extends Component {
+  constructor(props) {
+    super(props)
+    this.state = {
+      version: '',
+      disabled: false,
+      searchable: this.props.searchable,
+      selectValue: '',
+      clearable: true,
+      rtl: false,
+    }
+
+    this.updateValue = this.updateValue.bind(this)
+    this.handleCancel = this.handleCancel.bind(this)
+    this.handleSubmit = this.handleSubmit.bind(this)
+  }
+
+  updateValue (newValue) {
+    this.setState({
+      selectValue: newValue,
+    });
+  }
+
+  handleCancel(event) {
+    const hideModal = this.props.hideModal
+
+    event.preventDefault()
+    hideModal()
+  }
+
+  handleSubmit(event) {
+    const hideModal = this.props.hideModal
+
+    event.preventDefault()
+    hideModal()
+  }
+
+  render() {
+    if (this.props.file.children) {
+      const options = [
+        {label: 'Version 3 - 29/11/2017 - 17h37', value: '3'},
+        {label: 'Version 2 - 28/11/2017 - 11h02', value: '2'},
+        {label: 'Version 1 - 28/11/2017 - 08h55', value: '1'},
+      ]
+      console.log(this.state.selectValue)
+      var delta = ''
+      if (this.state.selectValue === '1') {
+        delta = <div>TODO 1 new changed deleted</div>
+      } else if (this.state.selectValue === '2') {
+        delta = <div>TODO 2 new changed deleted</div>
+      } else if (this.state.selectValue === '3') {
+        delta = <div>TODO 3 new changed deleted</div>
+      }
+      return (
+        <div className="modal">
+          <div className="modal-content">
+            <div className="modal-header">
+              <h3>HISTORY</h3>
+            </div>
+            <form onSubmit={this.handleSubmit}>
+              <div className="modal-body">
+                <label>
+                  Version number: 3<br/><br/></label>
+                <label>
+                  Restore version<br/>
+                </label>
+                <Select
+                  autoFocus
+                  options={options}
+                  simpleValue
+                  clearable={this.state.clearable}
+                  name="selected-version"
+                  disabled={this.state.disabled}
+                  value={this.state.selectValue}
+                  onChange={this.updateValue}
+                  rtl={this.state.rtl}
+                  openOnClick={false}
+                  searchable={this.state.searchable}
+                />
+              <br/>
+              <label >
+                 Include subfolders:<br/>
+                 <Toggle
+                   defaultChecked={true}
+                   onChange={this.handleBaconChange} />
+              </label>
+              <br/><br/>
+              {delta}
+              </div>
+              <div className="modal-footer">
+                <button onClick={this.handleCancel} className="button third-button">Cancel</button>
+                <button type="submit" className="button main-button" value="Submit">OK</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )
+    } else {
+      const options = [
+        {label: 'Version 4 - 29/11/2017 - 15h06 - 10Mo', value: '4'},
+        {label: 'Version 3 - 23/11/2017 - 14h54- 12Mo', value: '3'},
+        {label: 'Version 2 - 22/11/2017 - 09h24- 8Mo', value: '2'},
+        {label: 'Version 1 - 20/11/2017 - 18h28- 1Mo', value: '1'},
+      ]
+
+      return (
+        <div className="modal">
+          <div className="modal-content">
+            <div className="modal-header">
+              <h3>HISTORY</h3>
+            </div>
+            <form onSubmit={this.handleSubmit}>
+              <div className="modal-body">
+                <label>
+                  Version number: 5<br/><br/></label>
+                <label>
+                  Restore version<br/>
+                </label>
+                <Select
+                  autoFocus
+                  options={options}
+                  simpleValue
+                  clearable={this.state.clearable}
+                  name="selected-version"
+                  disabled={this.state.disabled}
+                  value={this.state.selectValue}
+                  onChange={this.updateValue}
+                  rtl={this.state.rtl}
+                  openOnClick={false}
+                  searchable={this.state.searchable}
+                />
+              </div>
+              <div className="modal-footer">
+                <button onClick={this.handleCancel} className="button third-button">Cancel</button>
+                <button type="submit" className="button main-button" value="Submit">OK</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )
+    }
+  }
+}
+
+export class SettingsModal extends Component {
+  constructor(props) {
+    super(props)
+    this.state = {
+    }
+
+    this.updateValue = this.updateValue.bind(this)
+    this.handleCancel = this.handleCancel.bind(this)
+    this.handleSubmit = this.handleSubmit.bind(this)
+  }
+
+  updateValue (newValue) {
+    this.setState({
+      selectValue: newValue,
+    });
+  }
+
+  handleCancel(event) {
+    const hideModal = this.props.hideModal
+
+    event.preventDefault()
+    hideModal()
+  }
+
+  handleSubmit(event) {
+    const hideModal = this.props.hideModal
+
+    event.preventDefault()
+    hideModal()
+  }
+
+  render() {
+      return (
+        <div className="modal">
+          <div className="modal-content">
+            <div className="modal-header">
+              <h3>SETTINGS</h3>
+            </div>
+            <div className="modal-body">
+             <br/>
+             <label>
+                Automatically mount at startup:<br/>
+                <Toggle
+                  defaultChecked={true}
+                  onChange={this.handleBaconChange} /><br/><br/>
+              </label>
+              <label>
+                Mountpoint:
+                <input type="text" name="mountpoint" value='~/parsec'/><br/>
+              </label>
+              <label>
+                Content indexation for search engine:<br/>
+                <Toggle
+                  defaultChecked={true}
+                  onChange={this.handleBaconChange} /><br/><br/>
+              </label>
+              <label>
+                Local cache size:<br/>
+                <input type="number" name="cache" value='200'/> Mo<br/><br/>
+              </label>
+              <label>
+                Max old versions size on total space ratio:<br/>
+                <input type="number" name="ratio" value='80'/> (%)<br/><br/>
+              </label>
+            </div>
+            <div className="modal-footer">
+              <button onClick={this.handleCancel} className="button third-button">Cancel</button>
+              <button onClick={this.handleSubmit} type="submit" className="button main-button" value="Submit">OK</button>
+            </div>
+          </div>
+        </div>
+      )
+  }
+}
+
 const MODAL_COMPONENTS = Object.freeze({
   "renameModal": RenameModal,
   "createDirModal": CreateDirModal,
@@ -395,7 +725,10 @@ const MODAL_COMPONENTS = Object.freeze({
   "restoreModal": RestoreModal,
   "detailsModal": DetailsModal,
   "restoreVersionModal": RestoreVersionModal,
-  "searchModal": SearchModal
+  "searchModal": SearchModal,
+  "shareModal": ShareModal,
+  "historyModal": HistoryModal,
+  "settingsModal": SettingsModal,
 })
 
 class Modals extends Component {

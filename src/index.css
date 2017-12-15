@@ -256,6 +256,23 @@ input, button, textarea, :focus {
   left: 10px;
 }
 
+.restore {
+  float: right;
+  margin: 11px;
+  position: relative;
+  color: #aaa;
+}
+
+.restore input {
+  width: 230px;
+  height: 34px;
+  background: #fcfcfc;
+  border: 1px solid #aaa;
+  border-radius: 5px;
+  text-indent: 32px;
+  font-size: 14px;
+}
+
 .clear {
   clear: both;
 }

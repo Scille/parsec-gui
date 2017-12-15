@@ -14,6 +14,8 @@ App.propTypes = {
     end: PropTypes.func.isRequired,
     logged: PropTypes.func.isRequired,
     logout: PropTypes.func.isRequired,
+    showModal: PropTypes.func.isRequired,
+    hideModal: PropTypes.func.isRequired,
   }),
 }
 
@@ -35,7 +37,9 @@ const mapDispatchToProps = (dispatch) => {
       logout: (fs_pid) => {
         dispatch(actionsCreators.socketLogout())
         dispatch(actionsCreators.umountFilesystem(fs_pid))
-      }
+      },
+      showModal: (modalType, modalProps) => dispatch(actionsCreators.showModal(modalType, modalProps)),
+      hideModal: () => dispatch(actionsCreators.hideModal()),
     }
   }
 }

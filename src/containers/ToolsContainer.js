@@ -23,6 +23,7 @@ Tools.propTypes = {
     switchView: PropTypes.func.isRequired,
     showModal: PropTypes.func.isRequired,
     hideModal: PropTypes.func.isRequired,
+    restoring: PropTypes.func.isRequired,
   }),
 }
 
@@ -32,6 +33,7 @@ const mapStateToProps = (state) => {
       breadcrumb: state.breadcrumbReducer,
       selection: state.selectionReducer,
       socket: state.socketReducer,
+      view: state.viewSwitcherReducer,
     }
   }
 }
@@ -85,6 +87,7 @@ const mapDispatchToProps = (dispatch) => {
         dispatch(actionsCreators.hideModal())
       },
       refresh: (route, animate) => dispatch(actionsCreators.socketListDir(route, animate)),
+      restoring: (state) => dispatch(actionsCreators.restoring(state)),
       switchView: () => dispatch(actionsCreators.switchView()),
       showModal: (modalType, modalProps) => dispatch(actionsCreators.showModal(modalType, modalProps)),
       hideModal: () => dispatch(actionsCreators.hideModal()),

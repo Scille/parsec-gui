@@ -2,7 +2,8 @@ import * as types from '../actions/ActionTypes';
 
 const initialState = {
   list: true,
-  loading_animation: true
+  loading_animation: true,
+  restoring: false
 }
 
 const viewSwitcherReducer = (state=initialState, action) => {
@@ -21,6 +22,16 @@ const viewSwitcherReducer = (state=initialState, action) => {
       return {
       	...state,
         loading_animation: false
+      }
+    case types.ENABLE_RESTORING:
+      return {
+        ...state,
+        restoring: true
+      }
+    case types.DISABLE_RESTORING:
+      return {
+        ...state,
+        restoring: false
       }
     default:
       return state

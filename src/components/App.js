@@ -4,7 +4,6 @@ import {
   Route,
   Redirect,
   Switch,
-  Link
 } from 'react-router-dom'
 
 import PersonalFilesContainer from '../containers/PersonalFilesContainer'
@@ -13,6 +12,7 @@ import ManifestHistoryContainer from '../containers/ManifestHistoryContainer'
 import LoginContainer from '../containers/LoginContainer'
 import SignupContainer from '../containers/SignupContainer'
 import ToolsContainer from '../containers/ToolsContainer'
+
 
 import './App.css'
 
@@ -40,6 +40,9 @@ export class App extends Component {
   }
 
   render() {
+    const showModal = this.props.dispatch.showModal
+    const hideModal = this.props.dispatch.hideModal
+    const settingsModal = () => {return { hideModal }}
     const connected = this.props.state.socket.connected
     if(!connected) return (<div id="loader-wrapper"><div id="loader"></div></div>)
     const authenticated = this.props.state.authentication.authenticated
@@ -65,7 +68,7 @@ export class App extends Component {
               <ToolsContainer/>
 
               <ul className="footer">
-                <li><Link to="/parameters"><i className="fa fa-cog fa-2x" title="Parameters"/></Link></li>
+                <li><a onClick={() => showModal('settingsModal', settingsModal())} href="#"><i className="fa fa-cog fa-2x" title="Settings"/></a></li>
                 <li><a onClick={() => this.handleLogout()} href="#"><i className="fa fa-power-off fa-2x" title="Logout"/></a></li>
               </ul>
             </nav>
@@ -74,15 +77,13 @@ export class App extends Component {
           <div className="content">
             <Switch>
               {/* PersonalFiles component */}
-              <Route path='/' component={PersonalFilesContainer}/>
+              <Route exact path='/login' component={PersonalFilesContainer}/>
+              <Route exact path='/' component={PersonalFilesContainer}/>
               <Redirect from='/personal-files' to='/'/>
               {/* DeletedFiles component */}
               <Route path='/deleted-files' component={DeletedFilesContainer}/>
               {/* History component */}
               <Route path='/history' component={ManifestHistoryContainer}/>
-              {/* Parameters component */}
-              {/* <Route path='/parameters' component={NoMatchError}/> */}
-              <Redirect from='/parameters' to='/404'/>
               {/* Errors component */}
               <Redirect to='/404'/>
             </Switch>

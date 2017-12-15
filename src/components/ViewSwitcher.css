@@ -175,3 +175,22 @@
   	display: none;
   }
 }
+
+div .restore {
+  margin: 0px;
+  border-top: 3px solid var(--main-color);
+  padding-left: 35%;
+  color: black;
+  position: absolute;
+  bottom: 0;
+  width: 64%;
+  height: 50px;
+}
+
+div .restore .rdt {
+  display: inline-block;
+}
+
+div .restore button {
+  width: 100px;
+}

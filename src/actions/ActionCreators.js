@@ -11,6 +11,15 @@ export const loadingAnimation = (state) => {
   else
     return { type: types.DISABLE_LOADING_ANIMATION }
 }
+export const restoring = (state) => {
+  return (dispatch) => {
+    if(state) {
+      dispatch({ type: types.ENABLE_RESTORING })
+    } else {
+      dispatch({ type: types.DISABLE_RESTORING })
+    }
+  }
+}
 export const switchView = () => {
   return { type: types.SWITCH_VIEW }
 }

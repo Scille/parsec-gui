@@ -21,6 +21,7 @@ PersonalFiles.propTypes = {
     moveUp: PropTypes.func.isRequired,
     refresh: PropTypes.func.isRequired,
     selectFile: PropTypes.func.isRequired,
+    restoring: PropTypes.func.isRequired,
   }),
 }
 
@@ -55,6 +56,7 @@ const mapDispatchToProps = (dispatch) => {
         dispatch(actionsCreators.removePath(index))
       },
       refresh: (route, animate) => dispatch(actionsCreators.socketListDir(route, animate)),
+      restoring: (state) => dispatch(actionsCreators.restoring(state)),
       selectFile: (file, state) => dispatch(actionsCreators.selectFile(file, state)),
     }
   }
