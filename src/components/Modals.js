@@ -3,7 +3,7 @@ import Select from 'react-select';
 import 'react-select/dist/react-select.css';
 import Toggle from 'react-toggle'
 import "react-toggle/style.css"
-
+const Store = window.require('electron-store')
 
 import { bytesToSize, dateToUTC } from '../common'
 
@@ -331,8 +331,6 @@ export class DetailsModal extends Component {
           </div>
           <div className="modal-body">
             <label>Name<input type="text" value={file.name} readOnly/></label>
-            <label>Path<input type="text" value={file.path} readOnly/></label>
-            <label>Type<input type="text" value={file.type} readOnly/></label>
             { file.size && <label>Size<input type="text" value={bytesToSize(file.size)} readOnly/></label> }
             { file.children && <label>List directory contents<textarea value={file.children} readOnly/></label> }
             { file.created && <label>Created<input type="text" value={dateToUTC(file.created)} readOnly/></label> }
@@ -646,18 +644,41 @@ export class HistoryModal extends Component {
 export class SettingsModal extends Component {
   constructor(props) {
     super(props)
+    this.store = new Store()
     this.state = {
+      enable_mountpoint: this.store.get('enable_mountpoint', false),
+      mountpoint: this.store.get('mountpoint', ''),
+      enable_indexation: this.store.get('enable_indexation', false),
+      local_cache_size: this.store.get('local_cache_size', '200'),
+      old_versions_ratio: this.store.get('old_versions_ratio', '80'),
     }
-
-    this.updateValue = this.updateValue.bind(this)
+    this.handleEnableMountpointChange = this.handleEnableMountpointChange.bind(this)
+    this.handleMountpointChange = this.handleMountpointChange.bind(this)
+    this.handleEnableIndexationChange = this.handleEnableIndexationChange.bind(this)
+    this.handleLocalCacheSizeChange = this.handleLocalCacheSizeChange.bind(this)
+    this.handleOldVersionsRatioChange = this.handleOldVersionsRatioChange.bind(this)
     this.handleCancel = this.handleCancel.bind(this)
     this.handleSubmit = this.handleSubmit.bind(this)
   }
 
-  updateValue (newValue) {
-    this.setState({
-      selectValue: newValue,
-    });
+  handleEnableMountpointChange(event) {
+    this.setState({enable_mountpoint: event.target.checked});
+  }
+
+  handleMountpointChange(event) {
+    this.setState({mountpoint: document.getElementById("mountpoint").files[0].path});
+  }
+
+  handleEnableIndexationChange(event) {
+    this.setState({enable_indexation: event.target.checked});
+  }
+
+  handleLocalCacheSizeChange(event) {
+    this.setState({local_cache_size: event.target.value});
+  }
+
+  handleOldVersionsRatioChange(event) {
+    this.setState({old_versions_ratio: event.target.value});
   }
 
   handleCancel(event) {
@@ -668,10 +689,21 @@ export class SettingsModal extends Component {
   }
 
   handleSubmit(event) {
+    this.store.set('enable_mountpoint', this.state.enable_mountpoint)
+    this.store.set('mountpoint', this.state.mountpoint)
+    this.store.set('enable_indexation', this.state.enable_indexation)
+    this.store.set('local_cache_size', this.state.local_cache_size)
+    this.store.set('old_versions_ratio', this.state.old_versions_ratio)
     const hideModal = this.props.hideModal
-
     event.preventDefault()
     hideModal()
+  }
+
+  _addDirectory(node) {
+    if (node) {
+      node.directory = true;
+      node.webkitdirectory = true;
+    }
   }
 
   render() {
@@ -686,26 +718,26 @@ export class SettingsModal extends Component {
              <label>
                 Automatically mount at startup:<br/>
                 <Toggle
-                  defaultChecked={true}
-                  onChange={this.handleBaconChange} /><br/><br/>
+                  defaultChecked={this.state.enable_mountpoint}
+                  onChange={this.handleEnableMountpointChange}/><br/><br/>
               </label>
               <label>
-                Mountpoint:
-                <input type="text" name="mountpoint" value='~/parsec'/><br/>
+                Mountpoint: {this.state.mountpoint}
+                <input type="file" id="mountpoint" ref={node => this._addDirectory(node)} name="mountpoint" onChange={this.handleMountpointChange} /><br/><br/>
               </label>
               <label>
                 Content indexation for search engine:<br/>
                 <Toggle
-                  defaultChecked={true}
-                  onChange={this.handleBaconChange} /><br/><br/>
+                  defaultChecked={this.state.enable_indexation}
+                  onChange={this.handleEnableIndexationChange}/><br/><br/>
               </label>
               <label>
                 Local cache size:<br/>
-                <input type="number" name="cache" value='200'/> Mo<br/><br/>
+                <input type="number" name="cache" value={this.state.local_cache_size} onChange={this.handleLocalCacheSizeChange}/> Mo<br/><br/>
               </label>
               <label>
                 Max old versions size on total space ratio:<br/>
-                <input type="number" name="ratio" value='80'/> (%)<br/><br/>
+                <input type="number" name="ratio" value={this.state.old_versions_ratio} onChange={this.handleOldVersionsRatioChange}/> (%)<br/><br/>
               </label>
             </div>
             <div className="modal-footer">

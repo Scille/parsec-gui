@@ -3,6 +3,7 @@ import * as types from './ActionTypes'
 import FileReaderApi from '../api/fileReaderApi'
 import NotifyApi from '../api/notifyApi'
 import SocketApi from '../api/socketApi'
+const Store = window.require('electron-store')
 
 // VIEW
 export const loadingAnimation = (state) => {
@@ -164,7 +165,8 @@ export const umountFilesystemFailure = () => {
 export const mountFilesystem = () => {
   return (dispatch) => {
     return new Promise((resolve, reject) => {
-      var mountpoint = '/home/rossigneux/parsec'
+      var store = new Store()
+      var mountpoint = store.get('mountpoint')
       var fs = window.require('fs')
       try {
         fs.accessSync(mountpoint)
@@ -255,7 +257,10 @@ export const socketLogin = (identity, password) => {
     dispatch(socketWrite())
     return SocketApi.write(cmd)
       .then((data) => {
-        dispatch(mountFilesystem())
+        var store = new Store()
+        if (store.get('enable_mountpoint', 'false')) {
+          dispatch(mountFilesystem())
+        }
         NotifyApi.notify('Login', `'${identity}' successfully logged in.`)
         dispatch(loginSuccess(identity))
       })
