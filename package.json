@@ -24,7 +24,6 @@
     "concurrently": "^3.4.0",
     "coveralls": "^2.13.1",
     "electron": "^1.6.5",
-    "electron-installer-debian": "^0.7.1",
     "electron-mocha": "^4.0.1",
     "electron-packager": "^8.6.0",
     "enzyme": "^2.8.2",
@@ -36,6 +35,9 @@
     "sinon": "^2.2.0",
     "spectron": "^3.7.2",
     "wait-on": "^2.0.2"
+  },
+  "optionalDependencies": {
+    "electron-installer-debian": "^0.7.1"
   },
   "scripts": {
     "clear": "rimraf build platforms coverage",
