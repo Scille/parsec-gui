@@ -3,7 +3,7 @@ import NotifyApi from '../api/notifyApi'
 
 class SocketApi {
 
-  static connect(path='/tmp/parsec') {
+  static connect(ip='127.0.0.1', port=6776) {
     return new Promise((resolve, reject) => {
       const electron = window.require('electron')
       const net = electron.remote.require('net')
@@ -25,11 +25,11 @@ class SocketApi {
         }
       })
 
-      this._socket.connect({ path }, () => {
+      this._socket.connect({ ip, port }, () => {
         this._socket.setEncoding('utf8')
         this._socket.on("close", (error) => {
           window.location.hash = '/socket-error'
-          NotifyApi.notify('Error', `Socket is fully closed (${path})`)
+          NotifyApi.notify('Error', `Socket is fully closed (${ip}:${port})`)
         })
         resolve({ status: 'ok' })
       })
