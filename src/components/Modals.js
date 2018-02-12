@@ -750,6 +750,160 @@ export class SettingsModal extends Component {
   }
 }
 
+export class InviteUserModal extends Component {
+  constructor(props) {
+    super(props)
+    this.state = { user: '' }
+
+    this.handleChange = this.handleChange.bind(this)
+    this.handleFocus = this.handleFocus.bind(this)
+    this.handleCancel = this.handleCancel.bind(this)
+    this.handleSubmit = this.handleSubmit.bind(this)
+  }
+
+  handleChange(event) {
+    const target = event.target
+    const value = target.value
+    const name = target.name
+
+    this.setState({ [name]: value })
+  }
+
+  handleFocus(event) {
+    const target = event.target
+    const value = target.value
+
+    target.setSelectionRange(0, value.lastIndexOf('.'))
+  }
+
+  handleCancel(event) {
+    const hideModal = this.props.hideModal
+
+    event.preventDefault()
+    hideModal()
+  }
+
+  handleSubmit(event) {
+    const inviteUser = this.props.inviteUser
+    const user = this.state.user
+
+    if(user === '') {
+      return
+    }
+
+    event.preventDefault()
+    inviteUser(user)
+  }
+
+  render() {
+    const user = this.state.user
+    var token = ''
+    if(this.props.user_invitation !== null)
+      token = this.props.user_invitation.token
+    return (
+      <div className="modal">
+        <div className="modal-content">
+          <div className="modal-header">
+            <h3>INVITE USER</h3>
+          </div>
+          <form onSubmit={this.handleSubmit}>
+            <div className="modal-body">
+              <label>
+                User<br/>
+                <input type="text" name="user" value={user} onChange={this.handleChange} onFocus={this.handleFocus} autoFocus/>
+              </label>
+              <label>
+                Token: {token}
+              </label>
+            </div>
+            <div className="modal-footer">
+              <button onClick={this.handleCancel} className="button third-button">Close</button>
+              <button type="submit" className="button main-button" value="Submit">Get Token</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    )
+  }
+}
+
+export class DeclareDeviceModal extends Component {
+  constructor(props) {
+    super(props)
+    this.state = { device: '' }
+
+    this.handleChange = this.handleChange.bind(this)
+    this.handleFocus = this.handleFocus.bind(this)
+    this.handleCancel = this.handleCancel.bind(this)
+    this.handleSubmit = this.handleSubmit.bind(this)
+  }
+
+  handleChange(event) {
+    const target = event.target
+    const value = target.value
+    const name = target.name
+
+    this.setState({ [name]: value })
+  }
+
+  handleFocus(event) {
+    const target = event.target
+    const value = target.value
+
+    target.setSelectionRange(0, value.lastIndexOf('.'))
+  }
+
+  handleCancel(event) {
+    const hideModal = this.props.hideModal
+
+    event.preventDefault()
+    hideModal()
+  }
+
+  handleSubmit(event) {
+    const declareDevice = this.props.declareDevice
+    const device = this.state.device
+
+    if(device === '') {
+      return
+    }
+
+    event.preventDefault()
+    declareDevice(device)
+  }
+
+  render() {
+    const device = this.state.device
+    var token = ''
+    if(this.props.device_declaration !== null)
+      token = this.props.device_declaration.token
+    return (
+      <div className="modal">
+        <div className="modal-content">
+          <div className="modal-header">
+            <h3>DECLARE DEVICE</h3>
+          </div>
+          <form onSubmit={this.handleSubmit}>
+            <div className="modal-body">
+              <label>
+                Device<br/>
+                <input type="text" name="device" value={device} onChange={this.handleChange} onFocus={this.handleFocus} autoFocus/>
+              </label>
+              <label>
+                Token: {token}
+              </label>
+            </div>
+            <div className="modal-footer">
+              <button onClick={this.handleCancel} className="button third-button">Close</button>
+              <button type="submit" className="button main-button" value="Submit">Get Token</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    )
+  }
+}
+
 const MODAL_COMPONENTS = Object.freeze({
   "renameModal": RenameModal,
   "createDirModal": CreateDirModal,
@@ -761,6 +915,8 @@ const MODAL_COMPONENTS = Object.freeze({
   "shareModal": ShareModal,
   "historyModal": HistoryModal,
   "settingsModal": SettingsModal,
+  "inviteUserModal": InviteUserModal,
+  "declareDeviceModal": DeclareDeviceModal,
 })
 
 class Modals extends Component {

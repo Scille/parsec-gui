@@ -18,6 +18,10 @@ const viewSwitcherReducer = (state=initialState, action) => {
       	...state,
         loading_animation: true
       }
+    case types.DECLARE_DEVICE_SUCCESS:
+    case types.DECLARE_DEVICE_FAILURE:
+    case types.INVITE_USER_SUCCESS:
+    case types.INVITE_USER_FAILURE:
     case types.DISABLE_LOADING_ANIMATION:
       return {
       	...state,

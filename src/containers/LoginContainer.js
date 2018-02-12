@@ -12,13 +12,15 @@ Login.propTypes = {
   }),
   dispatch: PropTypes.shape({
     login: PropTypes.func.isRequired,
+    listLogins: PropTypes.func.isRequired,
   }),
 }
 
 const mapStateToProps = (state) => {
   return {
     state: {
-      authenticated: state.authenticated,
+      authenticated: state.authenticationReducer.authenticated,
+      logins: state.authenticationReducer.logins,
       socket: state.socketReducer,
     }
   }
@@ -28,6 +30,7 @@ const mapDispatchToProps = (dispatch) => {
   return {
     dispatch: {
       init: () => {},
+      listLogins: () => dispatch(actionsCreators.SocketListLogins()),
       login: (identity, password) => dispatch(actionsCreators.socketLogin(identity, password))
     }
   }

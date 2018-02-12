@@ -117,6 +117,30 @@ export const restoreVersionSuccess = () => {
   return { type: types.RESTORE_VERSION_SUCCESS }
 }
 
+// INVITE USER
+export const inviteUserSuccess = (user, token) => {
+  return { type: types.INVITE_USER_SUCCESS, user, token }
+}
+export const inviteUserFailure = (user) => {
+  return { type: types.INVITE_USER_FAILURE, user }
+}
+
+// DECLARE DEVICE
+export const declareDeviceSuccess = (device, token) => {
+  return { type: types.DECLARE_DEVICE_SUCCESS, device, token }
+}
+export const declareDeviceFailure = (device) => {
+  return { type: types.DECLARE_DEVICE_FAILURE, device }
+}
+
+// CONFIGURE DEVICE
+export const configureDeviceSuccess = (device) => {
+  return { type: types.CONFIGURE_DEVICE_SUCCESS, device }
+}
+export const configureDeviceFailure = (device) => {
+  return { type: types.CONFIGURE_DEVICE_FAILURE, device }
+}
+
 // SIGNUP
 export const signupSuccess = (identity) => {
   return { type: types.SIGNUP_SUCCESS, identity }
@@ -126,6 +150,9 @@ export const signupFailure = (identity) => {
 }
 
 // LOGIN
+export const listLoginSuccess = (logins) => {
+  return { type: types.LIST_LOGINS_SUCCESS, logins }
+}
 export const loginSuccess = (identity) => {
   return { type: types.LOGIN_SUCCESS, identity }
 }
@@ -236,8 +263,38 @@ export const socketEnd = () => {
     dispatch(socketEndSuccess())
   }
 }
-export const socketSignup = (identity, password) => {
-  const cmd = `{"cmd": "identity_signup", "id": "${identity}", "password": "${password}"}\n`
+export const socketInviteUser = (user) => {
+  const cmd = `{"cmd": "user_invite", "user_id": "${user}"}\n`
+  return (dispatch) => {
+    dispatch(socketWrite())
+    return SocketApi.write(cmd)
+      .then((data) => {
+        NotifyApi.notify('User', `'${user}' successfully invited.`)
+        dispatch(inviteUserSuccess(data['user_id'], data['invitation_token']))
+      })
+      .catch((error) => {
+        NotifyApi.notify('Error', error.label)
+        dispatch(socketWriteFailure())
+      })
+  }
+}
+export const socketDeclareDevice = (device) => {
+  const cmd = `{"cmd": "device_declare", "device_name": "${device}"}\n`
+  return (dispatch) => {
+    dispatch(socketWrite())
+    return SocketApi.write(cmd)
+      .then((data) => {
+        NotifyApi.notify('Device', `'${device}' successfully declared.`)
+        dispatch(declareDeviceSuccess(device, data['configure_device_token']))
+      })
+      .catch((error) => {
+        NotifyApi.notify('Error', error.label)
+        dispatch(socketWriteFailure())
+      })
+  }
+}
+export const socketSignup = (identity, password, token) => {
+  const cmd = `{"cmd": "user_claim", "id": "${identity}", "password": "${password}", "invitation_token": "${token}"}\n`
   return (dispatch) => {
     dispatch(socketWrite())
     return SocketApi.write(cmd)
@@ -251,8 +308,37 @@ export const socketSignup = (identity, password) => {
       })
   }
 }
+export const socketConfigureDevice = (identity, password, token) => {
+  const cmd = `{"cmd": "device_configure", "device_id": "${identity}", "password": "${password}", "configure_device_token": "${token}"}\n`
+  return (dispatch) => {
+    dispatch(socketWrite())
+    return SocketApi.write(cmd)
+      .then((data) => {
+        NotifyApi.notify('Device', `'${identity}' successfully configured.`)
+        dispatch(configureDeviceSuccess(identity))
+      })
+      .catch((error) => {
+        NotifyApi.notify('Error', error.label)
+        dispatch(socketWriteFailure())
+      })
+  }
+}
+export const SocketListLogins = () => {
+  const cmd = `{"cmd": "list_available_logins"}\n`
+  return (dispatch) => {
+    dispatch(socketWrite())
+    return SocketApi.write(cmd)
+      .then((data) => {
+        dispatch(listLoginSuccess(data['devices']))
+      })
+      .catch((error) => {
+        NotifyApi.notify('Error', error.label)
+        dispatch(socketWriteFailure())
+      })
+  }
+}
 export const socketLogin = (identity, password) => {
-  const cmd = `{"cmd": "identity_login", "id": "${identity}", "password": "${password}"}\n`
+  const cmd = `{"cmd": "login", "id": "${identity}", "password": "${password}"}\n`
   return (dispatch) => {
     dispatch(socketWrite())
     return SocketApi.write(cmd)
@@ -274,7 +360,7 @@ export const socketLogin = (identity, password) => {
   }
 }
 export const socketLogged = () => {
-  const cmd = `{"cmd": "identity_info"}\n`
+  const cmd = `{"cmd": "info"}\n`
   return (dispatch) => {
     dispatch(socketWrite())
     return SocketApi.write(cmd)
@@ -290,7 +376,7 @@ export const socketLogged = () => {
   }
 }
 export const socketLogout = () => {
-  const cmd = `{"cmd": "identity_unload"}\n`
+  const cmd = `{"cmd": "logout"}\n`
   return (dispatch) => {
     dispatch(socketWrite())
     return SocketApi.write(cmd)
@@ -300,7 +386,7 @@ export const socketLogout = () => {
       })
       .catch((error) => {
         NotifyApi.notify('Error', error.label)
-        if(error['status'] === 'identity_not_loaded')
+        if(error['status'] === 'login_required')
           dispatch(logoutFailure())
         else
           dispatch(socketWriteFailure())

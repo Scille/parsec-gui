@@ -16,6 +16,8 @@ App.propTypes = {
     logout: PropTypes.func.isRequired,
     showModal: PropTypes.func.isRequired,
     hideModal: PropTypes.func.isRequired,
+    inviteUser: PropTypes.func.isRequired,
+    declareDevice: PropTypes.func.isRequired,
   }),
 }
 
@@ -40,6 +42,8 @@ const mapDispatchToProps = (dispatch) => {
       },
       showModal: (modalType, modalProps) => dispatch(actionsCreators.showModal(modalType, modalProps)),
       hideModal: () => dispatch(actionsCreators.hideModal()),
+      inviteUser: (user) => dispatch(actionsCreators.socketInviteUser(user)),
+      declareDevice: (device) => dispatch(actionsCreators.socketDeclareDevice(device))
     }
   }
 }

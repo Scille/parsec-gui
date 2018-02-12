@@ -42,6 +42,10 @@ export class App extends Component {
   render() {
     const showModal = this.props.dispatch.showModal
     const hideModal = this.props.dispatch.hideModal
+    const inviteUser = this.props.dispatch.inviteUser
+    const declareDevice = this.props.dispatch.declareDevice
+    const inviteUserModal = () => {return { inviteUser, hideModal, user_invitation: this.props.state.authentication.user_invitation }}
+    const declareDeviceModal = () => {return { declareDevice, hideModal }}
     const settingsModal = () => {return { hideModal }}
     const connected = this.props.state.socket.connected
     if(!connected) return (<div id="loader-wrapper"><div id="loader"></div></div>)
@@ -68,6 +72,8 @@ export class App extends Component {
               <ToolsContainer/>
 
               <ul className="footer">
+                <li><a onClick={() => showModal('inviteUserModal', inviteUserModal())} href="#"><i className="fa fa-user-plus fa-2x" title="Invite user"/></a></li>
+                <li><a onClick={() => showModal('declareDeviceModal', declareDeviceModal())} href="#"><i className="fa fa-plus-square fa-2x" title="Declare device"/></a></li>
                 <li><a onClick={() => showModal('settingsModal', settingsModal())} href="#"><i className="fa fa-cog fa-2x" title="Settings"/></a></li>
                 <li><a onClick={() => this.handleLogout()} href="#"><i className="fa fa-power-off fa-2x" title="Logout"/></a></li>
               </ul>

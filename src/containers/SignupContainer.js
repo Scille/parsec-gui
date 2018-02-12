@@ -12,6 +12,7 @@ Signup.propTypes = {
   }),
   dispatch: PropTypes.shape({
     signup: PropTypes.func.isRequired,
+    configureDevice : PropTypes.func.isRequired,
   }),
 }
 
@@ -28,7 +29,8 @@ const mapDispatchToProps = (dispatch) => {
   return {
     dispatch: {
       init: () => {},
-      signup: (identity, password) => dispatch(actionsCreators.socketSignup(identity, password)),
+      signup: (identity, password, invitation_token) => dispatch(actionsCreators.socketSignup(identity, password, invitation_token)),
+      configureDevice: (identity, password, invitation_token) => dispatch(actionsCreators.socketConfigureDevice(identity, password, invitation_token)),
     }
   }
 }

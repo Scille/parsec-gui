@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import _ from 'lodash';
 
 import './Login.css'
 
@@ -10,6 +11,7 @@ class Login extends Component {
     this.handleChange = this.handleChange.bind(this)
     this.handleLogin = this.handleLogin.bind(this)
     this.handleSignup = this.handleSignup.bind(this)
+    this.props.dispatch.listLogins()
   }
 
   componentDidMount() {
@@ -20,7 +22,6 @@ class Login extends Component {
     const target = event.target
     const value = target.value
     const name = target.name
-
     this.setState({ [name]: value })
   }
 
@@ -28,9 +29,9 @@ class Login extends Component {
     const identity = this.state.identity
     const password = this.state.password
     const login = this.props.dispatch.login
-
     event.preventDefault()
-    if(identity !== '' && password !== '') login(identity, password)
+    if(identity !== '' && password !== '')
+      login(identity, password)
   }
 
   handleSignup(event) {
@@ -38,9 +39,10 @@ class Login extends Component {
   }
 
   render() {
-    const identity = this.state.identity
+    const logins = this.props.state.logins
     const password = this.state.password
-
+    if(logins.length >= 1 && this.state.identity === '')
+      this.state.identity = logins[0]
     return (
       <div className="modal">
         <div className="modal-content">
@@ -51,11 +53,13 @@ class Login extends Component {
             <div className="modal-body">
               <label>
                 Identity<br/>
-                <input type="text" name="identity" value={identity} onChange={this.handleChange} onFocus={this.handleFocus} autoFocus/>
+                <select onChange={this.handleChange} name="identity" disabled={(logins.length === 0)}>
+                  { _.range(0, logins.length).map(value => <option key={value} value={logins[value]}>{logins[value]}</option>) }
+                </select>
               </label>
               <label>
                 Password<br/>
-                <input type="password" name="password" value={password} onChange={this.handleChange} onFocus={this.handleFocus}/>
+                <input type="password" name="password" value={password} onChange={this.handleChange} onFocus={this.handleFocus} disabled={(logins.length === 0)}/>
               </label>
             </div>
             <div className="modal-footer">
