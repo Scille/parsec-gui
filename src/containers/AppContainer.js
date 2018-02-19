@@ -7,6 +7,7 @@ import App from '../components/App'
 
 App.propTypes = {
   state: PropTypes.shape({
+    authentication: PropTypes.object.isRequired,
     socket: PropTypes.object.isRequired,
   }),
   dispatch: PropTypes.shape({
@@ -18,6 +19,7 @@ App.propTypes = {
     hideModal: PropTypes.func.isRequired,
     inviteUser: PropTypes.func.isRequired,
     declareDevice: PropTypes.func.isRequired,
+    endDeclareDevice: PropTypes.func.isRequired,
   }),
 }
 
@@ -43,7 +45,13 @@ const mapDispatchToProps = (dispatch) => {
       showModal: (modalType, modalProps) => dispatch(actionsCreators.showModal(modalType, modalProps)),
       hideModal: () => dispatch(actionsCreators.hideModal()),
       inviteUser: (user) => dispatch(actionsCreators.socketInviteUser(user)),
-      declareDevice: (device) => dispatch(actionsCreators.socketDeclareDevice(device))
+      declareDevice: (device) => {
+        dispatch(actionsCreators.socketDeclareDevice(device))
+        dispatch(actionsCreators.socketEventSubscribe('device_try_claim_submitted'))
+      },
+      endDeclareDevice: () => dispatch(actionsCreators.socketEventUnsubscribe('device_try_claim_submitted')),
+      listenEvents: () => dispatch(actionsCreators.socketEventListen()),
+      acceptDevice: (try_id) => dispatch(actionsCreators.socketAcceptDevice(try_id)),
     }
   }
 }

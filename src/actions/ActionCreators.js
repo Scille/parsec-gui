@@ -125,21 +125,50 @@ export const inviteUserFailure = (user) => {
   return { type: types.INVITE_USER_FAILURE, user }
 }
 
-// DECLARE DEVICE
+// DEVICE
 export const declareDeviceSuccess = (device, token) => {
   return { type: types.DECLARE_DEVICE_SUCCESS, device, token }
 }
-export const declareDeviceFailure = (device) => {
-  return { type: types.DECLARE_DEVICE_FAILURE, device }
+export const declareDeviceFailure = (error) => {
+  return { type: types.DECLARE_DEVICE_FAILURE, error }
 }
-
-// CONFIGURE DEVICE
+export const configureDeviceClear = () => {
+  return { type: types.CONFIGURE_DEVICE_CLEAR }
+}
 export const configureDeviceSuccess = (device) => {
   return { type: types.CONFIGURE_DEVICE_SUCCESS, device }
 }
-export const configureDeviceFailure = (device) => {
-  return { type: types.CONFIGURE_DEVICE_FAILURE, device }
+export const configureDeviceFailure = (error) => {
+  return { type: types.CONFIGURE_DEVICE_FAILURE, error }
 }
+export const deviceAcceptConfigurationTrySuccess = () => {
+  return { type: types.DEVICE_ACCEPT_CONFIGURATION_TRY_SUCCESS }
+}
+export const deviceAcceptConfigurationTryFailure = () => {
+  return { type: types.DEVICE_ACCEPT_CONFIGURATION_TRY_FAILURE }
+}
+
+
+// EVENT
+export const eventSubscribeSuccess = (event) => {
+  return { type: types.EVENT_SUBSCRIBE_SUCCESS, event }
+}
+export const eventSubscribeFailure = () => {
+  return { type: types.EVENT_SUBSCRIBE_FAILURE }
+}
+export const eventUnsubscribeSuccess = (event) => {
+  return { type: types.EVENT_UNSUBSCRIBE_SUCCESS, event }
+}
+export const eventUnsubscribeFailure = () => {
+  return { type: types.EVENT_UNSUBSCRIBE_FAILURE }
+}
+export const eventListenSuccess = (event) => {
+  return { type: types.EVENT_LISTEN_SUCCESS, event }
+}
+export const eventListenFailure = () => {
+  return { type: types.EVENT_LISTEN_FAILURE }
+}
+
 
 // SIGNUP
 export const signupSuccess = (identity) => {
@@ -273,22 +302,7 @@ export const socketInviteUser = (user) => {
         dispatch(inviteUserSuccess(data['user_id'], data['invitation_token']))
       })
       .catch((error) => {
-        NotifyApi.notify('Error', error.label)
-        dispatch(socketWriteFailure())
-      })
-  }
-}
-export const socketDeclareDevice = (device) => {
-  const cmd = `{"cmd": "device_declare", "device_name": "${device}"}\n`
-  return (dispatch) => {
-    dispatch(socketWrite())
-    return SocketApi.write(cmd)
-      .then((data) => {
-        NotifyApi.notify('Device', `'${device}' successfully declared.`)
-        dispatch(declareDeviceSuccess(device, data['configure_device_token']))
-      })
-      .catch((error) => {
-        NotifyApi.notify('Error', error.label)
+        NotifyApi.notify('Error', error.reason)
         dispatch(socketWriteFailure())
       })
   }
@@ -303,7 +317,23 @@ export const socketSignup = (identity, password, token) => {
         dispatch(signupSuccess(identity))
       })
       .catch((error) => {
-        NotifyApi.notify('Error', error.label)
+        NotifyApi.notify('Error', error.reason)
+        dispatch(socketWriteFailure())
+      })
+  }
+}
+export const socketDeclareDevice = (device) => {
+  const cmd = `{"cmd": "device_declare", "device_name": "${device}"}\n`
+  return (dispatch) => {
+    dispatch(socketWrite())
+    return SocketApi.write(cmd)
+      .then((data) => {
+        NotifyApi.notify('Device', `'${device}' successfully declared.`)
+        dispatch(declareDeviceSuccess(device, data['configure_device_token']))
+      })
+      .catch((error) => {
+        NotifyApi.notify('Error', error.reason)
+        dispatch(declareDeviceFailure(error.reason))
         dispatch(socketWriteFailure())
       })
   }
@@ -311,14 +341,78 @@ export const socketSignup = (identity, password, token) => {
 export const socketConfigureDevice = (identity, password, token) => {
   const cmd = `{"cmd": "device_configure", "device_id": "${identity}", "password": "${password}", "configure_device_token": "${token}"}\n`
   return (dispatch) => {
+    dispatch(configureDeviceClear())
     dispatch(socketWrite())
     return SocketApi.write(cmd)
       .then((data) => {
-        NotifyApi.notify('Device', `'${identity}' successfully configured.`)
-        dispatch(configureDeviceSuccess(identity))
+        if(data['status'] !== 'ok') {
+          NotifyApi.notify('Error', data['reason'])
+          dispatch(configureDeviceFailure(data))
+        } else {
+          NotifyApi.notify('Device', `'${identity}' successfully configured.`)
+          dispatch(configureDeviceSuccess(identity))
+        }
       })
       .catch((error) => {
-        NotifyApi.notify('Error', error.label)
+        NotifyApi.notify('Error', error.reason)
+        dispatch(configureDeviceFailure(error))
+        dispatch(socketWriteFailure())
+      })
+  }
+}
+export const socketAcceptDevice = (configuration_try_id) => {
+  const cmd = `{"cmd": "device_accept_configuration_try", "configuration_try_id": "${configuration_try_id}"}\n`
+  return (dispatch) => {
+    dispatch(socketWrite())
+    return SocketApi.write(cmd)
+      .then((data) => {
+        dispatch(deviceAcceptConfigurationTrySuccess())
+        NotifyApi.notify('Device successfully enrolled.')
+      })
+      .catch((error) => {
+        NotifyApi.notify('Error', error.reason)
+        dispatch(socketWriteFailure())
+      })
+  }
+}
+export const socketEventSubscribe = (event) => {
+  const cmd = `{"cmd": "event_subscribe", "event": "${event}"}\n`
+  return (dispatch) => {
+    dispatch(socketWrite())
+    return SocketApi.write(cmd)
+      .then((data) => {
+        dispatch(eventSubscribeSuccess(event))
+      })
+      .catch((error) => {
+        NotifyApi.notify('Error', error.reason)
+        dispatch(socketWriteFailure())
+      })
+  }
+}
+export const socketEventUnsubscribe = (event) => {
+  const cmd = `{"cmd": "event_unsubscribe", "event": "${event}"}\n`
+  return (dispatch) => {
+    dispatch(socketWrite())
+    return SocketApi.write(cmd)
+      .then((data) => {
+        dispatch(eventUnsubscribeSuccess(event))
+      })
+      .catch((error) => {
+        NotifyApi.notify('Error', error.reason)
+        dispatch(socketWriteFailure())
+      })
+  }
+}
+export const socketEventListen = () => {
+  const cmd = `{"cmd": "event_listen", "wait": "False"}\n`
+  return (dispatch) => {
+    dispatch(socketWrite())
+    return SocketApi.write(cmd)
+      .then((data) => {
+        dispatch(eventListenSuccess(data))
+      })
+      .catch((error) => {
+        NotifyApi.notify('Error', error.reason)
         dispatch(socketWriteFailure())
       })
   }
@@ -332,7 +426,7 @@ export const SocketListLogins = () => {
         dispatch(listLoginSuccess(data['devices']))
       })
       .catch((error) => {
-        NotifyApi.notify('Error', error.label)
+        NotifyApi.notify('Error', error.reason)
         dispatch(socketWriteFailure())
       })
   }
@@ -351,7 +445,7 @@ export const socketLogin = (identity, password) => {
         dispatch(loginSuccess(identity))
       })
       .catch((error) => {
-        NotifyApi.notify('Error', error.label)
+        NotifyApi.notify('Error', error.reason)
         if(error['status'] === 'privkey_not_found')
           dispatch(loginFailure())
         else
@@ -385,7 +479,7 @@ export const socketLogout = () => {
         dispatch(logoutSuccess())
       })
       .catch((error) => {
-        NotifyApi.notify('Error', error.label)
+        NotifyApi.notify('Error', error.reason)
         if(error['status'] === 'login_required')
           dispatch(logoutFailure())
         else
@@ -424,7 +518,7 @@ export const socketListDir = (route, animation) => {
       })
       .then(() => dispatch(loadFilesSuccess(files)))
       .catch((error) => {
-        NotifyApi.notify('Error', error.label)
+        NotifyApi.notify('Error', error.reason)
         dispatch(loadFilesFailure())
       })
       .then(() => dispatch(loadingAnimation(true)))
@@ -444,7 +538,7 @@ export const socketShowDustbin = () => {
         dispatch(loadFilesSuccess(files))
       })
       .catch((error) => {
-        NotifyApi.notify('Error', error.label)
+        NotifyApi.notify('Error', error.reason)
         dispatch(loadFilesFailure())
       })
   }
@@ -459,7 +553,7 @@ export const socketSearchFile = (name) => {
         dispatch(loadFilesSuccess(files))
       })
       .catch((error) => {
-        NotifyApi.notify('Error', error.label)
+        NotifyApi.notify('Error', error.reason)
         dispatch(loadFilesFailure())
       })
   }
@@ -491,7 +585,7 @@ export const socketCreateFile = (route, fileR) => {
         dispatch(addFileSuccess(file))
       })
       .catch((error) => {
-        NotifyApi.notify('Error', error.label)
+        NotifyApi.notify('Error', error.reason)
         dispatch(socketWriteFailure())
       })
   }
@@ -512,7 +606,7 @@ export const socketRenameFile = (file, name) => {
         dispatch(updateFileSuccess(file.path, renamedFile))
       })
       .catch((error) => {
-        NotifyApi.notify('Error', error.label)
+        NotifyApi.notify('Error', error.reason)
         dispatch(socketWriteFailure())
       })
   }
@@ -527,7 +621,7 @@ export const socketDeleteFile = (file) => {
         dispatch(deleteFileSuccess(file))
       })
       .catch((error) => {
-        NotifyApi.notify('Error', error.label)
+        NotifyApi.notify('Error', error.reason)
         dispatch(socketWriteFailure())
       })
   }
@@ -542,7 +636,7 @@ export const socketRestoreFile = (file) => {
         dispatch(deleteFileSuccess(file))
       })
       .catch((error) => {
-        NotifyApi.notify('Error', error.label)
+        NotifyApi.notify('Error', error.reason)
         dispatch(socketWriteFailure())
       })
   }
@@ -563,7 +657,7 @@ export const socketMoveFile = (file, path) => {
         dispatch(updateFileSuccess(path, data))
       })
       .catch((error) => {
-        NotifyApi.notify('Error', error.label)
+        NotifyApi.notify('Error', error.reason)
         dispatch(socketWriteFailure())
       })
   }
@@ -587,7 +681,7 @@ export const socketCreateDir = (route, name) => {
         dispatch(addFileSuccess(file))
       })
       .catch((error) => {
-        NotifyApi.notify('Error', error.label)
+        NotifyApi.notify('Error', error.reason)
         dispatch(socketWriteFailure())
       })
   }
@@ -599,7 +693,7 @@ export const socketHistory = (summary=false) => {
     return SocketApi.write(cmd)
       .then((data) => dispatch(loadHistorySuccess(data.detailed_history)))
       .catch((error) => {
-        NotifyApi.notify('Error', error.label)
+        NotifyApi.notify('Error', error.reason)
         dispatch(socketWriteFailure())
       })
   }
@@ -615,7 +709,7 @@ export const socketRestoreVersion = (version) => {
         dispatch(restoreVersionSuccess())
       })
       .catch((error) => {
-        NotifyApi.notify('Error', error.label)
+        NotifyApi.notify('Error', error.reason)
         dispatch(socketWriteFailure())
       })
   }

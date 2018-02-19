@@ -26,7 +26,12 @@ class Login extends Component {
   }
 
   handleLogin(event) {
-    const identity = this.state.identity
+    const logins = this.props.state.logins
+    var identity = ''
+    if(logins.length >= 1 && this.state.identity === '')
+      identity = logins[0]
+    else
+      identity = this.state.identity
     const password = this.state.password
     const login = this.props.dispatch.login
     event.preventDefault()
@@ -41,8 +46,6 @@ class Login extends Component {
   render() {
     const logins = this.props.state.logins
     const password = this.state.password
-    if(logins.length >= 1 && this.state.identity === '')
-      this.state.identity = logins[0]
     return (
       <div className="modal">
         <div className="modal-content">

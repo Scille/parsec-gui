@@ -5,20 +5,26 @@ const initialState = {
   logins: [],
   fs_pid: null,
   user_invitation: null,
-  device_declaration: null
+  device_declaration: null,
+  device_try_claim_submitted: null
 }
 
 const authenticationReducer = (state=initialState, action) => {
   switch(action.type) {
-    case types.DECLARE_DEVICE_SUCCESS:
+    case types.CONFIGURE_DEVICE_CLEAR:
       return {
         ...state,
-        device_declaration: {device: action.device, token: action.token},
+        device_try_claim_submitted: null,
       }
-    case types.INVITE_USER_SUCCESS:
+    case types.CONFIGURE_DEVICE_SUCCESS:
       return {
         ...state,
-        user_invitation: {user: action.user, token: action.token},
+        device_try_claim_submitted: action.type,
+      }
+    case types.CONFIGURE_DEVICE_FAILURE:
+      return {
+        ...state,
+        device_try_claim_submitted: action.error,
       }
     case types.SIGNUP_SUCCESS:
     case types.SIGNUP_FAILURE:

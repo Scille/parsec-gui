@@ -812,13 +812,17 @@ export class InviteUserModal extends Component {
                 User<br/>
                 <input type="text" name="user" value={user} onChange={this.handleChange} onFocus={this.handleFocus} autoFocus/>
               </label>
-              <label>
-                Token: {token}
-              </label>
+              {this.props.user_invitation !== null &&
+                <label>
+                  Token: {token}
+                </label>
+              }
             </div>
             <div className="modal-footer">
               <button onClick={this.handleCancel} className="button third-button">Close</button>
-              <button type="submit" className="button main-button" value="Submit">Get Token</button>
+              {this.props.user_invitation === null &&
+                <button type="submit" className="button main-button" value="Submit">Get Token</button>
+              }
             </div>
           </form>
         </div>
@@ -830,12 +834,13 @@ export class InviteUserModal extends Component {
 export class DeclareDeviceModal extends Component {
   constructor(props) {
     super(props)
-    this.state = { device: '' }
+    this.state = { device: '', confirmation_token: '' }
 
     this.handleChange = this.handleChange.bind(this)
     this.handleFocus = this.handleFocus.bind(this)
     this.handleCancel = this.handleCancel.bind(this)
     this.handleSubmit = this.handleSubmit.bind(this)
+    this.listenEvents = this.listenEvents.bind(this)
   }
 
   handleChange(event) {
@@ -855,8 +860,13 @@ export class DeclareDeviceModal extends Component {
 
   handleCancel(event) {
     const hideModal = this.props.hideModal
+    const endDeclareDevice = this.props.endDeclareDevice
 
-    event.preventDefault()
+    if(event !== null)
+      event.preventDefault()
+    if(this.props.device_declaration !== null)
+      endDeclareDevice()
+      clearInterval(this.interval)
     hideModal()
   }
 
@@ -870,12 +880,28 @@ export class DeclareDeviceModal extends Component {
 
     event.preventDefault()
     declareDevice(device)
+    this.interval = setInterval(this.listenEvents, 1000);
+  }
+
+  listenEvents() {
+    const listenEvents = this.props.listenEvents
+    const acceptDevice = this.props.acceptDevice
+    const endDeclareDevice = this.props.endDeclareDevice
+    if(this.props.device_declaration && this.props.device_declaration.token === undefined) {
+      endDeclareDevice()
+      clearInterval(this.interval)
+    } else if(this.props.event_device_try_claim_listened && this.props.event_device_try_claim_listened.device_name === this.state.device) {
+      acceptDevice(this.props.event_device_try_claim_listened.configuration_try_id)
+      this.handleCancel(null)
+    } else {
+      listenEvents()
+    }
   }
 
   render() {
     const device = this.state.device
     var token = ''
-    if(this.props.device_declaration !== null)
+    if(this.props.device_declaration && this.props.device_declaration.token !== undefined)
       token = this.props.device_declaration.token
     return (
       <div className="modal">
@@ -885,17 +911,32 @@ export class DeclareDeviceModal extends Component {
           </div>
           <form onSubmit={this.handleSubmit}>
             <div className="modal-body">
-              <label>
-                Device<br/>
-                <input type="text" name="device" value={device} onChange={this.handleChange} onFocus={this.handleFocus} autoFocus/>
-              </label>
-              <label>
-                Token: {token}
-              </label>
+              {this.props.device_declaration && this.props.device_declaration.token !== undefined &&
+                <label>
+                  Device: {device}<br/><br/>
+                </label>
+              }
+              {(this.props.device_declaration === null || this.props.device_declaration.token === undefined) &&
+                <label>
+                  Device<br/>
+                  <input type="text" name="device" value={device} onChange={this.handleChange} onFocus={this.handleFocus} autoFocus/>
+                </label>
+              }
+              {this.props.device_declaration && this.props.device_declaration.token !== undefined &&
+                <label>
+                  Token: {token}<br/><br/>
+                  Waiting for "{this.state.device}" configuration try...
+                </label>
+              }
             </div>
             <div className="modal-footer">
               <button onClick={this.handleCancel} className="button third-button">Close</button>
-              <button type="submit" className="button main-button" value="Submit">Get Token</button>
+              {this.props.device_declaration && this.props.device_declaration.token !== undefined && this.props.device_declaration.device_name === this.state.device
+
+              }
+              {(this.props.device_declaration === null || this.props.device_declaration.token === undefined) &&
+                <button type="submit" className="button main-button" value="Submit">Get Token</button>
+              }
             </div>
           </form>
         </div>

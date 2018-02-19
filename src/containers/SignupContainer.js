@@ -8,6 +8,7 @@ import Signup from '../components/Signup'
 
 Signup.propTypes = {
   state: PropTypes.shape({
+    authentication: PropTypes.object.isRequired,
     socket: PropTypes.object.isRequired,
   }),
   dispatch: PropTypes.shape({
@@ -19,7 +20,7 @@ Signup.propTypes = {
 const mapStateToProps = (state) => {
   return {
     state: {
-      authenticated: state.authenticated,
+      authentication: state.authenticationReducer,
       socket: state.socketReducer,
     }
   }

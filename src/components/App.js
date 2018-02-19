@@ -44,8 +44,11 @@ export class App extends Component {
     const hideModal = this.props.dispatch.hideModal
     const inviteUser = this.props.dispatch.inviteUser
     const declareDevice = this.props.dispatch.declareDevice
+    const endDeclareDevice = this.props.dispatch.endDeclareDevice
+    const listenEvents = this.props.dispatch.listenEvents
+    const acceptDevice = this.props.dispatch.acceptDevice
     const inviteUserModal = () => {return { inviteUser, hideModal, user_invitation: this.props.state.authentication.user_invitation }}
-    const declareDeviceModal = () => {return { declareDevice, hideModal }}
+    const declareDeviceModal = () => {return { declareDevice, endDeclareDevice, listenEvents, acceptDevice, hideModal, event_device_try_claim_subscribed: this.props.state.modalReducer }}
     const settingsModal = () => {return { hideModal }}
     const connected = this.props.state.socket.connected
     if(!connected) return (<div id="loader-wrapper"><div id="loader"></div></div>)
