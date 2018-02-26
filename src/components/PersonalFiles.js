@@ -130,6 +130,18 @@ class PersonalFiles extends Component {
     const moveTo = this.props.dispatch.moveTo
     const moveUp = this.props.dispatch.moveUp
 
+    files.sort((a, b) => {
+      if(a.type === 'folder' && b.type === 'file')
+        return -1
+      else if (a.type === 'file' && b.type === 'folder')
+        return 1
+      if (a.name > b.name)
+        return 1
+      if (b.name > a.name)
+        return -1
+      return 0
+    })
+
     let displayedFiles = files.filter(file => {
       console.log('filtre')
       console.log(this.state.searchTerm)
@@ -159,18 +171,6 @@ class PersonalFiles extends Component {
                 updated: "2012-01-01T00:00:00",
                 version: 1}]
     }
-
-    files.sort((a, b) => {
-      if(a.type === 'folder' && b.type === 'file')
-        return -1
-      else if (a.type === 'file' && b.type === 'folder')
-        return 1
-      if (a.name > b.name)
-        return 1
-      if (b.name > a.name)
-        return -1
-      return 0
-    })
 
     class IconFormatter extends React.Component {
       static propTypes = {
