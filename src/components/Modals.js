@@ -460,7 +460,7 @@ export class ShareModal extends Component {
           <form onSubmit={this.handleSubmit}>
             <div className="modal-body">
               <label>
-                Recipient email<br/>
+                Recipients<br/>
                 <Select
                   closeOnSelect={!stayOpen}
                   disabled={disabled}

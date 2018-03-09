@@ -18,7 +18,6 @@ class Tools extends Component {
     // const view = this.props.state.view
     // const loading = this.props.state.socket.loading
     // const loading_animation = this.props.state.view.loading_animation
-    const isRestoring = this.props.state.view.restoring
     const breadcrumb = this.props.state.breadcrumb
     this.currentPath = breadcrumb[breadcrumb.length -1]
 
@@ -33,7 +32,6 @@ class Tools extends Component {
     const deleteFile = this.props.dispatch.deleteFile
     const shareFile = this.props.dispatch.shareFile
     const historyFile = this.props.dispatch.historyFile
-    const restoring = this.props.dispatch.restoring
 
     // const openFile = this.props.dispatch.openFile
     const createDir = this.props.dispatch.createDir
@@ -54,15 +52,11 @@ class Tools extends Component {
         title = files[0].type === 'file' ? 'DELETE FILE' : 'DELETE DIRECTORY'
       }
       return {
-      files,
-      title: title,
-      removeFunc: deleteFile,
-      hideModal
-    }}
-
-    var style = {}
-    if (isRestoring) {
-      style = {'color': 'var(--main-color)'}
+        files,
+        title: title,
+        removeFunc: deleteFile,
+        hideModal
+      }
     }
 
     if (selected.length === 0) {
@@ -76,7 +70,6 @@ class Tools extends Component {
           {cutted.length > 0 && 
             <li><a onClick={() => {for(var i = 0; i < cutted.length; i++) moveFile(cutted[i], this.currentPath.route); refresh(this.currentPath.route, true)}}><i className="fa fa-paste" title="Paste"/></a></li>
           }
-          <li><a onClick={() => restoring(!isRestoring)}><i className="fa fa-history" title="History" style={style}/></a></li>
           <li><a onClick={() => console.log('SHOW/HIDE DELETED FILED')}><i className="fa fa-eye" title="View deleted files"/></a></li>
           <li><a onClick={() => refresh(this.currentPath.route, true)}><i className="fa fa-refresh" title="Refresh"/></a></li>
         </ul>
