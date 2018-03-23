@@ -31,7 +31,8 @@ const mapDispatchToProps = (dispatch) => {
     dispatch: {
       init: () => {},
       listLogins: () => dispatch(actionsCreators.SocketListLogins()),
-      login: (identity, password) => dispatch(actionsCreators.socketLogin(identity, password))
+      login: (identity, password) => dispatch(actionsCreators.socketLogin(identity, password)),
+      mount: (mountpoint) => dispatch(actionsCreators.mountFilesystem(mountpoint))
     }
   }
 }

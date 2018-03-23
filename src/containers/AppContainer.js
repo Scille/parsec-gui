@@ -15,6 +15,7 @@ App.propTypes = {
     end: PropTypes.func.isRequired,
     logged: PropTypes.func.isRequired,
     logout: PropTypes.func.isRequired,
+    umount: PropTypes.func.isRequired,
     showModal: PropTypes.func.isRequired,
     hideModal: PropTypes.func.isRequired,
     inviteUser: PropTypes.func.isRequired,
@@ -38,10 +39,8 @@ const mapDispatchToProps = (dispatch) => {
       init: () => dispatch(actionsCreators.socketConnect()),
       end: () => dispatch(actionsCreators.socketEnd()),
       logged: () => dispatch(actionsCreators.socketLogged()),
-      logout: (fs_pid) => {
-        dispatch(actionsCreators.socketLogout())
-        dispatch(actionsCreators.umountFilesystem(fs_pid))
-      },
+      logout: () => dispatch(actionsCreators.socketLogout()),
+      umount: () => dispatch(actionsCreators.umountFilesystem()),
       showModal: (modalType, modalProps) => dispatch(actionsCreators.showModal(modalType, modalProps)),
       hideModal: () => dispatch(actionsCreators.hideModal()),
       inviteUser: (user) => dispatch(actionsCreators.socketInviteUser(user)),
@@ -50,7 +49,7 @@ const mapDispatchToProps = (dispatch) => {
         dispatch(actionsCreators.socketEventSubscribe('device_try_claim_submitted'))
       },
       endDeclareDevice: () => dispatch(actionsCreators.socketEventUnsubscribe('device_try_claim_submitted')),
-      listenEvents: () => dispatch(actionsCreators.socketEventListen()),
+      listenEvents: (notify) => dispatch(actionsCreators.socketEventListen(notify)),
       acceptDevice: (try_id) => dispatch(actionsCreators.socketAcceptDevice(try_id)),
     }
   }

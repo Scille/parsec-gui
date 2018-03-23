@@ -27,6 +27,7 @@ export class App extends Component {
     this.props.dispatch.init()
     const logged = this.props.dispatch.logged
     logged()
+    // this.interval = setInterval(this.props.dispatch.listenEvents, 3000, true)
   }
 
   componentWillUnmount() {
@@ -34,9 +35,11 @@ export class App extends Component {
   }
 
   handleLogout() {
-    console.log('LOGOUT')
     const logout = this.props.dispatch.logout
-    logout(this.props.state.authentication.fs_pid)
+    const umount = this.props.dispatch.umount
+    if(this.props.state.socket.mounpoint !== null)
+      umount()
+    logout()
   }
 
   render() {

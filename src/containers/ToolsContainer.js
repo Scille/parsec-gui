@@ -42,10 +42,6 @@ const mapDispatchToProps = (dispatch) => {
   return {
     dispatch: {
       logged: () => dispatch(actionsCreators.socketLogged()),
-      logout: (fs_pid) => {
-        dispatch(actionsCreators.socketLogout())
-        dispatch(actionsCreators.umountFilesystem(fs_pid))
-      },
       moveTo: (route, name) => {
         const path = {
           route: route === '/' ? route.concat(name) : route.concat('/', name),

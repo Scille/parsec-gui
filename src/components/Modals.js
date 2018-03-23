@@ -894,7 +894,7 @@ export class DeclareDeviceModal extends Component {
       acceptDevice(this.props.event_device_try_claim_listened.configuration_try_id)
       this.handleCancel(null)
     } else {
-      listenEvents()
+      listenEvents(false)
     }
   }
 

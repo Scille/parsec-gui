@@ -18,7 +18,6 @@ class PersonalFiles extends Component {
 
     var breadcrumb = this.props.state.breadcrumb
     this.currentPath = breadcrumb[breadcrumb.length -1]
-    this.refresh = this.props.dispatch.refresh
     this.state = {
       searchTerm: '',
       matchingFiles: []
@@ -26,14 +25,13 @@ class PersonalFiles extends Component {
   }
 
   componentDidMount() {
-    console.log('mount')
+    // TODO never called. Why?
     this.props.dispatch.init()
     console.log(this.tick)
     this.interval = setInterval(this.tick, 3000, this.currentPath.route)
   }
 
   componentWillUnmount() {
-    console.log('Umount')
     this.props.dispatch.end()
     clearInterval(this.interval)
   }
