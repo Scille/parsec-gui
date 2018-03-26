@@ -21,8 +21,6 @@ class Tools extends Component {
     const breadcrumb = this.props.state.breadcrumb
     this.currentPath = breadcrumb[breadcrumb.length -1]
 
-    // const moveTo = this.props.dispatch.moveTo
-    // const moveUp = this.props.dispatch.moveUp
     const refresh = this.props.dispatch.refresh
     const createFiles = this.props.dispatch.createFiles
     // const searchFile = this.props.dispatch.searchFile
@@ -66,7 +64,7 @@ class Tools extends Component {
             <a><input type="file" name="file" id="file" className="input-file" onChange={(event) => {createFiles(this.currentPath.route, event.target.files)}} multiple/>
             <label htmlFor="file"><i className="fa fa-file" title="Upload file"/></label></a>
           </li>
-          <li><a onClick={() => {showModal('createDirModal', createDirModal); refresh(this.currentPath.route, true)}}><i className="fa fa-folder" title="Create directory"/></a></li>
+          <li><a onClick={() => {showModal('createDirModal', createDirModal)}}><i className="fa fa-folder" title="Create directory"/></a></li>
           {cutted.length > 0 && 
             <li><a onClick={() => {for(var i = 0; i < cutted.length; i++) moveFile(cutted[i], this.currentPath.route); refresh(this.currentPath.route, true)}}><i className="fa fa-paste" title="Paste"/></a></li>
           }

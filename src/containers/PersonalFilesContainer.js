@@ -40,7 +40,7 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     dispatch: {
-      init: () => dispatch(actionsCreators.socketListDir('/')),
+      init: () => dispatch(actionsCreators.socketListDir('/', true)),
       end: () => dispatch(actionsCreators.removePath(0)),
       openFile: (file) => dispatch(actionsCreators.openFile(file)),
       moveTo: (route, name) => {
@@ -48,11 +48,11 @@ const mapDispatchToProps = (dispatch) => {
           route: route === '/' ? route.concat(name) : route.concat('/', name),
           libelle: name
         }
-        dispatch(actionsCreators.socketListDir(path.route))
+        dispatch(actionsCreators.socketListDir(path.route, true))
         dispatch(actionsCreators.addPath(path))
       },
       moveUp: (route, index) => {
-        dispatch(actionsCreators.socketListDir(route))
+        dispatch(actionsCreators.socketListDir(route, true))
         dispatch(actionsCreators.removePath(index))
       },
       refresh: (route, animate) => dispatch(actionsCreators.socketListDir(route, animate)),

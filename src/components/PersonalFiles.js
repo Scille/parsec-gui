@@ -13,12 +13,9 @@ class PersonalFiles extends Component {
     this.onSearchInputChange = this.onSearchInputChange.bind(this)
     this.selectFile = this.selectFile.bind(this)
     this.isSelected = this.isSelected.bind(this)
-    this.tick = this.tick.bind(this)
+    this.refresh = this.refresh.bind(this)
     this.handleCancelRestore = this.handleCancelRestore.bind(this)
     this.handleValidateRestore = this.handleValidateRestore.bind(this)
-
-    var breadcrumb = this.props.state.breadcrumb
-    this.currentPath = breadcrumb[breadcrumb.length -1]
     this.state = {
       searchTerm: '',
       matchingFiles: []
@@ -27,8 +24,6 @@ class PersonalFiles extends Component {
 
   componentDidMount() {
     this.props.dispatch.init()
-    console.log(this.tick)
-    this.interval = setInterval(this.tick, 3000, this.currentPath.route)
   }
 
   componentWillUnmount() {
@@ -98,9 +93,8 @@ class PersonalFiles extends Component {
     this.props.dispatch.selectFile(file, selected)
   }
 
-  tick(path) {
-    console.log('RE ' + path)
-    this.props.dispatch.refresh(path, false)
+  refresh(path) {
+    this.props.dispatch.refresh(this.currentPath.route, false)
   }
 
   handleCancelRestore(event) {
@@ -112,8 +106,9 @@ class PersonalFiles extends Component {
   }
 
   render() {
-    console.log('RENDER PERSONAL FILE')
-    console.log(this.props.state.selection)
+    if(this.interval === undefined)
+      this.interval = setInterval(this.refresh, 3000)
+    // console.log(this.props.state.selection)
     var files = this.props.state.files
     const selected = this.props.state.selection.selected
     const view = this.props.state.view
@@ -139,9 +134,9 @@ class PersonalFiles extends Component {
     })
 
     let displayedFiles = files.filter(file => {
-      console.log('filtre')
-      console.log(this.state.searchTerm)
-      console.log(this.state.matchingFiles)
+      // console.log('filtre')
+      // console.log(this.state.searchTerm)
+      // console.log(this.state.matchingFiles)
       return this.state.searchTerm === '' || file.name.toLowerCase().includes(this.state.searchTerm) || this.state.matchingFiles.indexOf(file.mountpoint) !== -1
     })
 
@@ -232,7 +227,7 @@ class PersonalFiles extends Component {
               <li>
                 <div className="dropdown-content">
                 {breadcrumb.map((path, i) => 
-                  <button key={path.route} onClick={() => moveUp(path.route, i)} className={`button path-button ${i === 0 ? 'first-path-button' : ''} ${(i + 1) === breadcrumb.length ? 'last-path-button' : ''}`}>{(i + 1) === breadcrumb.length ? <i className="fa fa-folder-open"/> : ''} {path.libelle}</button>
+                  <button key={path.route} onClick={() => {clearInterval(this.interval); moveUp(path.route, i)}} className={`button path-button ${i === 0 ? 'first-path-button' : ''} ${(i + 1) === breadcrumb.length ? 'last-path-button' : ''}`}>{(i + 1) === breadcrumb.length ? <i className="fa fa-folder-open"/> : ''} {path.libelle}</button>
                 )}
                 </div>
               </li>

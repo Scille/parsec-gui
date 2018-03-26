@@ -11,8 +11,6 @@ Tools.propTypes = {
   }),
   dispatch: PropTypes.shape({
     init: PropTypes.func.isRequired,
-    moveTo: PropTypes.func.isRequired,
-    moveUp: PropTypes.func.isRequired,
     createFiles: PropTypes.func.isRequired,
     searchFile: PropTypes.func.isRequired,
     renameFile: PropTypes.func.isRequired,
@@ -44,18 +42,6 @@ const mapDispatchToProps = (dispatch) => {
     dispatch: {
       init: () => {},
       logged: () => dispatch(actionsCreators.socketLogged()),
-      moveTo: (route, name) => {
-        const path = {
-          route: route === '/' ? route.concat(name) : route.concat('/', name),
-          libelle: name
-        }
-        dispatch(actionsCreators.socketListDir(path.route))
-        dispatch(actionsCreators.addPath(path))
-      },
-      moveUp: (route, index) => {
-        dispatch(actionsCreators.socketListDir(route))
-        dispatch(actionsCreators.removePath(index))
-      },
       createFiles: (route, files={}) => {
         for(const file of files) {
           dispatch(actionsCreators.socketCreateFile(
