@@ -11,7 +11,7 @@ export const loadingAnimation = (state) => {
   else
     return { type: types.DISABLE_LOADING_ANIMATION }
 }
-export const restoring = (state) => {
+export const restore = (state) => {
   return (dispatch) => {
     if(state) {
       dispatch({ type: types.ENABLE_RESTORING })
@@ -83,6 +83,14 @@ export const loadHistorySuccess = (history) => {
 }
 export const restoreVersionSuccess = () => {
   return { type: types.RESTORE_VERSION_SUCCESS }
+}
+
+// SHARE
+export const shareSuccess = (path) => {
+  return { type: types.SHARE_SUCCESS, path }
+}
+export const shareFailure = (path) => {
+  return { type: types.SHARE_FAILURE, path }
 }
 
 // INVITE USER
@@ -721,6 +729,23 @@ export const socketRestoreVersion = (version) => {
         window.location.hash = '/personal_files'
         NotifyApi.notify('Restore', `All files restored to the user_manifest's version V.${version}.`)
         dispatch(restoreVersionSuccess())
+      })
+      .catch((error) => {
+        NotifyApi.notify('Error', error.reason)
+        console.log('ERROR')
+        console.log(error)
+        dispatch(socketWriteFailure())
+      })
+  }
+}
+export const socketSharePath = (path, recipient) => {
+  const cmd = `{"cmd": "share", "path": "${path}", "recipient": "${recipient}"}\n`
+  return (dispatch) => {
+    dispatch(socketWrite())
+    return SocketApi.write(cmd)
+      .then((data) => {
+        NotifyApi.notify('Share', `${path} successfully shared`)
+        dispatch(shareSuccess(path))
       })
       .catch((error) => {
         NotifyApi.notify('Error', error.reason)

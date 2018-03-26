@@ -397,43 +397,20 @@ export class ShareModal extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      removeSelected: true,
-      disabled: false,
-      crazy: false,
-      stayOpen: false,
-      value: [],
-      rtl: false,
+      recipient: '',
     }
 
-    this.handleSelectChange = this.handleSelectChange.bind(this)
+    this.handleChange = this.handleChange.bind(this)
     this.handleCancel = this.handleCancel.bind(this)
-    this.handleSubmit = this.handleSubmit.bind(this)
+    this.handleShare = this.handleShare.bind(this)
   }
 
-  getInitialState () {
-    return {
-      removeSelected: true,
-      disabled: false,
-      crazy: false,
-      stayOpen: false,
-      value: [],
-      rtl: false,
-    };
-  }
+  handleChange(event) {
+    const target = event.target
+    const value = target.value
+    const name = target.name
 
-  handleSelectChange (value) {
-    this.setState({ value });
-  }
-
-  toggleCheckbox (e) {
-    this.setState({
-      [e.target.name]: e.target.checked,
-    });
-  }
-
-  toggleRtl (e) {
-    let rtl = e.target.checked;
-    this.setState({ rtl });
+    this.setState({ [name]: value })
   }
 
   handleCancel(event) {
@@ -443,47 +420,25 @@ export class ShareModal extends Component {
     hideModal()
   }
 
-  handleSubmit(event) {
-    // TODO REMOVE THIS
-    const hideModal = this.props.hideModal
-    hideModal()
+  handleShare(event) {
+    const path = this.props.path
+    const share = this.props.sharePath
+    const recipient = this.state.recipient
+    if(recipient !== '') share(path.path, recipient)
   }
 
   render() {
-    const { disabled, stayOpen, value } = this.state;
     return (
       <div className="modal">
         <div className="modal-content">
           <div className="modal-header">
             <h3>SHARE</h3>
           </div>
-          <form onSubmit={this.handleSubmit}>
+          <form onSubmit={this.handleShare}>
             <div className="modal-body">
               <label>
-                Recipients<br/>
-                <Select
-                  closeOnSelect={!stayOpen}
-                  disabled={disabled}
-                  multi
-                  onChange={this.handleSelectChange}
-                  placeholder="Select the recipients"
-                  removeSelected={this.state.removeSelected}
-                  rtl={this.state.rtl}
-                  simpleValue
-                  value={value}
-                  options={[
-                    { value: 'accounting@scille.eu', label: 'Accounting (group)' },
-                    { value: 'damien.tural@gmail.com', label: 'Damien Tural' },
-                    { value: 'aline.virion@hotmail.com', label: 'Alice Virion' },
-                    { value: 'thomas.lagarde@hotmail.com', label: 'Thomas Lagarde' },
-                    { value: 'robert.acero@hotmail.com', label: 'Robert Acero' },
-                  ]}
-                />
-                <br/>
-              </label>
-              <label>
-                Save recipients in group (optional)<br/>
-                <input type="text" name="groupName" />
+                Recipient<br/>
+                <input type="text" name="recipient" value={this.state.recipient} onChange={this.handleChange} onFocus={this.handleFocus} autoFocus/>
               </label>
             </div>
             <div className="modal-footer">

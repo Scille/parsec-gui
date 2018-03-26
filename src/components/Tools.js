@@ -28,7 +28,7 @@ class Tools extends Component {
     const moveFile = this.props.dispatch.moveFile
     const cutFiles = this.props.dispatch.cutFiles
     const deleteFile = this.props.dispatch.deleteFile
-    const shareFile = this.props.dispatch.shareFile
+    const sharePath = this.props.dispatch.sharePath
     const historyFile = this.props.dispatch.historyFile
 
     // const openFile = this.props.dispatch.openFile
@@ -41,7 +41,7 @@ class Tools extends Component {
     const createDirModal = { path: this.currentPath.route, createDir, hideModal }
     const detailsModal = (file) => {return { file, hideModal }}
     const renameModal = (file) => {return { file, renameFile, hideModal }}
-    const shareModal = (file) => {return { file, shareFile, hideModal }}
+    const shareModal = (path) => {return { path, sharePath, hideModal }}
     const historyModal = (file) => {return { file, historyFile, hideModal }}
     const removeModal = (files) => {
       if(files.length > 1) {

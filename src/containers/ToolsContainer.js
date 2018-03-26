@@ -22,7 +22,7 @@ Tools.propTypes = {
     switchView: PropTypes.func.isRequired,
     showModal: PropTypes.func.isRequired,
     hideModal: PropTypes.func.isRequired,
-    restoring: PropTypes.func.isRequired,
+    restore: PropTypes.func.isRequired,
   }),
 }
 
@@ -70,8 +70,9 @@ const mapDispatchToProps = (dispatch) => {
         dispatch(actionsCreators.socketCreateDir(route, name))
         dispatch(actionsCreators.hideModal())
       },
+      sharePath: (path, recipient) => dispatch(actionsCreators.socketSharePath(path, recipient)),
       refresh: (route, animate) => dispatch(actionsCreators.socketListDir(route, animate)),
-      restoring: (state) => dispatch(actionsCreators.restoring(state)),
+      restore: (state) => dispatch(actionsCreators.restore(state)),
       switchView: () => dispatch(actionsCreators.switchView()),
       showModal: (modalType, modalProps) => dispatch(actionsCreators.showModal(modalType, modalProps)),
       hideModal: () => dispatch(actionsCreators.hideModal()),
