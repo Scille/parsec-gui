@@ -79,14 +79,14 @@ class Tools extends Component {
             [<li key='1'><a onClick={() => showModal('detailsModal', detailsModal(selected[0]))}><i className="fa fa-info" title="Details"/></a></li>,
             <li key='2'><a onClick={() => showModal('shareModal', shareModal(selected[0]))}><i className="fa fa-share-alt" title="Share"/></a></li>,
             <li key='3'><a onClick={() => showModal('historyModal', historyModal(selected[0]))}><i className="fa fa-history" title="History"/></a></li>,
-            <li key='4'><a onClick={() => {showModal('renameModal', renameModal(selected[0])); refresh(this.currentPath.route, true)}}><i className="fa fa-i-cursor" title="Rename"/></a></li>]
+            <li key='4'><a onClick={() => showModal('renameModal', renameModal(selected[0]))}><i className="fa fa-i-cursor" title="Rename"/></a></li>]
           }
           <li><a onClick={() => {cutFiles(selected)}}><i className="fa fa-cut" title="Cut"/></a></li>
           <li><a onClick={() => console.log('CACHE')}><i className="fa fa-cloud-download" title="Offline"/></a></li>
           {cutted.length > 0 && 
             <li><a onClick={() => {for(var i = 0; i < cutted.length; i++) moveFile(cutted[i], this.currentPath.route)}}><i className="fa fa-paste" title="Paste"/></a></li>
           }
-          <li><a onClick={() => {showModal('removeModal', removeModal(selected)); refresh(this.currentPath.route, true)}}><i className="fa fa-trash" title="Delete"/></a></li>
+          <li><a onClick={() => showModal('removeModal', removeModal(selected))}><i className="fa fa-trash" title="Delete"/></a></li>
         </ul>
       )
     }
