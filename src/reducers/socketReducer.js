@@ -19,8 +19,6 @@ const socketReducer = (state=initialState, action) => {
         connected: true
       }
     case types.MOUNT_FILESYSTEM_SUCCESS:
-      console.log('setting mountpoint')
-      console.log(action.mountpoint)
       return {
         ...state,
         mountpoint: action.mountpoint,

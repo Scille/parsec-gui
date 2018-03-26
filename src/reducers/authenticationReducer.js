@@ -26,14 +26,14 @@ const authenticationReducer = (state=initialState, action) => {
         ...state,
         device_try_claim_submitted: action.error,
       }
-    case types.SIGNUP_SUCCESS:
-    case types.SIGNUP_FAILURE:
     case types.LIST_LOGINS_SUCCESS:
       return {
         ...state,
         logins: action.logins,
       }
     case types.LIST_LOGINS_FAILURE:
+    case types.SIGNUP_SUCCESS:
+    case types.SIGNUP_FAILURE:
     case types.LOGIN_FAILURE:
     case types.LOGGED_FAILURE:
     case types.LOGOUT_SUCCESS:

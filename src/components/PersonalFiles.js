@@ -81,7 +81,7 @@ class PersonalFiles extends Component {
   isSelected(file) {
     for(var i = 0; i < this.props.state.selection.selected.length; i++) {
       if(this.props.state.selection.selected[i].path === file.path) {
-        console.log(file.path + ' selected')
+        // console.log(file.path + ' selected')
         return true
       }
     }

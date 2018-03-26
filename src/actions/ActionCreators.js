@@ -651,7 +651,6 @@ export const socketRestoreFile = (file) => {
   }
 }
 export const socketMoveFile = (file, path) => {
-  console.log('MOVE TO ', path)
   const newPath = path === '/' ? path.concat(file.name) : path.concat('/', file.name)
   const cmd = `{"cmd": "move", "src": "${file.path}", "dst": "${newPath}"}\n`
   return (dispatch) => {
