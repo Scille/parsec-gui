@@ -13,6 +13,7 @@ class PersonalFiles extends Component {
     this.onSearchInputChange = this.onSearchInputChange.bind(this)
     this.selectFile = this.selectFile.bind(this)
     this.isSelected = this.isSelected.bind(this)
+    this.tick = this.tick.bind(this)
     this.handleCancelRestore = this.handleCancelRestore.bind(this)
     this.handleValidateRestore = this.handleValidateRestore.bind(this)
 
@@ -25,7 +26,6 @@ class PersonalFiles extends Component {
   }
 
   componentDidMount() {
-    // TODO never called. Why?
     this.props.dispatch.init()
     console.log(this.tick)
     this.interval = setInterval(this.tick, 3000, this.currentPath.route)
@@ -141,7 +141,6 @@ class PersonalFiles extends Component {
     let displayedFiles = files.filter(file => {
       console.log('filtre')
       console.log(this.state.searchTerm)
-      console.log(file.mountpoint)
       console.log(this.state.matchingFiles)
       return this.state.searchTerm === '' || file.name.toLowerCase().includes(this.state.searchTerm) || this.state.matchingFiles.indexOf(file.mountpoint) !== -1
     })
@@ -203,7 +202,7 @@ class PersonalFiles extends Component {
             }
             }}>
           <li className="file-item" id={file.path}>
-            <input className={hidden} id={'select_' + file.path} name={file.path} type="checkbox" title={selected_file ? 'Deselect' : 'Select'} onClick={(event) => {this.selectFile(event, file); event.stopPropagation()}} checked={selected_file}/>
+            <input className={hidden} id={'select_' + file.path} name={file.path} type="checkbox" title={selected_file ? 'Deselect' : 'Select'} onClick={(event) => {this.selectFile(event, file); event.stopPropagation()}} checked={selected_file} readOnly/>
             <IconFormatter file={file}/>
             <div className="title">{file.name}</div>
             <div className="details">{details}</div>
