@@ -10,6 +10,7 @@ Tools.propTypes = {
     socket: PropTypes.object.isRequired,
   }),
   dispatch: PropTypes.shape({
+    init: PropTypes.func.isRequired,
     moveTo: PropTypes.func.isRequired,
     moveUp: PropTypes.func.isRequired,
     createFiles: PropTypes.func.isRequired,
@@ -41,6 +42,7 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     dispatch: {
+      init: () => {},
       logged: () => dispatch(actionsCreators.socketLogged()),
       moveTo: (route, name) => {
         const path = {
