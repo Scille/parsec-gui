@@ -227,6 +227,8 @@ export const mountFilesystem = (mountpoint) => {
       })
       .catch((error) => {
         NotifyApi.notify('Error', error.reason)
+        console.log('ERROR')
+        console.log(error)
         dispatch(socketWriteFailure())
       })
   }
@@ -241,6 +243,8 @@ export const umountFilesystem = () => {
       })
       .catch((error) => {
         NotifyApi.notify('Error', error.reason)
+        console.log('ERROR')
+        console.log(error)
         dispatch(socketWriteFailure())
       })
   }
@@ -256,6 +260,8 @@ export const openFile = (file) => {
       })
       .catch((error) => {
         NotifyApi.notify('Error', error.reason)
+        console.log('ERROR')
+        console.log(error)
         dispatch(socketWriteFailure())
       })
       .then(() => dispatch(loadingAnimation(true)))
@@ -272,6 +278,8 @@ export const socketInviteUser = (user) => {
       })
       .catch((error) => {
         NotifyApi.notify('Error', error.reason)
+        console.log('ERROR')
+        console.log(error)
         dispatch(socketWriteFailure())
       })
   }
@@ -287,6 +295,8 @@ export const socketSignup = (identity, password, token) => {
       })
       .catch((error) => {
         NotifyApi.notify('Error', error.reason)
+        console.log('ERROR')
+        console.log(error)
         dispatch(socketWriteFailure())
       })
   }
@@ -302,6 +312,8 @@ export const socketDeclareDevice = (device) => {
       })
       .catch((error) => {
         NotifyApi.notify('Error', error.reason)
+        console.log('ERROR')
+        console.log(error)
         dispatch(declareDeviceFailure(error.reason))
         dispatch(socketWriteFailure())
       })
@@ -316,6 +328,8 @@ export const socketConfigureDevice = (identity, password, token) => {
       .then((data) => {
         if(data['status'] !== 'ok') {
           NotifyApi.notify('Error', data.reason)
+          console.log('ERROR')
+          console.log(data)
           dispatch(configureDeviceFailure(data))
         } else {
           NotifyApi.notify('Device', `'${identity}' successfully configured.`)
@@ -324,6 +338,8 @@ export const socketConfigureDevice = (identity, password, token) => {
       })
       .catch((error) => {
         NotifyApi.notify('Error', error.reason)
+        console.log('ERROR')
+        console.log(error)
         dispatch(configureDeviceFailure(error))
         dispatch(socketWriteFailure())
       })
@@ -340,6 +356,8 @@ export const socketAcceptDevice = (configuration_try_id) => {
       })
       .catch((error) => {
         NotifyApi.notify('Error', error.reason)
+        console.log('ERROR')
+        console.log(error)
         dispatch(socketWriteFailure())
       })
   }
@@ -354,6 +372,8 @@ export const socketEventSubscribe = (event) => {
       })
       .catch((error) => {
         NotifyApi.notify('Error', error.reason)
+        console.log('ERROR')
+        console.log(error)
         dispatch(socketWriteFailure())
       })
   }
@@ -368,6 +388,8 @@ export const socketEventUnsubscribe = (event) => {
       })
       .catch((error) => {
         NotifyApi.notify('Error', error.reason)
+        console.log('ERROR')
+        console.log(error)
         dispatch(socketWriteFailure())
       })
   }
@@ -382,6 +404,8 @@ export const socketEventListen = () => {
       })
       .catch((error) => {
         NotifyApi.notify('Error', error.reason)
+        console.log('ERROR')
+        console.log(error)
         dispatch(socketWriteFailure())
       })
   }
@@ -396,6 +420,8 @@ export const SocketListLogins = () => {
       })
       .catch((error) => {
         NotifyApi.notify('Error', error.reason)
+        console.log('ERROR')
+        console.log(error)
         dispatch(socketWriteFailure())
       })
   }
@@ -411,6 +437,8 @@ export const socketLogin = (identity, password) => {
       })
       .catch((error) => {
         NotifyApi.notify('Error', error.reason)
+        console.log('ERROR')
+        console.log(error)
         if(error['status'] === 'privkey_not_found')
           dispatch(loginFailure())
         else
@@ -445,6 +473,8 @@ export const socketLogout = () => {
       })
       .catch((error) => {
         NotifyApi.notify('Error', error.reason)
+        console.log('ERROR')
+        console.log(error)
         if(error['status'] === 'login_required')
           dispatch(logoutFailure())
         else
@@ -484,6 +514,8 @@ export const socketListDir = (route, animation) => {
       .then(() => dispatch(loadFilesSuccess(files)))
       .catch((error) => {
         NotifyApi.notify('Error', error.reason)
+        console.log('ERROR')
+        console.log(error)
         dispatch(loadFilesFailure())
       })
       .then(() => dispatch(loadingAnimation(true)))
@@ -504,6 +536,8 @@ export const socketShowDustbin = () => {
       })
       .catch((error) => {
         NotifyApi.notify('Error', error.reason)
+        console.log('ERROR')
+        console.log(error)
         dispatch(loadFilesFailure())
       })
   }
@@ -519,6 +553,8 @@ export const socketSearchFile = (name) => {
       })
       .catch((error) => {
         NotifyApi.notify('Error', error.reason)
+        console.log('ERROR')
+        console.log(error)
         dispatch(loadFilesFailure())
       })
   }
@@ -551,6 +587,8 @@ export const socketCreateFile = (route, fileR) => {
       })
       .catch((error) => {
         NotifyApi.notify('Error', error.reason)
+        console.log('ERROR')
+        console.log(error)
         dispatch(socketWriteFailure())
       })
   }
@@ -572,6 +610,8 @@ export const socketRenameFile = (file, name) => {
       })
       .catch((error) => {
         NotifyApi.notify('Error', error.reason)
+        console.log('ERROR')
+        console.log(error)
         dispatch(socketWriteFailure())
       })
   }
@@ -587,6 +627,8 @@ export const socketDeleteFile = (file) => {
       })
       .catch((error) => {
         NotifyApi.notify('Error', error.reason)
+        console.log('ERROR')
+        console.log(error)
         dispatch(socketWriteFailure())
       })
   }
@@ -602,6 +644,8 @@ export const socketRestoreFile = (file) => {
       })
       .catch((error) => {
         NotifyApi.notify('Error', error.reason)
+        console.log('ERROR')
+        console.log(error)
         dispatch(socketWriteFailure())
       })
   }
@@ -623,6 +667,8 @@ export const socketMoveFile = (file, path) => {
       })
       .catch((error) => {
         NotifyApi.notify('Error', error.reason)
+        console.log('ERROR')
+        console.log(error)
         dispatch(socketWriteFailure())
       })
   }
@@ -647,6 +693,8 @@ export const socketCreateDir = (route, name) => {
       })
       .catch((error) => {
         NotifyApi.notify('Error', error.reason)
+        console.log('ERROR')
+        console.log(error)
         dispatch(socketWriteFailure())
       })
   }
@@ -659,6 +707,8 @@ export const socketHistory = (summary=false) => {
       .then((data) => dispatch(loadHistorySuccess(data.detailed_history)))
       .catch((error) => {
         NotifyApi.notify('Error', error.reason)
+        console.log('ERROR')
+        console.log(error)
         dispatch(socketWriteFailure())
       })
   }
@@ -675,6 +725,8 @@ export const socketRestoreVersion = (version) => {
       })
       .catch((error) => {
         NotifyApi.notify('Error', error.reason)
+        console.log('ERROR')
+        console.log(error)
         dispatch(socketWriteFailure())
       })
   }
