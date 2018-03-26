@@ -154,8 +154,6 @@ class PersonalFiles extends Component {
         const file = this.props.file
         var re = /(?:\.([^.]+))?$/
         var type = re.exec(file['name'])[1]
-        if (type === undefined || file['type'] === 'folder')
-          type = file['type']
         const icons = {
           folder: 'fa-folder-o',
           file: 'fa-file-o',
@@ -169,6 +167,8 @@ class PersonalFiles extends Component {
           avi: 'fa-file-video-o',
           doc: 'fa-file-word-o'
         }
+        if (type === undefined || !(type in icons) || file['type'] === 'folder')
+          type = file['type']
         return (
             <div className='icon'>
               <i className={'fa ' + icons[type]}/>
