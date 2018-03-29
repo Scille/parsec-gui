@@ -1,3 +1,4 @@
+const electron = window.require('electron')
 import { getPath } from '../common'
 import * as types from './ActionTypes'
 import FileReaderApi from '../api/fileReaderApi'
@@ -210,7 +211,11 @@ export const socketEndSuccess = () => {
 }
 export const socketConnect = () => {
   return (dispatch) => {
-    return SocketApi.connect()
+    var port = 6776
+    if (electron.remote.process.env.PARSEC_CORE_PORT) {
+      port = electron.remote.process.env.PARSEC_CORE_PORT
+    }
+    return SocketApi.connect('127.0.0.1', port)
       .then((data) => dispatch(socketConnectSuccess()))
       .catch((error) => {
         window.location.hash = '/socket-error'
