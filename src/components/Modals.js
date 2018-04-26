@@ -621,7 +621,7 @@ export class SettingsModal extends Component {
   }
 
   handleMountpointChange(event) {
-    this.setState({mountpoint: document.getElementById("mountpoint").files[0].path});
+    this.setState({mountpoint: event.target.value});
   }
 
   handleEnableIndexationChange(event) {
@@ -677,8 +677,8 @@ export class SettingsModal extends Component {
                   onChange={this.handleEnableMountpointChange}/><br/><br/>
               </label>
               <label>
-                Mountpoint: {this.state.mountpoint}
-                <input type="file" id="mountpoint" ref={node => this._addDirectory(node)} name="mountpoint" onChange={this.handleMountpointChange} /><br/><br/>
+                Mountpoint:<br/>
+                <input type="text" id="mountpoint" name="mountpoint" value={this.state.mountpoint} onChange={this.handleMountpointChange} /><br/><br/>
               </label>
               <label>
                 Content indexation for search engine:<br/>
