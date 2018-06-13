@@ -120,7 +120,7 @@ class Signup extends Component {
               </label>
               <label>
                 Device<br/>
-                <input type="text" name="device" value={device} onChange={this.handleChange} onFocus={this.handleFocus} autoFocus/>
+                <input type="text" name="device" value={device} onChange={this.handleChange} onFocus={this.handleFocus}/>
               </label>
               <label>
                 Password<br/>
@@ -132,7 +132,7 @@ class Signup extends Component {
               </label>
               <label>
                 Token<br/>
-                <input type="text" name="token" value={token} onChange={this.handleChange} onFocus={this.handleFocus} autoFocus/>
+                <input type="text" name="token" value={token} onChange={this.handleChange} onFocus={this.handleFocus}/>
               </label>
               {this.state.pairing_message}
             </div>
