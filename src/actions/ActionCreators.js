@@ -26,11 +26,8 @@ export const switchView = () => {
 }
 
 // PATH
-export const addPath = (path) => {
-  return { type: types.ADD_PATH, path }
-}
-export const removePath = (index) => {
-  return { type: types.REMOVE_PATH, index }
+export const setPath = (path) => {
+  return { type: types.SET_PATH, path }
 }
 
 // MODAL
@@ -524,6 +521,7 @@ export const socketListDir = (route, animation) => {
         }
         else return Promise.reject({label: 'Not a directory'})
       })
+      .then(() => dispatch(setPath(route)))
       .then(() => dispatch(loadFilesSuccess(files)))
       .catch((error) => {
         NotifyApi.notify('Error', error.reason)
@@ -746,6 +744,7 @@ export const socketRestoreVersion = (version) => {
 export const socketSharePath = (path, recipient) => {
   const cmd = `{"cmd": "share", "path": "${path}", "recipient": "${recipient}"}\n`
   return (dispatch) => {
+    dispatch(loadingAnimation(false))
     dispatch(socketWrite())
     return SocketApi.write(cmd)
       .then((data) => {
@@ -758,5 +757,6 @@ export const socketSharePath = (path, recipient) => {
         console.log(error)
         dispatch(socketWriteFailure())
       })
+      .then(() => dispatch(loadingAnimation(true)))
   }
 }

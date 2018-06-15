@@ -6,8 +6,7 @@ export const ENABLE_RESTORING = 'ENABLE_RESTORING'
 export const DISABLE_RESTORING = 'DISABLE_RESTORING'
 
 // PATH
-export const ADD_PATH = 'ADD_PATH'
-export const REMOVE_PATH = 'REMOVE_PATH'
+export const SET_PATH = 'SET_PATH'
 
 // Modal
 export const SHOW_MODAL = 'SHOW_MODAL'

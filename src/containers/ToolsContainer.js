@@ -51,7 +51,7 @@ const mapDispatchToProps = (dispatch) => {
         }
       },
       searchFile: (name) => {
-        dispatch(actionsCreators.removePath(0))
+        dispatch(actionsCreators.setPath("/"))
         dispatch(actionsCreators.socketSearchFile(name))
         dispatch(actionsCreators.hideModal())
       },
@@ -70,7 +70,10 @@ const mapDispatchToProps = (dispatch) => {
         dispatch(actionsCreators.socketCreateDir(route, name))
         dispatch(actionsCreators.hideModal())
       },
-      sharePath: (path, recipient) => dispatch(actionsCreators.socketSharePath(path, recipient)),
+      sharePath: (path, recipient) => {
+        dispatch(actionsCreators.socketSharePath(path, recipient))
+        dispatch(actionsCreators.hideModal())
+      },
       refresh: (route, animate) => dispatch(actionsCreators.socketListDir(route, animate)),
       restore: (state) => dispatch(actionsCreators.restore(state)),
       switchView: () => dispatch(actionsCreators.switchView()),

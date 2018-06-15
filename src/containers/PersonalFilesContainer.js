@@ -17,9 +17,7 @@ PersonalFiles.propTypes = {
     init: PropTypes.func.isRequired,
     end: PropTypes.func.isRequired,
     openFile: PropTypes.func.isRequired,
-    moveTo: PropTypes.func.isRequired,
-    moveUp: PropTypes.func.isRequired,
-    refresh: PropTypes.func.isRequired,
+    listDir: PropTypes.func.isRequired,
     selectFile: PropTypes.func.isRequired,
     restoring: PropTypes.func.isRequired,
   }),
@@ -41,21 +39,9 @@ const mapDispatchToProps = (dispatch) => {
   return {
     dispatch: {
       init: () => dispatch(actionsCreators.socketListDir('/', true)),
-      end: () => dispatch(actionsCreators.removePath(0)),
+      end: () => dispatch(actionsCreators.setPath("/")),
       openFile: (file) => dispatch(actionsCreators.openFile(file)),
-      moveTo: (route, name) => {
-        const path = {
-          route: route === '/' ? route.concat(name) : route.concat('/', name),
-          libelle: name
-        }
-        dispatch(actionsCreators.socketListDir(path.route, true))
-        dispatch(actionsCreators.addPath(path))
-      },
-      moveUp: (route, index) => {
-        dispatch(actionsCreators.socketListDir(route, true))
-        dispatch(actionsCreators.removePath(index))
-      },
-      refresh: (route, animate) => dispatch(actionsCreators.socketListDir(route, animate)),
+      listDir: (route, animate) => dispatch(actionsCreators.socketListDir(route, animate)),
       restoring: (state) => dispatch(actionsCreators.restoring(state)),
       selectFile: (file, state) => dispatch(actionsCreators.selectFile(file, state)),
     }

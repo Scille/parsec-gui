@@ -1,6 +1,6 @@
 import * as types from '../actions/ActionTypes'
 
-const initialState = {selected: [], cutted: []}
+const initialState = {selected: [], cutted: [], path: ''}
 
 const selectionReducer = (state=initialState, action) => {
   switch(action.type) {
@@ -18,10 +18,15 @@ const selectionReducer = (state=initialState, action) => {
           ...state.selected.filter(file => file.path !== action.file.path)
         ]
       })
-    case types.REMOVE_PATH:
-      return Object.assign({}, state, {
-        selected: []
-      })
+    case types.SET_PATH:
+      if(state.path !== action.path) {
+        return Object.assign({}, state, {
+          selected: [],
+          path: action.path
+        })
+      } else {
+        return state
+      }
     case types.CUT_FILES:
       return {
         cutted: state.selected,

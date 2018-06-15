@@ -21,14 +21,17 @@ class PersonalFiles extends Component {
     this.store = new Store()
     this.state = {
       searchTerm: '',
-      matchingFiles: []
+      matchingFiles: [],
+      target_directory: '/',
+      refresh: 0,
+      lock: false,
     }
   }
 
   componentDidMount() {
     this.props.dispatch.init()
     clearInterval(this.interval)
-    this.interval = setInterval(this.refresh, 3000)
+    this.interval = setInterval(this.refresh, 250)
   }
 
   componentWillUnmount() {
@@ -36,12 +39,64 @@ class PersonalFiles extends Component {
     clearInterval(this.interval)
   }
 
-  // shouldComponentUpdate(nextProps, nextState) {
-  //   if(this.props.state.breadcrumb.length !== nextProps.state.breadcrumb.length) {
-  //     return false
-  //   }
-  //   return true
-  // }
+  shouldComponentUpdate(nextProps, nextState) {
+    if(nextProps.state.files !== this.props.state.files)
+      this.setState(Object.assign(this.state, {lock: false}))
+
+    if(nextProps.state.socket.loading && !this.props.state.socket.loading && nextProps.state.view.loading_animation)
+      return true
+
+    if(nextProps.state.breadcrumb[nextProps.state.breadcrumb.length - 1].route !== this.props.state.breadcrumb[this.props.state.breadcrumb.length - 1].route)
+      return true
+
+    var newFiles = []
+    for (var i = nextProps.state.files.length - 1; i >= 0; i--) {
+      newFiles.push([nextProps.state.files[i].path, nextProps.state.files[i].type])
+    }
+    var oldFiles = []
+    for (i = this.props.state.files.length - 1; i >= 0; i--) {
+      oldFiles.push([this.props.state.files[i].path, this.props.state.files[i].type])
+    }
+    if(newFiles.length !== oldFiles.length || (newFiles.length > 1 && newFiles.every(function(item, i) {return item[0] !== oldFiles[i][0] || item[1] !== oldFiles[i][1]})))
+      return true
+
+    var newSelectedFiles = []
+    for (i = nextProps.state.selection.selected.length - 1; i >= 0; i--) {
+      newSelectedFiles.push([nextProps.state.selection.selected[i].path, nextProps.state.selection.selected[i].type])
+    }
+    var oldSelectedFiles = []
+    for (i = this.props.state.selection.selected.length - 1; i >= 0; i--) {
+      oldSelectedFiles.push([this.props.state.selection.selected[i].path, this.props.state.selection.selected[i].type])
+    }
+    if(newSelectedFiles.length !== oldSelectedFiles.length || (newSelectedFiles.length > 1 && newSelectedFiles.every(function(item, i) {return item[0] !== oldSelectedFiles[i][0] || item[1] !== oldSelectedFiles[i][1]})))
+      return true
+
+    return false
+  }
+
+  refresh() {
+    var new_refresh_state = 0
+    if(this.state.refresh >= 12)
+      new_refresh_state = 0
+    else
+      new_refresh_state = this.state.refresh + 1
+
+    this.setState(Object.assign(this.state, {refresh: new_refresh_state}))
+
+    if(this.state.target_directory === this.props.state.breadcrumb[this.props.state.breadcrumb.length - 1].route && new_refresh_state !== 1)
+      return
+
+    var animate = false
+    var target_directory = this.props.state.breadcrumb[this.props.state.breadcrumb.length - 1].route
+    if(this.state.target_directory !== target_directory) {
+      target_directory = this.state.target_directory
+      animate = true
+    }
+    if(!this.state.lock) {
+      this.setState(Object.assign(this.state, {lock: true}))
+      this.props.dispatch.listDir(target_directory, animate)
+    }
+  }
 
   onSearchInputChange(event, route) {
     var grep = function(what, where, callback) {
@@ -91,6 +146,7 @@ class PersonalFiles extends Component {
   }
 
   isSelected(file) {
+
     for(var i = 0; i < this.props.state.selection.selected.length; i++) {
       if(this.props.state.selection.selected[i].path === file.path) {
         // console.log(file.path + ' selected')
@@ -105,10 +161,6 @@ class PersonalFiles extends Component {
     this.props.dispatch.selectFile(file, selected)
   }
 
-  refresh(path) {
-    this.props.dispatch.refresh(this.currentPath.route, false)
-  }
-
   handleCancelRestore(event) {
     this.props.dispatch.restoring(false)
   }
@@ -118,7 +170,6 @@ class PersonalFiles extends Component {
   }
 
   render() {
-    // console.log(this.props.state.selection)
     var files = this.props.state.files
     const selected = this.props.state.selection.selected
     const view = this.props.state.view
@@ -126,10 +177,7 @@ class PersonalFiles extends Component {
     const loading_animation = this.props.state.view.loading_animation
     const breadcrumb = this.props.state.breadcrumb
     this.currentPath = breadcrumb[breadcrumb.length -1]
-
     const openFile = this.props.dispatch.openFile
-    const moveTo = this.props.dispatch.moveTo
-    const moveUp = this.props.dispatch.moveUp
 
     files.sort((a, b) => {
       if(a.type === 'folder' && b.type === 'file')
@@ -201,7 +249,11 @@ class PersonalFiles extends Component {
         return (
           <a key={file.path} onClick={(event) => {
             if(selected.length === 0) {
-              file.type === 'folder' ? moveTo(this.currentPath.route, file.name) : openFile(file)
+              if(file.type === 'folder') {
+                this.setState(Object.assign(this.state, {target_directory: file.path}))
+              } else {
+                openFile(file)
+              }
             } else {
               this.selectFile(event, file)
             }
@@ -237,7 +289,7 @@ class PersonalFiles extends Component {
               <li>
                 <div className="dropdown-content">
                 {breadcrumb.map((path, i) => 
-                  <button key={path.route} onClick={() => {clearInterval(this.interval); moveUp(path.route, i)}} className={`button path-button ${i === 0 ? 'first-path-button' : ''} ${(i + 1) === breadcrumb.length ? 'last-path-button' : ''}`}>{(i + 1) === breadcrumb.length ? <i className="fa fa-folder-open"/> : ''} {path.libelle}</button>
+                  <button key={path.route} onClick={() => {this.setState(Object.assign(this.state, {target_directory: path.route}))}} className={`button path-button ${i === 0 ? 'first-path-button' : ''} ${(i + 1) === breadcrumb.length ? 'last-path-button' : ''}`}>{(i + 1) === breadcrumb.length ? <i className="fa fa-folder-open"/> : ''} {path.libelle}</button>
                 )}
                 </div>
               </li>

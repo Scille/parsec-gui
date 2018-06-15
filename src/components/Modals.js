@@ -421,6 +421,7 @@ export class ShareModal extends Component {
   }
 
   handleShare(event) {
+    event.preventDefault()
     const path = this.props.path
     const share = this.props.sharePath
     const recipient = this.state.recipient
