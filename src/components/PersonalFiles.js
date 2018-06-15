@@ -4,6 +4,8 @@ import PropTypes from 'prop-types'
 import ModalsContainer from '../containers/ModalsContainer'
 import { bytesToSize } from '../common'
 
+const Store = window.require('electron-store')
+
 import './ViewSwitcher.css'
 
 class PersonalFiles extends Component {
@@ -16,6 +18,7 @@ class PersonalFiles extends Component {
     this.refresh = this.refresh.bind(this)
     this.handleCancelRestore = this.handleCancelRestore.bind(this)
     this.handleValidateRestore = this.handleValidateRestore.bind(this)
+    this.store = new Store()
     this.state = {
       searchTerm: '',
       matchingFiles: []
@@ -24,12 +27,21 @@ class PersonalFiles extends Component {
 
   componentDidMount() {
     this.props.dispatch.init()
+    clearInterval(this.interval)
+    this.interval = setInterval(this.refresh, 3000)
   }
 
   componentWillUnmount() {
     this.props.dispatch.end()
     clearInterval(this.interval)
   }
+
+  // shouldComponentUpdate(nextProps, nextState) {
+  //   if(this.props.state.breadcrumb.length !== nextProps.state.breadcrumb.length) {
+  //     return false
+  //   }
+  //   return true
+  // }
 
   onSearchInputChange(event, route) {
     var grep = function(what, where, callback) {
@@ -106,8 +118,6 @@ class PersonalFiles extends Component {
   }
 
   render() {
-    if(this.interval === undefined)
-      this.interval = setInterval(this.refresh, 3000)
     // console.log(this.props.state.selection)
     var files = this.props.state.files
     const selected = this.props.state.selection.selected
@@ -220,7 +230,7 @@ class PersonalFiles extends Component {
           </div>
           <div className="search">
             <span className="fa fa-search"></span>
-            <input onKeyUp={(event) => this.onSearchInputChange(event, '/home/rossigneux/parsec' + this.currentPath.route)} placeholder="Search"/>
+            <input onKeyUp={(event) => this.onSearchInputChange(event, this.store.get('mountpoint', '') + this.currentPath.route)} placeholder="Search"/>
           </div>
           <div className="breadcrumb">
             <ul>
