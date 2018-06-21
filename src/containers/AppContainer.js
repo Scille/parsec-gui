@@ -50,7 +50,7 @@ const mapDispatchToProps = (dispatch) => {
       },
       endDeclareDevice: () => dispatch(actionsCreators.socketEventUnsubscribe('device_try_claim_submitted')),
       listenEvents: (notify) => dispatch(actionsCreators.socketEventListen(notify)),
-      acceptDevice: (try_id) => dispatch(actionsCreators.socketAcceptDevice(try_id)),
+      acceptDevice: (try_id, password) => dispatch(actionsCreators.socketAcceptDevice(try_id, password)),
     }
   }
 }

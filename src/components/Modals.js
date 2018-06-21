@@ -790,7 +790,7 @@ export class InviteUserModal extends Component {
 export class DeclareDeviceModal extends Component {
   constructor(props) {
     super(props)
-    this.state = { device: '', confirmation_token: '' }
+    this.state = { device: '', confirmation_token: '', password: '' }
 
     this.handleChange = this.handleChange.bind(this)
     this.handleFocus = this.handleFocus.bind(this)
@@ -847,7 +847,7 @@ export class DeclareDeviceModal extends Component {
       endDeclareDevice()
       clearInterval(this.interval)
     } else if(this.props.event_device_try_claim_listened && this.props.event_device_try_claim_listened.device_name === this.state.device) {
-      acceptDevice(this.props.event_device_try_claim_listened.configuration_try_id)
+      acceptDevice(this.props.event_device_try_claim_listened.configuration_try_id, this.state.password)
       this.handleCancel(null)
     } else {
       listenEvents(false)
@@ -856,6 +856,7 @@ export class DeclareDeviceModal extends Component {
 
   render() {
     const device = this.state.device
+    const password = this.state.password
     var token = ''
     if(this.props.device_declaration && this.props.device_declaration.token !== undefined)
       token = this.props.device_declaration.token
@@ -873,10 +874,16 @@ export class DeclareDeviceModal extends Component {
                 </label>
               }
               {(this.props.device_declaration === null || this.props.device_declaration.token === undefined) &&
+                <div>
                 <label>
                   Device<br/>
                   <input type="text" name="device" value={device} onChange={this.handleChange} onFocus={this.handleFocus} autoFocus/>
                 </label>
+                <label>
+                  Password<br/>
+                  <input type="password" name="password" value={password} onChange={this.handleChange} onFocus={this.handleFocus}/>
+                </label>
+                </div>
               }
               {this.props.device_declaration && this.props.device_declaration.token !== undefined &&
                 <label>

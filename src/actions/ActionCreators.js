@@ -314,6 +314,7 @@ export const socketSignup = (identity, password, token) => {
 export const socketDeclareDevice = (device) => {
   const cmd = `{"cmd": "device_declare", "device_name": "${device}"}\n`
   return (dispatch) => {
+    dispatch(loadingAnimation(false))
     dispatch(socketWrite())
     return SocketApi.write(cmd)
       .then((data) => {
@@ -327,6 +328,7 @@ export const socketDeclareDevice = (device) => {
         dispatch(declareDeviceFailure(error.reason))
         dispatch(socketWriteFailure())
       })
+      .then(() => dispatch(loadingAnimation(true)))
   }
 }
 export const socketConfigureDevice = (identity, password, token) => {
@@ -355,8 +357,8 @@ export const socketConfigureDevice = (identity, password, token) => {
       })
   }
 }
-export const socketAcceptDevice = (configuration_try_id) => {
-  const cmd = `{"cmd": "device_accept_configuration_try", "configuration_try_id": "${configuration_try_id}"}\n`
+export const socketAcceptDevice = (configuration_try_id, password) => {
+  const cmd = `{"cmd": "device_accept_configuration_try", "configuration_try_id": "${configuration_try_id}", "password": "${password}"}\n`
   return (dispatch) => {
     dispatch(socketWrite())
     return SocketApi.write(cmd)
