@@ -46,6 +46,9 @@ class PersonalFiles extends Component {
     if(nextProps.state.socket.loading && !this.props.state.socket.loading && nextProps.state.view.loading_animation)
       return true
 
+    if(!nextState.lock && nextProps.state.view.loading_animation && !this.props.state.view.loading_animation)
+      return true
+
     if(nextProps.state.breadcrumb[nextProps.state.breadcrumb.length - 1].route !== this.props.state.breadcrumb[this.props.state.breadcrumb.length - 1].route)
       return true
 
