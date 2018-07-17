@@ -54,8 +54,8 @@
     "electron": "npm run build && electron .",
     "electron:dev": "concurrently \"npm run start\" \"wait-on http://localhost:3000/ && ELECTRON_DEV=true electron .\"",
     "electron:osx": "npm run clear:osx && npm run build && electron-packager . --icon=build/favicon.icns --platform=darwin --arch=x64 --prune=true --asar --out=platforms/osx",
-    "electron:win": "npm run clear:win && npm run build && electron-packager . --icon=build/favicon.ico --platform=win32 --arch=ia32,x64 --prune=true --asar --out=platforms/win",
-    "electron:nix": "npm run clear:nix && npm run build && electron-packager . --icon=build/favicon.png --platform=linux --arch=ia32,x64 --prune=true --asar --out=platforms/nix",
+    "electron:win": "npm run clear:win && npm run build && electron-packager . --icon=build/favicon.ico --platform=win32 --arch=x64 --prune=true --asar --out=platforms/win",
+    "electron:nix": "npm run clear:nix && npm run build && electron-packager . --icon=build/favicon.png --platform=linux --arch=x64 --prune=true --asar --out=platforms/nix",
     "electron:deb": "npm run electron:nix && electron-installer-debian --src platforms/nix/parsec-gui-linux-x64/ --dest dist/installers/ --arch amd64"
   },
   "main": "electron-starter.js",
